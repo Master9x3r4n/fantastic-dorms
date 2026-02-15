@@ -67,7 +67,7 @@ const props = defineProps({
 <template>
     <div class="flex justify-around gap-8 m-8 ">
         <!-- Main Listing -->
-        <div class="flex flex-col gap-4 w-fit flex-grow max-w-screen-lg">
+        <div class="flex flex-col gap-4 w-fit grow max-w-5xl">
             <!-- Media Carousel -->
             <Carousel :count="1" buttonStyling="large">
                 <template #content>
