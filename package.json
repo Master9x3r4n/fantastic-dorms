@@ -12,6 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "express": "^5.2.1",
     "vue": "^3.5.26",
     "vue-router": "^4.6.4"
   },
