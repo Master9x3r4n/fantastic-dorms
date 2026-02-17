@@ -4,11 +4,11 @@
 	// Object data for dark and light mode themes
 	const theme = {
 		"light": {
-			"src": "src/assets/darkmode-assets/sun-svgrepo-com.svg",
+			"src": "/src/assets/darkmode-assets/sun-svgrepo-com.svg",
 			"alt": "Light Mode Icon" 
 		},
 		"dark": {
-			"src": "src/assets/darkmode-assets/moon-svgrepo-com.svg",
+			"src": "/src/assets/darkmode-assets/moon-svgrepo-com.svg",
 			"alt": "Dark Mode Icon"
 		}
 	}
