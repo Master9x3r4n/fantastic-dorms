@@ -1,11 +1,10 @@
 <script setup>
 import ApartmentCardLarge from '@/components/apartment-cards/ApartmentCardLarge.vue';
 
+import { useRoute } from 'vue-router';
+import {computed} from 'vue';
+
 const props = defineProps({
-    searchQuery: {
-        type: String,
-        default: "beautiful apartment"
-    },
     searchResults: {
         type: Array,
         default: [
@@ -43,6 +42,9 @@ const props = defineProps({
     }
 })
 
+const route = useRoute();
+const searchQuery = computed(() => route.query.q);
+
 </script>
 
 <template>
@@ -51,7 +53,7 @@ const props = defineProps({
         <!-- Body Header -->
         <div class="w-full flex justify-between items-center px-2">
             <!-- Search Result -->
-            <div class="font-light text-[20px] italic leading-6 dark:text-white">Found {{ props.searchResults.length }} results for “{{ props.searchQuery }}”</div>
+            <div class="font-light text-[20px] italic leading-6 dark:text-white">Found {{ searchResults.length }} results for “{{ searchQuery }}”</div>
 
             <!-- Filter Button -->
             <div class="flex justify-center items-center py-1 px-3.75 border-2 rounded-[40px]
@@ -62,7 +64,7 @@ const props = defineProps({
 
         <!-- Body Content -->
         <div class="h-fit w-full flex flex-col gap-8">
-            <template v-for="i in props.searchResults">
+            <template v-for="i in searchResults">
             <div>
             <ApartmentCardLarge :cardData="i"/>
             </div>
