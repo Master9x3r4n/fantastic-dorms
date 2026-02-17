@@ -54,45 +54,80 @@ export const profileData = {
         },
     },
 
-    "2": {
-	    "name": "",
-		"username": "",
-		"joinDate": "",
-		"bio": "",
-        "listingAdmin": 0,
-        "profileImgSrc": "",
+    "tmorgan_med": {
+	    "name": "Taylor Morgan",
+		"username": "tmorgan_med",
+		"joinDate": "March 2nd, 2020",
+		"bio": "Med student. Need absolute silence for studying.",
+        "listingAdmin": "",
+        "profileImgSrc": "https://i.pinimg.com/736x/4c/08/6f/4c086f7e5b160afad39dbf3432be6022.jpg",
         "schoolData": {
-            "name": "",
-            "since": 0
+            "name": "UP Manila",
+            "since": "2021"
         },
         "dormData": {
-            "name": "",
-            "since": ""
+            "name": "The Scholar's Den",
+            "since": "2022"
         },
         "reviewData": {
-            "since": "",
-            "reviews": ["profileReview array"]
+            "since": "March 2022",
+            "reviews": [
+            {
+                "listing": {
+                    "id": 2,
+                    "thumbnailSrc": "https://static0.cbrimages.com/wordpress/wp-content/uploads/2020/09/rsz-baxter-buildingv1.jpg"
+                },
+                "content": {
+                    "title": "The Baxter Suite",
+                    "description": "I gotta say, its fantastic"
+                },
+                "rating": 4.0
+            },
+            ]
         }
     },
 
-    "3": {
-	    "name": "",
-		"username": "",
-		"joinDate": "",
-		"bio": "",
-        "listingAdmin": 0,
-        "profileImgSrc": "",
+    "jlee_99": {
+	    "name": "Jordan Lee",
+		"username": "jlee_99",
+		"joinDate": "March 3rd, 2020",
+		"bio": "Engineering student. Gamer. Night owl.",
+        "listingAdmin": "",
+        "profileImgSrc": "https://i.pinimg.com/1200x/40/71/e3/4071e33ef6d3d34178fac2a3e11e358b.jpg",
         "schoolData": {
-            "name": "",
-            "since": 0
+            "name": "De La Salle University",
+            "since": "2022"
         },
         "dormData": {
-            "name": "",
-            "since": ""
+            "name": "Urban Hive Lofts",
+            "since": "2023"
         },
         "reviewData": {
-            "since": "",
-            "reviews": ["profileReview array"]
+            "since": "Sept 2022",
+            "reviews": [
+            {
+                "listing": {
+                    "id": 1,
+                    "thumbnailSrc": "https://youre.outof.games/media/uploads/cb/da/cbda1bb4-ee0d-4c65-989f-05a24edd22cf/daily-bugle-featured-location.jpg"
+                },
+                "content": {
+                    "title": "Grand Apartment",
+                    "description": "Absolutely Grand"
+                },
+                "rating": 5.0
+            },
+            {
+                "listing": {
+                    "id": 3,
+                    "thumbnailSrc": "https://static.wikitide.net/peppafanonwiki/thumb/e/ee/Peppa%27s_house_updated.webp/800px-Peppa%27s_house_updated.webp.png"
+                },
+                "content": {
+                    "title": "Miro's House",
+                    "description": "cool ig"
+                },
+                "rating": 2.0
+            },
+            ]
         }
     },
 }
