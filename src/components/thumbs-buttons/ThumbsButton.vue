@@ -12,7 +12,7 @@ const toggled = ref(false);
 
 const getImageUrl = () => {
     const toggle = toggled.value? '-fill' : ''
-    return `src/assets/reply-rating-assets/thumbs-${props.direction}${toggle}.svg`
+    return `/src/assets/reply-rating-assets/thumbs-${props.direction}${toggle}.svg`
 }
 
 </script>

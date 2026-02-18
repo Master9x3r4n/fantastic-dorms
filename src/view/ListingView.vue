@@ -7,9 +7,15 @@ import ReviewCard from '@/components/review-cards/ReviewCard.vue';
 import Divider from '@/components/divider/Divider.vue';
 import ReviewDropdown from "@/components/dropdown/ReviewDropdown.vue";
 
+import { listingData } from "@/assets/temp-data/listing-temp"
+import { computed } from 'vue';
 
 const props = defineProps({
-    listingData: {
+    id: {
+		type: String,
+		default: 1
+	},
+    listingDatas: {
         type: Object,
         default:{
             name: "Apartment Name",
@@ -62,6 +68,8 @@ const props = defineProps({
     }
 })
 
+const listing = computed(() => listingData[props.id]);
+
 </script>
 
 <template>
@@ -70,31 +78,33 @@ const props = defineProps({
         <div class="flex flex-col gap-4 w-fit grow max-w-5xl">
             <!-- Media Carousel -->
             <Carousel :count="1" buttonStyling="large">
-                <template #content>
-                <MediaContainer class="flex shrink-0 snap-start" :src="props.listingData.imageSrc"/>
+            <template #content>
+                <template v-for="i in listing.mediaSrcs">
+                    <MediaContainer class="flex shrink-0 snap-start" :src="i"/>
                 </template>
+            </template>
             </Carousel>
 
             <!-- Listing Information -->
-            <ListingInformation :listingData="props.listingData">
+            <ListingInformation :listingData="listing">
                 <template #listing-name>
-                    {{ props.listingData.name }}
+                    {{ listing.name }}
                 </template>
                 <template #listing-address>
-                    {{ props.listingData.address }}
+                    {{ listing.address }}
                 </template>
                 <template #listing-owner>
-                    {{ props.listingData.owner }}
+                    {{ listing.owner }}
                 </template>
                 <template #description> 
-                    {{ props.listingData.description }}
+                    {{ listing.description }}
                 </template>
             </ListingInformation> 
         </div>
 
         <!-- Reviews -->
         <div class="flex flex-col gap-4 w-fit">
-            <OverallRating :ratings="props.listingData.rating"/>
+            <OverallRating :ratings="listing.rating"/>
 
             <!-- Reviews List -->
             <div class="flex flex-col gap-1">
@@ -104,16 +114,16 @@ const props = defineProps({
                 </div>
 
                 <!-- Reviews -->
-                <template v-for="i in props.reviewsData">
-                    <ReviewCard :reviewData="i" :reviewsRoute="i.reviewsRoute">
+                <template v-for="i in listing.reviews">
+                    <ReviewCard :reviewData="i"> 
                         <template #review-title>
-                            {{ i.reviewTitle }}
+                            {{ i.content.title }}
                         </template>
                         <template #review>
-                            {{ i.reviewContent }}
+                            {{ i.content.description }}
                         </template>
-                        <template #ownerReply v-if="i.ownerReply">
-                            {{ i.ownerReply }}
+                        <template #ownerReply v-if="i.content.reply">
+                            {{ i.content.reply }}
                         </template> 
                     </ReviewCard>
                     <Divider/>
