@@ -5,7 +5,6 @@ import PageButtons from "@/components/page-buttons/PageButtons.vue";
 import Divider from "@/components/divider/Divider.vue";
 import BlueButton from "@/components/page-buttons/BlueButton.vue";
 import { profileData } from "@/assets/temp-data/profile-temp.js";
-
 import { computed } from 'vue';
 
 const props = defineProps({
@@ -52,9 +51,7 @@ const user = computed(() => profileData[props.id]);
 		<ProfileSummary :name="user.name" :username="user.username" :joinDate="user.joinDate"
 										:university="user.schoolData.name" :profileImg="user.profileImgSrc"
 								
-		>
-
-		</ProfileSummary>
+		/>
 
 		<!-- Biography and Reviews Container -->
 		<div class="flex flex-row flex-wrap justify-center items-start gap-10 w-full max-w-300 min-h-146.5 mx-auto">
@@ -79,7 +76,7 @@ const user = computed(() => profileData[props.id]);
 				<span class="text-[16px] leading-[19px] dark:text-white">{{ user.bio }}</span>
 
 				<!-- separator -->
-				<Divider></Divider>
+				<Divider/>
 
 				<!-- Profile details container-->
 				<div class="flex flex-col items-start gap-[20px] w-full max-w-[580px] min-h-[157px] flex-none order-2 self-stretch">
