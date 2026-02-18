@@ -114,20 +114,23 @@ const listing = computed(() => listingData[props.id]);
                 </div>
 
                 <!-- Reviews -->
-                <template v-for="i in listing.reviews">
-                    <ReviewCard :reviewData="i"> 
-                        <template #review-title>
-                            {{ i.content.title }}
-                        </template>
-                        <template #review>
-                            {{ i.content.description }}
-                        </template>
-                        <template #ownerReply v-if="i.content.reply">
-                            {{ i.content.reply }}
-                        </template> 
-                    </ReviewCard>
-                    <Divider/>
+                <template v-if="listing.reviews">
+                    <template v-for="i in listing.reviews">
+                        <ReviewCard :reviewData="i"> 
+                            <template #review-title>
+                                {{ i.content.title }}
+                            </template>
+                            <template #review>
+                                {{ i.content.description }}
+                            </template>
+                            <template #ownerReply v-if="i.content.reply">
+                                {{ i.content.reply }}
+                            </template> 
+                        </ReviewCard>
+                        <Divider/>
+                    </template>
                 </template>
+                <template v-else> bruh </template>
             </div>
         </div>
     </div>
