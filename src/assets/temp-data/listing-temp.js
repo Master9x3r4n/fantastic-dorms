@@ -71,38 +71,38 @@ export const listingData = {
         ],
         "locationSrc": "https://cdn.britannica.com/06/276306-049-A8451874/world-map.jpg",
         "reviews": [
-            {
-                "reviewerProfile": {
-                    "name": "Casey Cruz",
-                    "username": "casey_c",
-                    "profileImageSrc": "https://i.pinimg.com/736x/07/ad/21/07ad218a0a5df57b1cf0458c7febd2e3.jpg",
-                    "count": 2
-                },
-                "content": {
-                    "title": "Fantastic For Us",
-                    "description": "I have stayed at this apartment for a while, and let me say, it is as the name says. It's a really cool apartment and it has a lot of the amenities that a student would want from...",
-                    "reply": "Glad to hear that you were satisfied with our space! ^_^"
-                },
-                "rating": 4,
-                "score": 44,
-                "mediaSrcs": []
+        {
+            "reviewerProfile": {
+                "name": "Casey Cruz",
+                "username": "casey_c",
+                "profileImageSrc": "https://i.pinimg.com/736x/07/ad/21/07ad218a0a5df57b1cf0458c7febd2e3.jpg",
+                "count": 2
             },
-            {
-                "reviewerProfile": {
-                    "name": "Taylor Morgan",
-                    "username": "tmorgan_med",
-                    "profileImageSrc": "https://i.pinimg.com/736x/4c/08/6f/4c086f7e5b160afad39dbf3432be6022.jpg",
-                    "count": 1
-                },
-                "content": {
-                    "title": "I Love it!",
-                    "description": "Easy 4 stars 4 me. I even got to meet the Human Torch! Fantastic!",
-                    "reply": "Happy to hear that!"
-                },
-                "rating": 4,
-                "score": 44,
-                "mediaSrcs": []
+            "content": {
+                "title": "Fantastic For Us",
+                "description": "I have stayed at this apartment for a while, and let me say, it is as the name says. It's a really cool apartment and it has a lot of the amenities that a student would want from...",
+                "reply": "Glad to hear that you were satisfied with our space! ^_^"
             },
+            "rating": 4,
+            "score": 44,
+            "mediaSrcs": []
+        },
+        {
+            "reviewerProfile": {
+                "name": "Taylor Morgan",
+                "username": "tmorgan_med",
+                "profileImageSrc": "https://i.pinimg.com/736x/4c/08/6f/4c086f7e5b160afad39dbf3432be6022.jpg",
+                "count": 1
+            },
+            "content": {
+                "title": "I Love it!",
+                "description": "Easy 4 stars 4 me. I even got to meet the Human Torch! Fantastic!",
+                "reply": "Happy to hear that!"
+            },
+            "rating": 4,
+            "score": 44,
+            "mediaSrcs": []
+        },
         ]
     },
 
