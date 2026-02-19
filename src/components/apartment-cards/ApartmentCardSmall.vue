@@ -39,14 +39,14 @@ const props = defineProps({
                 <!-- Apartment Name -->
                 <div>
                     <h1 class="font-bold text-[32px] leading-10 dark:text-white hover:underline">   
-                        <RouterLink :to="props.cardData.routerLink">{{ props.cardData.name }}</RouterLink>
+                        <RouterLink :to="cardData.routerLink">{{ cardData.name }}</RouterLink>
                     </h1>
                 </div>
 
                 <!-- Apartment Description -->
                 <div>
                     <p class="italic font-normal text-[20px] leading-6 dark:text-white">
-                        {{ props.cardData.description }}
+                        {{ cardData.description }}
                     </p>
                 </div>
             </div>
@@ -54,8 +54,8 @@ const props = defineProps({
             <!-- Lower Review Container -->
             <div class="h-[50%] flex justify-end items-end">
                 <CardRating 
-                :rating="props.cardData.ratingData.rating" 
-                :reviewCount="props.cardData.ratingData.reviewCount"/>
+                :rating="cardData.ratingData.rating" 
+                :reviewCount="cardData.ratingData.reviewCount"/>
             </div>
        </div>
     </div>
