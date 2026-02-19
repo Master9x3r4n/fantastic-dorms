@@ -136,7 +136,7 @@ const user = computed(() => profileData[props.id]);
                 {{ user.reviewData.reviews.length }}
               </span>
 							<span class="italic font-normal text-[12px] leading-[15px] text-[#676767]">
-                {{ user.reviewData.since }}
+                Since {{ user.reviewData.since }}
               </span>
 						</div>
 					</div>
