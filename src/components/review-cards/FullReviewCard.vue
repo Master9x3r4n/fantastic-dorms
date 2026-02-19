@@ -34,6 +34,7 @@ const profile = computed(() => profileData[props.reviewData.username]);
     bg-white dark:bg-[#121422] dark:text-white">
         <!-- Header Container -->
         <div class="w-full flex justify-between items-center ">
+            <RouterLink :to="{name: 'profile', params: {id: reviewData.username}}">
             <div class="flex gap-3 items-center">
                 <!-- Profile -->
                 <div class="w-13 h-13 rounded-[50%] bg-blue-300 bg-gradient">
@@ -47,6 +48,7 @@ const profile = computed(() => profileData[props.reviewData.username]);
                     <div class="font-normal leading-5 italic">{{ profile.reviewData.reviews.length }} Reviews</div>
                 </div>
             </div>
+            </RouterLink>
 
             <!-- Rating -->
             <div class="flex justify-between items-center w-[8%] text-center">
