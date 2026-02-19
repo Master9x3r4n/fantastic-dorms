@@ -4,16 +4,25 @@ import MediaContainer from '../carousel/MediaContainer.vue';
 import ThumbsButton from '../thumbs-buttons/ThumbsButton.vue';
 
 const props = defineProps({
-    rating: {
-        type: Number,
-        default: 0
-    },
-    reviewer: {
+    reviewData: {
         type: Object,
-        default: {
-            name: "chud student",
-            count: 67
-        }
+        default: 
+        {
+            reviewerProfile: {
+                "name": "chud student 1",
+                "username": "",
+                "profileImageSrc": "",
+                "count": 67
+            },
+            content: {
+                "title": "Title of Review",
+                "description": "",
+                "reply": ""
+            },
+            rating: 4,
+            score: 0,
+            mediaSrcs: []
+        },
     }
 })
 
@@ -27,19 +36,22 @@ const props = defineProps({
         <div class="w-full flex justify-between items-center ">
             <div class="flex gap-3 items-center">
                 <!-- Profile -->
-                <div class="w-13 h-13 rounded-[50%] bg-blue-300 bg-gradient"></div>
+                <div class="w-13 h-13 rounded-[50%] bg-blue-300 bg-gradient">
+                    <img :src="reviewData.reviewerProfile.profileImageSrc" width="52px" class="w-13 h-13 rounded-[50%]" 
+                    v-if="reviewData.reviewerProfile.profileImageSrc">
+                </div>
 
                 <!-- Name -->
                 <div>
-                    <div class="font-medium text-[20px] leading-6">{{ props.reviewer.name }}</div>
-                    <div class="font-normal leading-5 italic">{{ props.reviewer.count }} Reviews</div>
+                    <div class="font-medium text-[20px] leading-6">{{ reviewData.reviewerProfile.name }}</div>
+                    <div class="font-normal leading-5 italic">{{ reviewData.reviewerProfile.count }} Reviews</div>
                 </div>
             </div>
 
             <!-- Rating -->
             <div class="flex justify-between items-center w-[8%] text-center">
                 <img src="@\assets\rating-assets\star-full.svg" width="36px">
-                <div class="font-bold text-3xl leading-10">{{ props.rating.toFixed(1) }}</div>
+                <div class="font-bold text-3xl leading-10">{{ reviewData.rating.toFixed(1) }}</div>
             </div>
         </div>
 

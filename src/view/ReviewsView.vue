@@ -9,51 +9,7 @@ const props = defineProps({
     id: {
 		type: String,
 		default: 1
-	},
-    reviewsy: {
-        type: Array,
-        default:[
-        {
-            content:{
-                title: "Absolute Cinema",
-                description: "Never have I ever found an apartment that makes me go \"ABSOLUTE CINEMA\"",
-                reply: "Glad to hear that you were satisfied with our space! ^_^",
-            },
-            rating: 5.0,
-            score: 123,
-            reviewerProfile: {
-                name: "MetaGuelTheta",
-                count: 5
-            },
-        }, 
-        {
-            content:{
-                title: "Laughter is the Best Medicine",
-                description: "AHAHAHHHAHAHAHAHHAHAHAHAHAHHAHAHAHAHAHAHAHA",
-                reply: "",
-            },
-            rating: 3.5,
-            score: 64,
-            reviewerProfile: {
-                name: "Sofialoccocus",
-                count: 42
-            },
-        }, 
-        {
-            content:{
-                title: "Best for playing Gesnsh*t",
-                description: "Skibi toilet go kys (keep yourself safe)",
-                reply: "Lmao get rekt",
-            },
-            rating: 1.5,
-            score: -69,
-            reviewerProfile: {
-                name: "Sussana Mogus",
-                count: 12
-            },
-        }, 
-        ]
-    }
+	}
 })
 
 const reviews = computed(() => reviewsData[props.id])
@@ -75,7 +31,7 @@ const reviews = computed(() => reviewsData[props.id])
         <div class="h-fit w-full flex flex-col gap-6">
             <template v-for="(i, index) in reviews">
             <div>
-                <FullReviewCard :rating="i.rating" :reviewer="i.reviewerProfile">
+                <FullReviewCard :reviewData="i">
                     <template #review-title>{{i.content.title}}</template>
                     <template #review-content>{{i.content.description}}</template>
                     <template v-if="i.content.reply" #ownerReply>{{ i.content.reply }}</template>
