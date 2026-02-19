@@ -8,6 +8,7 @@ import Divider from '@/components/divider/Divider.vue';
 import ReviewDropdown from "@/components/dropdown/ReviewDropdown.vue";
 
 import { listingData } from "@/assets/temp-data/listing-temp"
+import { reviewsData } from "@/assets/temp-data/reviews-temp";
 import { computed } from 'vue';
 
 const props = defineProps({
@@ -33,7 +34,7 @@ const props = defineProps({
             imageSrc: "",
         }
     },
-    reviewsData: {
+    reviewsDatas: {
         type: Array,
         default: [
             {
@@ -69,6 +70,7 @@ const props = defineProps({
 })
 
 const listing = computed(() => listingData[props.id]);
+const reviews = computed(() => reviewsData[props.id]);
 
 </script>
 
@@ -110,12 +112,12 @@ const listing = computed(() => listingData[props.id]);
             <div class="flex flex-col gap-1">
                 <div class="flex flex-row justify-between items-center gap-2">
                     <span class="font-bold text-3xl leading-10 dark:text-white">Reviews</span>
-                  <ReviewDropdown></ReviewDropdown>
+                  <ReviewDropdown/>
                 </div>
 
                 <!-- Reviews -->
-                <template v-if="listing.reviews">
-                    <template v-for="i in listing.reviews">
+                <template v-if="reviews">
+                    <template v-for="i in reviews">
                         <ReviewCard :reviewData="i"> 
                             <template #review-title>
                                 {{ i.content.title }}
