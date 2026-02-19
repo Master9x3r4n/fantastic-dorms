@@ -2,17 +2,15 @@
 import MediaContainer from '../carousel/MediaContainer.vue';
 import ThumbsButton from '../thumbs-buttons/ThumbsButton.vue';
 
+import {computed} from 'vue';
+import {profileData} from '@/assets/temp-data/profile-temp.js';
+
 const props = defineProps({
     reviewData: {
         type: Object,
         default: 
         {
-            reviewerProfile: {
-                "name": "chud student 1",
-                "username": "",
-                "profileImageSrc": "",
-                "count": 67
-            },
+            username: "",
             content: {
                 "title": "Title of Review",
                 "description": "",
@@ -24,10 +22,12 @@ const props = defineProps({
         },
     },
     routeId: {
-        type: Number,
-        default: 1
+        type: String,
+        default: "1"
     }
 })
+
+const profile = computed(() => profileData[props.reviewData.username]);
 
 </script>
 
@@ -36,18 +36,18 @@ const props = defineProps({
     p-2 pb-4 gap-4.5 w-105.25 h-fit bg-white dark:bg-[#121422] dark:text-white">
         <!-- Header Container -->
         <div class="w-full flex justify-between items-center">
-            <RouterLink :to="{name: 'profile', params: {id: reviewData.reviewerProfile.username}}">
+            <RouterLink :to="{name: 'profile', params: {id: reviewData.username}}">
             <div class="flex gap-3 items-center">
                 <!-- Profile -->
                 <div class="w-13 h-13 rounded-[50%] bg-amber-100 bg-gradient">
-                    <img :src="reviewData.reviewerProfile.profileImageSrc" width="52px" class="w-13 h-13 rounded-[50%]" 
-                    v-if="reviewData.reviewerProfile.profileImageSrc">
+                    <img :src="profile.profileImgSrc" width="52px" class="w-13 h-13 rounded-[50%]" 
+                    v-if="profile.profileImgSrc">
                 </div>
                 
                 <!-- Name -->
                 <div>
-                    <div class="font-medium text-[20px] leading-6">{{ reviewData.reviewerProfile.name }}</div>
-                    <div class="font-normal leading-5 italic">{{ reviewData.reviewerProfile.count }} Reviews</div>
+                    <div class="font-medium text-[20px] leading-6">{{ profile.name }}</div>
+                    <div class="font-normal leading-5 italic">{{ profile.reviewData.reviews.length }} Reviews</div>
                 </div>
             </div>
             </RouterLink>

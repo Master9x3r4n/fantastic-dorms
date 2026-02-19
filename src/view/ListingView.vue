@@ -15,58 +15,7 @@ const props = defineProps({
     id: {
 		type: String,
 		default: 1
-	},
-    listingDatas: {
-        type: Object,
-        default:{
-            name: "Apartment Name",
-            address: "Studio apartment - Awesome St., Barangay Big Love, Pasay City",
-            description: "This apartment is very nice. It has nice rooms and is placed very nicely. It also has nice neighbors and a lot of other nice things.",
-            owner: "Really Cool Apartments",
-            amenities: ['2 Bedrooms', '2 Bathrooms', '3 Dining Rooms', '10 Living Rooms'],
-            contacts: ['Facebook', 'Instagram'],
-            rating: [
-                { name: "Cleanliness", rating: 4 },
-                { name: "Comfort", rating: 4 },
-                { name: "Spaciousness", rating: 3 },
-                { name: "Price", rating: 2 }
-            ],
-            imageSrc: "",
-        }
-    },
-    reviewsDatas: {
-        type: Array,
-        default: [
-            {
-                authorData: {
-                    name: "chud student 1",
-                    reviewCount: 67,
-                    imageSrc: "",
-                    profileRoute: "/profile",
-                },
-                rating: 4,
-                reviewTitle: "Review Name 1",
-                reviewContent: "I have stayed at this apartment for a while, and let me say, it is as the name says. It's a really cool apartment and it has a lot of the amenities that a student would want from...",
-                reply: "Glad to hear that you were satisfied with our space! ^_^",
-                score: 67,
-                reviewsRoute: "/reviews1"
-            },
-            {
-                authorData: {
-                    name: "chud student 2",
-                    reviewCount: 67,
-                    imageSrc: "",
-                    profileRoute: "/profile",
-                },
-                rating: 4,
-                reviewTitle: "Review Name 2",
-                reviewContent: "I have stayed at this apartment for a while, and let me say, it is as the name says. It's a really cool apartment and it has a lot of the amenities that a student would want from...",
-                ownerReply: "Glad to hear that you were satisfied with our space! ^_^",
-                score: 52,
-                reviewsRoute: "/reviews2"
-            }
-        ]
-    }
+	}
 })
 
 const listing = computed(() => listingData[props.id]);

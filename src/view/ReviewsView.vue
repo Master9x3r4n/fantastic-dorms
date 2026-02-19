@@ -8,7 +8,7 @@ import { computed } from 'vue';
 const props = defineProps({
     id: {
 		type: String,
-		default: 1
+		default: "1"
 	}
 })
 
@@ -38,7 +38,7 @@ const reviews = computed(() => reviewsData[props.id])
                     <template #score>{{ i.score }}</template>
                 </FullReviewCard>
             </div>
-            <Divider v-if="index != reviews.length -1"/>
+            <Divider v-if="index != reviews.length - 1"/>
             </template>
         </div>
     </div>
