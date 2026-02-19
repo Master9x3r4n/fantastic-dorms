@@ -23,6 +23,10 @@ const props = defineProps({
             mediaSrcs: []
         },
     },
+    routeId: {
+        type: Number,
+        default: 1
+    }
 })
 
 </script>
@@ -102,7 +106,7 @@ const props = defineProps({
         <div class="w-full h-[16%] flex justify-between items-center mt-1">
             <!-- Show More -->
             <div class="font-semibold underline text-[16px] leading-6">
-                <RouterLink to="/reviews">Show More</RouterLink>
+                <RouterLink :to="'/reviews/'+routeId">Show More</RouterLink>
             </div>
 
             <!-- Upvote -->

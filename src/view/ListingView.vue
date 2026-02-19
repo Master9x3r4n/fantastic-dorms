@@ -112,13 +112,13 @@ const reviews = computed(() => reviewsData[props.id]);
             <div class="flex flex-col gap-1">
                 <div class="flex flex-row justify-between items-center gap-2">
                     <span class="font-bold text-3xl leading-10 dark:text-white">Reviews</span>
-                  <ReviewDropdown/>
+                    <ReviewDropdown/>
                 </div>
 
                 <!-- Reviews -->
                 <template v-if="reviews">
                     <template v-for="i in reviews">
-                        <ReviewCard :reviewData="i"> 
+                        <ReviewCard :reviewData="i" :routeId="id"> 
                             <template #review-title>
                                 {{ i.content.title }}
                             </template>
