@@ -1,8 +1,8 @@
 export const listingData = {
     "1": {
         "name": "Grand Apartment",
-        "description": "Blk 12 Lt 32 Somebody st., Las Pinas City",
-        "address": "A very grand, beautiful, and luxurious apartment that features multiple rooms and doors. A must stay for the holidays.",
+        "address": "Blk 12 Lt 32 Somebody st., Las Pinas City",
+        "description": "A very grand, beautiful, and luxurious apartment that features multiple rooms and doors. A must stay for the holidays.",
         "owner": "The Daily Bugle",
         "amenities": ['2 Bedrooms', '1 Bathroom', 'Air Conditioning'],
         "contacts": ['The Daily Bugle', 'Facebook', 'Twitter'],
