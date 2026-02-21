@@ -1,11 +1,10 @@
 <script setup>
 import ApartmentCardLarge from '@/components/apartment-cards/ApartmentCardLarge.vue';
 
+import { useRoute } from 'vue-router';
+import {computed} from 'vue';
+
 const props = defineProps({
-    searchQuery: {
-        type: String,
-        default: "beautiful apartment"
-    },
     searchResults: {
         type: Array,
         default: [
@@ -17,7 +16,7 @@ const props = defineProps({
                 reviewCount: 124,
             },
             imageSrc: "https://youre.outof.games/media/uploads/cb/da/cbda1bb4-ee0d-4c65-989f-05a24edd22cf/daily-bugle-featured-location.jpg",
-            routerLink: "/listing1",
+            routerLink: "/listing/1",
         },
         {
             name: "The Baxter Suite",
@@ -27,7 +26,7 @@ const props = defineProps({
                 reviewCount: 44,
             },
             imageSrc: "https://static0.cbrimages.com/wordpress/wp-content/uploads/2020/09/rsz-baxter-buildingv1.jpg",
-            routerLink: "/listing2",
+            routerLink: "/listing/2",
         },
         {
             name: "Miro's House",
@@ -37,11 +36,14 @@ const props = defineProps({
                 reviewCount: 67,
             },
             imageSrc: "https://static.wikitide.net/peppafanonwiki/thumb/e/ee/Peppa%27s_house_updated.webp/800px-Peppa%27s_house_updated.webp.png",
-            routerLink: "/listing3",
+            routerLink: "/listing/3",
         },
         ]
     }
 })
+
+const route = useRoute();
+const searchQuery = computed(() => route.query.q);
 
 </script>
 
@@ -51,7 +53,7 @@ const props = defineProps({
         <!-- Body Header -->
         <div class="w-full flex justify-between items-center px-2">
             <!-- Search Result -->
-            <div class="font-light text-[20px] italic leading-6 dark:text-white">Found {{ props.searchResults.length }} results for “{{ props.searchQuery }}”</div>
+            <div class="font-light text-[20px] italic leading-6 dark:text-white">Found {{ searchResults.length }} results for “{{ searchQuery }}”</div>
 
             <!-- Filter Button -->
             <div class="flex justify-center items-center py-1 px-3.75 border-2 rounded-[40px]
@@ -62,7 +64,7 @@ const props = defineProps({
 
         <!-- Body Content -->
         <div class="h-fit w-full flex flex-col gap-8">
-            <template v-for="i in props.searchResults">
+            <template v-for="i in searchResults">
             <div>
             <ApartmentCardLarge :cardData="i"/>
             </div>

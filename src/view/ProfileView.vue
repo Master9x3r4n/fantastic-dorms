@@ -4,8 +4,14 @@ import ReviewPreview from "@/components/profile/ReviewPreview.vue";
 import PageButtons from "@/components/page-buttons/PageButtons.vue";
 import Divider from "@/components/divider/Divider.vue";
 import BlueButton from "@/components/page-buttons/BlueButton.vue";
+import { profileData } from "@/assets/temp-data/profile-temp.js";
+import { computed } from 'vue';
 
 const props = defineProps({
+	id: {
+		type: String,
+		default: 1
+	},
 	// Grouped Profile Details
 	profile: {
 		type: Object,
@@ -34,24 +40,26 @@ const props = defineProps({
 });
 
 defineEmits(['edit']);
+
+const user = computed(() => profileData[props.id]);
+
 </script>
 
 <template>
-	<div class="flex flex-col items-start p-[40px] gap-10 w-full max-w-[1280px] min-h-[856px] mx-auto z-[1]">
+	<div class="flex flex-col items-start p-10 gap-10 w-full max-w-7xl min-h-214 mx-auto z-1">
 
-		<ProfileSummary :name="profile.name" :username="profile.username" :joinDate="profile.joinDate"
-										:university="profile.school" :profileImg="profile.profileImg"
-		>
-
-		</ProfileSummary>
+		<ProfileSummary :name="user.name" :username="user.username" :joinDate="user.joinDate"
+										:university="user.schoolData.name" :profileImg="user.profileImgSrc"
+								
+		/>
 
 		<!-- Biography and Reviews Container -->
-		<div class="flex flex-row flex-wrap justify-center items-start gap-[40px] w-full max-w-[1200px] min-h-[586px] mx-auto">
+		<div class="flex flex-row flex-wrap justify-center items-start gap-10 w-full max-w-300 min-h-146.5 mx-auto">
 			<!-- Profile info column -->
-			<div class="flex flex-col justify-between items-start gap-5 w-full max-w-[580px]">
+			<div class="flex flex-col justify-between items-start gap-5 w-full max-w-145">
 				<!-- Biography and edit container -->
-				<div class="flex flex-row justify-between items-start gap-5 w-full max-w-[580px] h-[29px] self-stretch flex-none order-0">
-					<h2 class="font-semibold text-[24px] leading-[29px] text-black dark:text-white">
+				<div class="flex flex-row justify-between items-start gap-5 w-full max-w-145 h-7.25 self-stretch flex-none order-0">
+					<h2 class="font-semibold text-[24px] leading-7.25 text-black dark:text-white">
 						Biography
 					</h2>
 
@@ -60,35 +68,35 @@ defineEmits(['edit']);
 						<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
 							<path d="M0 11.25V14H2.75L10.8625 5.8875L8.1125 3.1375L0 11.25ZM13.0375 3.7125C13.325 3.425 13.325 2.9625 13.0375 2.675L11.325 0.9625C11.0375 0.675 10.575 0.675 10.2875 0.9625L8.9 2.35L11.65 5.1L13.0375 3.7125Z" fill="white"/>
 						</svg>
-						<span class="text-[16px] leading-[19px] text-white">Edit</span>
+						<span class="text-[16px] leading-4.75 text-white">Edit</span>
 					</BlueButton>
 				</div>
 
 				<!-- Bio text container -->
-				<span class="text-[16px] leading-[19px] dark:text-white">{{ profile.bio }}</span>
+				<span class="text-[16px] leading-4.75 dark:text-white">{{ user.bio }}</span>
 
 				<!-- separator -->
-				<Divider></Divider>
+				<Divider/>
 
 				<!-- Profile details container-->
-				<div class="flex flex-col items-start gap-[20px] w-full max-w-[580px] min-h-[157px] flex-none order-2 self-stretch">
+				<div class="flex flex-col items-start gap-5 w-full max-w-145 min-h-39.25 flex-none order-2 self-stretch">
 
 					<!-- Education details -->
-					<div class="flex flex-row items-center gap-5 w-full max-w-[580px] h-[39px] self-stretch flex-none order-0">
-						<div class="w-[100px] font-semibold text-[20px] leading-[24px] text-right text-[#355AFF] flex-none">
+					<div class="flex flex-row items-center gap-5 w-full max-w-145 h-9.75 self-stretch flex-none order-0">
+						<div class="w-25 font-semibold text-[20px] leading-6 text-right text-[#355AFF] flex-none">
 							School
 						</div>
-						<div class="flex flex-col justify-center items-center w-[30px] h-[30px] flex-none order-1">
+						<div class="flex flex-col justify-center items-center w-7.5 h-7.5 flex-none order-1">
 							<svg width="22" height="18" viewBox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path d="M4 10.18V14.18L11 18L18 14.18V10.18L11 14L4 10.18ZM11 0L0 6L11 12L20 7.09V14H22V6L11 0Z" fill="#355AFF"/>
 							</svg>
 						</div>
-						<div class="flex flex-col justify-center items-start gap-[5px] h-[39px] flex-none order-2">
-              <span class="font-semibold text-[16px] leading-[19px] text-black dark:text-white">
-                {{ profile.school }}
+						<div class="flex flex-col justify-center items-start gap-1.25 h-9.75 flex-none order-2">
+              <span class="font-semibold text-[16px] leading-4.75 text-black dark:text-white">
+                {{ user.schoolData.name }}
               </span>
 							<span class="italic font-normal text-[12px] leading-[15px] text-[#676767]">
-                {{ profile.schoolSince }}
+                Since {{ user.schoolData.since }}
               </span>
 						</div>
 					</div>
@@ -105,10 +113,10 @@ defineEmits(['edit']);
 						</div>
 						<div class="flex flex-col justify-center items-start gap-[5px] h-[39px] flex-none order-2">
 							<a class="font-semibold text-[16px] leading-[19px] text-black underline dark:text-white">
-								{{ profile.dorm }}
+								{{ user.dormData.name }}
 							</a>
 							<span class="italic font-normal text-[12px] leading-[15px] text-[#676767]">
-                {{ profile.dormSince }}
+                Since {{ user.dormData.since }}
               </span>
 						</div>
 					</div>
@@ -125,10 +133,10 @@ defineEmits(['edit']);
 						</div>
 						<div class="flex flex-col justify-center items-start gap-[5px] h-[39px] flex-none order-2">
               <span class="font-semibold text-[16px] leading-[19px] text-black dark:text-white">
-                {{ profile.reviewCount }}
+                {{ user.reviewData.reviews.length }}
               </span>
 							<span class="italic font-normal text-[12px] leading-[15px] text-[#676767]">
-                {{ profile.reviewSince }}
+                Since {{ user.reviewData.since }}
               </span>
 						</div>
 					</div>
@@ -136,21 +144,21 @@ defineEmits(['edit']);
 			</div>
 
 			<!-- Reviews column -->
-			<div class="flex flex-col justify-center items-center gap-[20px] w-full max-w-[580px] min-h-[586px] grow order-1">
-				<div class="font-semibold text-[24px] leading-[29px] text-black w-full dark:text-white">
+			<div class="flex flex-col justify-center items-center gap-5 w-full max-w-145 min-h-146.5 grow order-1">
+				<div class="font-semibold text-[24px] leading-7.25 text-black w-full dark:text-white">
 					Reviews
 				</div>
 
 				<!-- Reviews List (Dynamic) -->
-				<div class="flex flex-col w-full gap-[20px]">
+				<div class="flex flex-col w-full gap-5">
 					<ReviewPreview
-							v-for="review in reviews"
-							:key="review.id"
-							:title="review.title"
+							v-for="review in user.reviewData.reviews"
+							:key="review.listing.id"
+							:title="review.content.title"
 							:rating="review.rating"
-							:review="review.review"
-							:img="review.img"
-							:listingRoute="review.listingRoute"
+							:review="review.content.description"
+							:img="review.listing.thumbnailSrc"
+							:listingId="review.listing.id"
 					/>
 				</div>
 

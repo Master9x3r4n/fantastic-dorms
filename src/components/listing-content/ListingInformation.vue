@@ -1,6 +1,7 @@
 <script setup>
 import MediaContainer from '../carousel/MediaContainer.vue';
 import Divider from '../divider/Divider.vue';
+import Icon from '../icon/Icon.vue';
 
 const props = defineProps({
     listingData: {
@@ -31,11 +32,14 @@ const props = defineProps({
         <!-- Profile -->
         <div class="flex gap-3">
             <div class="w-13 h-13 rounded-[50%] bg-amber-100 bg-gradient"></div>
-            <div>
+            <div class="flex flex-col gap-0.5">
                 <div class="font-medium text-[20px] leading-6">
                     <slot name="listing-owner">Really Cool Apartments</slot>
                 </div>
-                <div class="font-normal leading-5 italic text-[#355AFF]">✅ Verified</div>
+                <div class="font-normal leading-5 italic text-[#355AFF] flex justify-start items-center gap-1">
+                    <Icon name="verified"/> 
+                    Verified
+                </div>
             </div>
         </div>
     </div>
