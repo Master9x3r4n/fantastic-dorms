@@ -1,11 +1,12 @@
 <script setup>
     import {ref, watch} from "vue"
+    import Icon from "../icon/Icon.vue"
 
 	// Object data for dark and light mode themes
 	const theme = {
 		"light": {
 			"src": "/src/assets/darkmode-assets/sun-svgrepo-com.svg",
-			"alt": "Light Mode Icon" 
+			"alt": "Light Mode Icon"
 		},
 		"dark": {
 			"src": "/src/assets/darkmode-assets/moon-svgrepo-com.svg",
@@ -27,7 +28,9 @@
 <template>
 <div class="p-0.5 flex gap-2">
     <div class="border-2 rounded-2xl p-1 size-8.5 flex items-center justify-center dark:bg-black">
-		<img :src="iconSrc.src" :alt="iconSrc.alt" width = "20px" height= "20px">
+		<!-- <img :src="iconSrc.src" :alt="iconSrc.alt" width = "20px" height= "20px"> -->
+        <Icon v-if="darkMode" name="darkMode"/>
+        <Icon v-else name="lightMode"/>
 	</div>
 
     <label class="relative inline-block w-15 h-8.5">
