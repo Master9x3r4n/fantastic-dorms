@@ -51,4 +51,10 @@ export const iconsData = {
         alt: "Thumbs Down Fill",
         altDark: "Thumbs Down Fill Dark",
     },
+    "verified": {
+        isInternal: true,
+        width: "20px",
+        height: "20px",
+        src: "/src/assets/listing-assets/verified.svg"
+    }
 }
