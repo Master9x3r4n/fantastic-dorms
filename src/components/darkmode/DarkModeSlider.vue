@@ -14,8 +14,7 @@
 <template>
 <div class="p-0.5 flex gap-2">
     <div class="border-2 rounded-2xl p-1 size-8.5 flex items-center justify-center dark:bg-black">
-        <Icon v-if="darkMode" name="darkMode"/>
-        <Icon v-else name="lightMode"/>
+        <Icon name="themeMode"/>
 	</div>
 
     <label class="relative inline-block w-15 h-8.5">
