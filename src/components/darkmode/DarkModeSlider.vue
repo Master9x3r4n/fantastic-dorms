@@ -2,24 +2,10 @@
     import {ref, watch} from "vue"
     import Icon from "../icon/Icon.vue"
 
-	// Object data for dark and light mode themes
-	const theme = {
-		"light": {
-			"src": "/src/assets/darkmode-assets/sun-svgrepo-com.svg",
-			"alt": "Light Mode Icon"
-		},
-		"dark": {
-			"src": "/src/assets/darkmode-assets/moon-svgrepo-com.svg",
-			"alt": "Dark Mode Icon"
-		}
-	}
-
     const darkMode = ref(false) // ref for dark mode toggle
-	const iconSrc = ref(theme.light) // ref for current theme
 
 	// Trigger dark mode call back when darkMode boolean is changed
     watch(darkMode, (enabled) => {
-		iconSrc.value = darkMode.value ? theme.dark : theme.light;
         document.documentElement.classList.toggle('dark', enabled)
     })
 
@@ -28,7 +14,6 @@
 <template>
 <div class="p-0.5 flex gap-2">
     <div class="border-2 rounded-2xl p-1 size-8.5 flex items-center justify-center dark:bg-black">
-		<!-- <img :src="iconSrc.src" :alt="iconSrc.alt" width = "20px" height= "20px"> -->
         <Icon v-if="darkMode" name="darkMode"/>
         <Icon v-else name="lightMode"/>
 	</div>
