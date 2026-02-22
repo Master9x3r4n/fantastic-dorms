@@ -29,7 +29,7 @@ const reviews = computed(() => reviewsData[props.id])
 
         <!-- Body Content -->
         <div class="h-fit w-full flex flex-col gap-6">
-            <template v-for="(i, index) in reviews">
+            <template v-for="(i, index) in reviews" :key="i.id || index">
             <div>
                 <FullReviewCard :reviewData="i">
                     <template #review-title>{{i.content.title}}</template>
