@@ -43,6 +43,13 @@ npm run dev
 npm run build
 ```
 
+### Setting up backend
+
+```sh
+cd backend
+npm install express mongoose dotenv cors
+```
+
 ### Conventional Commit Types
 
 | **Type**       | **Purpose** |
