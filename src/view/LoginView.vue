@@ -11,7 +11,7 @@ const togglePassword = () => {
 </script>
 
 <template>
-  <div class="flex min-h-screen bg-white dark:bg-[#111111] transition-colors duration-200">
+  <div class="flex min-h-screen bg-white dark:bg-[#111111] transition-colors duration-200 font-['Inter']">
 
     <!-- Left Side -->
     <div class="hidden lg:flex lg:w-1/2 bg-gradient p-12 flex-col justify-center text-white relative overflow-hidden">

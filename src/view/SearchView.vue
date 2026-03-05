@@ -48,7 +48,7 @@ const searchQuery = computed(() => route.query.q);
 </script>
 
 <template>
-<div class="flex justify-center w-full">
+<div class="flex justify-center w-full font-['Inter']">
     <div class="flex flex-col justify-around gap-8 m-7 w-fit">
         <!-- Body Header -->
         <div class="w-full flex justify-between items-center px-2">

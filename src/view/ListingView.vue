@@ -24,7 +24,7 @@ const reviews = computed(() => reviewsData[props.id]);
 </script>
 
 <template>
-    <div class="flex justify-around gap-8 m-8 ">
+    <div class="flex justify-around gap-8 m-8 font-['Inter']">
         <!-- Main Listing -->
         <div class="flex flex-col gap-4 w-fit grow max-w-5xl">
             <!-- Media Carousel -->

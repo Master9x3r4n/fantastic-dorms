@@ -52,7 +52,7 @@ const user = computed(() => profileData[props.id]);
 </script>
 
 <template>
-	<div class="flex flex-col items-start p-10 gap-10 w-full max-w-7xl min-h-214 mx-auto z-1">
+	<div class="flex flex-col items-start p-10 gap-10 w-full max-w-7xl min-h-214 mx-auto z-1 font-['Inter']">
 
 		<div class="w-full p-4 rounded-lg border border-solid border-slate-200 shadow-sm transition-colors duration-200 dark:border-slate-700">
 			<ProfileSummary

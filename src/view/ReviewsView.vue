@@ -17,7 +17,7 @@ const reviews = computed(() => reviewsData[props.id])
 </script>
 
 <template>
-<div class="flex justify-center w-full dark:bg-[#121422] dark:text-white">
+<div class="flex justify-center w-full dark:bg-[#121422] dark:text-white font-['Inter']">
     <div class="flex flex-col justify-around gap-4 m-7 w-fit">
         <!-- Body Header -->
         <div class="w-full flex justify-between items-center px-4.5">
