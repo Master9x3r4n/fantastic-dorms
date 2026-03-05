@@ -31,8 +31,8 @@ const profile = computed(() => profileData[props.reviewData.username]);
 
 <template>
     <!-- 1120 x 769 h-228 -->
-    <div class="w-295 h-fit p-5 flex flex-col items-center justify-center gap-6.5
-    bg-white dark:bg-[#121422] dark:text-white">
+    <div class="w-max-295 h-fit p-5 flex flex-col items-center justify-center gap-6.5
+    bg-white dark:bg-[#121422] dark:text-white w-full rounded-lg border border-solid border-slate-200 shadow-sm transition-colors duration-200 dark:border-slate-700">
         <!-- Header Container -->
         <div class="w-full flex justify-between items-center ">
             <RouterLink :to="{name: 'profile', params: {id: reviewData.username}}">
