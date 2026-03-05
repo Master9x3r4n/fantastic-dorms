@@ -5,7 +5,6 @@ import OverallRating from '@/components/side-cards/OverallRating.vue';
 import MediaContainer from '@/components/carousel/MediaContainer.vue';
 import ReviewCard from '@/components/review-cards/ReviewCard.vue';
 import Divider from '@/components/divider/Divider.vue';
-import ReviewDropdown from "@/components/dropdown/ReviewDropdown.vue";
 
 import { listingData } from "@/assets/temp-data/listing-temp"
 import { reviewsData } from "@/assets/temp-data/reviews-temp";
