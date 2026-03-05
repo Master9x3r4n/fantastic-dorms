@@ -10,7 +10,7 @@ import { computed } from 'vue';
 const props = defineProps({
 	id: {
 		type: String,
-		default: 1
+		default: "1"
 	},
 	// Grouped Profile Details
 	profile: {
@@ -33,8 +33,14 @@ const props = defineProps({
 	reviews: {
 		type: Array,
 		default: () => [
-			{ id: 1, title: 'Apartment 1', rating: '5.0', review: 'fantastic', img: '',
-			listingRoute: "/listing",},
+			{
+				id: 1,
+				title: 'Apartment 1',
+				rating: '5.0',
+				review: 'fantastic',
+				img: '',
+				listingRoute: "/listing"
+			},
 		]
 	}
 });
@@ -48,15 +54,22 @@ const user = computed(() => profileData[props.id]);
 <template>
 	<div class="flex flex-col items-start p-10 gap-10 w-full max-w-7xl min-h-214 mx-auto z-1">
 
-		<ProfileSummary :name="user.name" :username="user.username" :joinDate="user.joinDate"
-										:university="user.schoolData.name" :profileImg="user.profileImgSrc"
-								
-		/>
+		<div class="w-full p-4 rounded-lg border border-solid border-slate-200 shadow-sm transition-colors duration-200 dark:border-slate-700">
+			<ProfileSummary
+					:name="user.name"
+					:username="user.username"
+					:joinDate="user.joinDate"
+					:university="user.schoolData.name"
+					:profileImg="user.profileImgSrc"
+			/>
+		</div>
 
 		<!-- Biography and Reviews Container -->
 		<div class="flex flex-row flex-wrap justify-center items-start gap-10 w-full max-w-300 min-h-146.5 mx-auto">
+
 			<!-- Profile info column -->
-			<div class="flex flex-col justify-between items-start gap-5 w-full max-w-145">
+			<div class="flex flex-col justify-between items-start gap-5 max-w-145 w-full p-4 rounded-lg border border-solid border-slate-200 shadow-sm transition-colors duration-200 dark:border-slate-700">
+
 				<!-- Biography and edit container -->
 				<div class="flex flex-row justify-between items-start gap-5 w-full max-w-145 h-7.25 self-stretch flex-none order-0">
 					<h2 class="font-semibold text-[24px] leading-7.25 text-black dark:text-white">
@@ -73,7 +86,7 @@ const user = computed(() => profileData[props.id]);
 				</div>
 
 				<!-- Bio text container -->
-				<span class="text-[16px] leading-4.75 dark:text-white">{{ user.bio }}</span>
+				<span class="text-[16px] leading-4.75 text-slate-900 dark:text-white">{{ user.bio }}</span>
 
 				<!-- separator -->
 				<Divider/>
@@ -92,59 +105,59 @@ const user = computed(() => profileData[props.id]);
 							</svg>
 						</div>
 						<div class="flex flex-col justify-center items-start gap-1.25 h-9.75 flex-none order-2">
-              <span class="font-semibold text-[16px] leading-4.75 text-black dark:text-white">
-                {{ user.schoolData.name }}
-              </span>
-							<span class="italic font-normal text-[12px] leading-[15px] text-[#676767]">
-                Since {{ user.schoolData.since }}
-              </span>
+        <span class="font-semibold text-[16px] leading-4.75 text-black dark:text-white">
+          {{ user.schoolData.name }}
+        </span>
+							<span class="italic font-normal text-[12px] leading-3.75 text-[#676767]">
+          Since {{ user.schoolData.since }}
+        </span>
 						</div>
 					</div>
 
 					<!-- Dorm details -->
-					<div class="flex flex-row items-center gap-5 w-full max-w-[580px] h-[39px] self-stretch flex-none order-0">
-						<div class="w-[100px] font-semibold text-[20px] leading-[24px] text-right text-[#355AFF] flex-none">
+					<div class="flex flex-row items-center gap-5 w-full max-w-145 h-9.75 self-stretch flex-none order-0">
+						<div class="w-25 font-semibold text-[20px] leading-6 text-right text-[#355AFF] flex-none">
 							Home
 						</div>
-						<div class="flex flex-col justify-center items-center w-[30px] h-[30px] flex-none order-1">
+						<div class="flex flex-col justify-center items-center w-7.5 h-7.5 flex-none order-1">
 							<svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path d="M10 0L0 7V21H20V7L10 0ZM7.1875 11.0833C8.05 11.0833 8.75 11.7367 8.75 12.5417C8.75 13.3467 8.05 14 7.1875 14C6.325 14 5.625 13.3467 5.625 12.5417C5.625 11.7367 6.325 11.0833 7.1875 11.0833ZM16.25 17.5H15V15.75H5V17.5H3.75V9.33333H5V14.5833H9.375V10.5H13.75C15.125 10.5 16.25 11.55 16.25 12.8333V17.5Z" fill="#355AFF"/>
 							</svg>
 						</div>
-						<div class="flex flex-col justify-center items-start gap-[5px] h-[39px] flex-none order-2">
-							<a class="font-semibold text-[16px] leading-[19px] text-black underline dark:text-white">
+						<div class="flex flex-col justify-center items-start gap-1.25 h-9.75 flex-none order-2">
+							<a class="font-semibold text-[16px] leading-4.75 text-black underline dark:text-white cursor-pointer hover:text-[#355AFF] transition-colors">
 								{{ user.dormData.name }}
 							</a>
-							<span class="italic font-normal text-[12px] leading-[15px] text-[#676767]">
-                Since {{ user.dormData.since }}
-              </span>
+							<span class="italic font-normal text-[12px] leading-3.75 text-[#676767]">
+          Since {{ user.dormData.since }}
+        </span>
 						</div>
 					</div>
 
 					<!-- Review details -->
-					<div class="flex flex-row items-center gap-5 w-full max-w-[580px] h-[39px] self-stretch flex-none order-0">
-						<div class="w-[100px] font-semibold text-[20px] leading-[24px] text-right text-[#355AFF] flex-none">
+					<div class="flex flex-row items-center gap-5 w-full max-w-145 h-9.75 self-stretch flex-none order-0">
+						<div class="w-25 font-semibold text-[20px] leading-6 text-right text-[#355AFF] flex-none">
 							Reviews
 						</div>
-						<div class="flex flex-col justify-center items-center w-[30px] h-[30px] flex-none order-1">
+						<div class="flex flex-col justify-center items-center w-7.5 h-7.5 flex-none order-1">
 							<svg width="20" height="19" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path d="M8.86144 0.690965C9.1608 -0.230345 10.4642 -0.230344 10.7636 0.690967L12.3944 5.71022C12.5283 6.12224 12.9122 6.4012 13.3455 6.4012H18.623C19.5917 6.4012 19.9945 7.64082 19.2108 8.21022L14.9412 11.3123C14.5907 11.5669 14.444 12.0183 14.5779 12.4303L16.2088 17.4496C16.5081 18.3709 15.4536 19.137 14.6699 18.5676L10.4003 15.4655C10.0498 15.2109 9.5752 15.2109 9.22471 15.4655L4.95508 18.5676C4.17137 19.137 3.11689 18.3709 3.41624 17.4496L5.0471 12.4303C5.18097 12.0183 5.03431 11.5669 4.68382 11.3123L0.41419 8.21022C-0.369523 7.64082 0.0332539 6.4012 1.00198 6.4012H6.27953C6.71276 6.4012 7.09671 6.12224 7.23059 5.71022L8.86144 0.690965Z" fill="#355AFF"/>
 							</svg>
 						</div>
-						<div class="flex flex-col justify-center items-start gap-[5px] h-[39px] flex-none order-2">
-              <span class="font-semibold text-[16px] leading-[19px] text-black dark:text-white">
-                {{ user.reviewData.reviews.length }}
-              </span>
-							<span class="italic font-normal text-[12px] leading-[15px] text-[#676767]">
-                Since {{ user.reviewData.since }}
-              </span>
+						<div class="flex flex-col justify-center items-start gap-1.25 h-9.75 flex-none order-2">
+							<span class="font-semibold text-[16px] leading-4.75 text-black dark:text-white">
+          {{ user.reviewData.reviews.length }}
+        </span>
+							<span class="italic font-normal text-[12px] leading-3.75 text-[#676767]">
+          Since {{ user.reviewData.since }}
+        </span>
 						</div>
 					</div>
 				</div>
 			</div>
 
 			<!-- Reviews column -->
-			<div class="flex flex-col justify-center items-center gap-5 w-full max-w-145 min-h-146.5 grow order-1">
+			<div class="flex flex-col justify-center items-center gap-5 max-w-145 min-h-146.5 grow order-1 w-full p-4 rounded-lg border border-solid border-slate-200 shadow-sm transition-colors duration-200 dark:border-slate-700">
 				<div class="font-semibold text-[24px] leading-7.25 text-black w-full dark:text-white">
 					Reviews
 				</div>
@@ -170,3 +183,6 @@ const user = computed(() => profileData[props.id]);
 		</div>
 	</div>
 </template>
+
+<style scoped>
+</style>
