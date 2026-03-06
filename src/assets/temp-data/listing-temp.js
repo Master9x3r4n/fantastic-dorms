@@ -4,15 +4,15 @@ export const listingData = {
         "address": "Blk 12 Lt 32 Somebody st., Las Pinas City",
         "description": "A very grand, beautiful, and luxurious apartment that features multiple rooms and doors. A must stay for the holidays.",
         "owner": "The Daily Bugle",
-        "amenities": ['2 Bedrooms', '1 Bathroom', 'Air Conditioning'],
-        "contacts": ['The Daily Bugle', 'Facebook', 'Twitter'],
+        "amenities": ['2 Bedrooms', '1 Bathroom', 'Air Conditioning'], //array of strings
+        "contacts": ['The Daily Bugle', 'Facebook', 'Twitter'], //array of strings
         "rating": [
             { "name": "Cleanliness", "rating": 4 },
             { "name": "Comfort", "rating": 4 },
             { "name": "Spaciousness", "rating": 3 },
             { "name": "Price", "rating": 2 }
         ],
-        "mediaSrcs": [
+        "mediaSrcs": [ //this is an array of strings
             "https://youre.outof.games/media/uploads/cb/da/cbda1bb4-ee0d-4c65-989f-05a24edd22cf/daily-bugle-featured-location.jpg",
 
         ],

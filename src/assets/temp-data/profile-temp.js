@@ -71,6 +71,7 @@ export const profileData = {
         },
         "reviewData": {
             "since": "March 2022",
+            //Array of reviews
             "reviews": [
             {
                 "listing": {
