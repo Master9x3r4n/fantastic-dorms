@@ -257,7 +257,7 @@ const submitReview = () => {
 								</div>
 							</div>
 							<div class="flex items-center text-[#355AFF] text-2xl font-bold">
-								<span class="material-symbols-outlined text-[28px] mr-1">star</span> {{ overallRating }}
+								<span class="material-symbols-outlined text-[28px] mr-1 filled">star</span> {{ overallRating }}
 							</div>
 						</div>
 
@@ -318,7 +318,11 @@ const submitReview = () => {
 	font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
-.dark .material-symbols-outlined.dark-filled {
+.material-symbols-outlined.filled{
+	font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.dark .material-symbols-outlined.dark-filled{
 	font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 

@@ -53,7 +53,7 @@ const setHover = (category, star) => {
 		<div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-200 dark:border-slate-700">
 			<h2 class="text-xl font-bold text-slate-900 dark:text-white">Overall</h2>
 			<div class="flex items-center text-[#355AFF] text-xl font-bold">
-				<span class="material-symbols-outlined mr-1">star</span>
+				<span class="material-symbols-outlined mr-1 filled">star</span>
 				{{ displayOverallRating }}
 			</div>
 		</div>
@@ -77,7 +77,7 @@ const setHover = (category, star) => {
 							@click="setRating(category, star)"
 							@mouseenter="setHover(category, star)"
 							@mouseleave="setHover(category, 0)"
-							class="material-symbols-outlined cursor-pointer text-[28px] transition-colors"
+							class="material-symbols-outlined cursor-pointer text-[28px] transition-colors filled"
 							:class="(hoverRatings[category] || modelValue[category]) >= star ? 'text-[#355AFF]' : 'text-slate-200 dark:text-slate-700'"
 					>
             {{ (hoverRatings[category] || modelValue[category]) >= star ? 'star' : 'star_border' }}
@@ -88,3 +88,9 @@ const setHover = (category, star) => {
 		</div>
 	</div>
 </template>
+
+<style scoped>
+.material-symbols-outlined.filled{
+	font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+</style>
