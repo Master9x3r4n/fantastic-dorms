@@ -1,5 +1,5 @@
 {
-  "name": "adprg-mco",
+  "name": "apdev-mco",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -12,16 +12,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "axios": "^1.13.6",
+    "express": "^5.2.1",
     "vue": "^3.5.26",
     "vue-router": "^4.6.4"
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.1.18",
-    "@tailwindcss/vite": "^4.1.18",
+    "@tailwindcss/vite": "^4.2.1",
     "@vitejs/plugin-vue": "^6.0.3",
     "autoprefixer": "^10.4.23",
     "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.18",
+    "tailwindcss": "^4.2.1",
     "vite": "^7.3.0",
     "vite-plugin-vue-devtools": "^8.0.5"
   }

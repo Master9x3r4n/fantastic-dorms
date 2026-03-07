@@ -5,7 +5,9 @@ import ListingView from '../view/ListingView.vue'
 import ProfileView from '../view/ProfileView.vue'
 import ReviewsView from '../view/ReviewsView.vue'
 import SearchView from '../view/SearchView.vue'
+import RegisterView from "@/view/RegisterView.vue";
 import LoginView from "@/view/LoginView.vue";
+import WriteView from "@/view/WriteView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,27 +25,15 @@ const router = createRouter({
       meta: { search: false, loggedIn: false },
     },
     {
+      path: "/register",
+      name: "register",
+      component: RegisterView,
+      meta: { search: false, loggedIn: false },
+    },
+    {
       path: "/playground",
       name: "playground",
       component: PlaygroundView,
-      meta: { search: true, loggedIn: true },
-    },
-    {
-      path: "/listing",
-      name: "listing",
-      component: ListingView,
-      meta: { search: true, loggedIn: true },
-    },
-    {
-      path: "/profile",
-      name: "profile",
-      component: ProfileView,
-      meta: { search: true, loggedIn: true },
-    },
-    {
-      path: "/reviews",
-      name: "reviews",
-      component: ReviewsView,
       meta: { search: true, loggedIn: true },
     },
     {
@@ -51,7 +41,35 @@ const router = createRouter({
       name: "search",
       component: SearchView,
       meta: { search: true, loggedIn: true },
-    }
+    },
+    {
+      path: "/listing/:id",
+      name: "listing",
+      component: ListingView,
+      meta: { search: true, loggedIn: true },
+      props: true,
+    },
+    {
+      path: "/profile/:id",
+      name: "profile",
+      component: ProfileView,
+      meta: { search: true, loggedIn: true },
+      props: true,
+    },
+    {
+      path: "/reviews/:id",
+      name: "reviews",
+      component: ReviewsView,
+      meta: { search: true, loggedIn: true },
+      props: true,
+    },
+    {
+      path: "/write",
+      name: "write",
+      component: WriteView,
+      meta: { search: true, loggedIn: true },
+      props: true,
+    },
   ],
 })
 

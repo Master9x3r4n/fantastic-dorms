@@ -1,38 +1,20 @@
 <script setup>
     import {ref, watch} from "vue"
-
-	// Object data for dark and light mode themes
-	const theme = {
-		"light": {
-			"src": "src/assets/darkmode-assets/sun-svgrepo-com.svg",
-			"alt": "Light Mode Icon"
-		},
-		"dark": {
-			"src": "src/assets/darkmode-assets/moon-svgrepo-com.svg",
-			"alt": "Dark Mode Icon"
-		}
-	}
+    import Icon from "../icon/Icon.vue"
 
     const darkMode = ref(false) // ref for dark mode toggle
-	const iconSrc = ref(theme.light) // ref for current theme
 
 	// Trigger dark mode call back when darkMode boolean is changed
     watch(darkMode, (enabled) => {
-		iconSrc.value = darkMode.value ? theme.dark : theme.light;
         document.documentElement.classList.toggle('dark', enabled)
     })
-
-	// Callback function to toggle dark mode
-    const toggleDarkMode = () => {
-		darkMode.value = !darkMode.value;
-    }
 
 </script>
 
 <template>
 <div class="p-0.5 flex gap-2">
     <div class="border-2 rounded-2xl p-1 size-8.5 flex items-center justify-center dark:bg-black">
-		<img :src="iconSrc.src" :alt="iconSrc.alt" width = "20px" height= "20px">
+        <Icon name="themeMode"/>
 	</div>
 
     <label class="relative inline-block w-15 h-8.5">

@@ -2,6 +2,34 @@
 import MediaContainer from '../carousel/MediaContainer.vue';
 import ThumbsButton from '../thumbs-buttons/ThumbsButton.vue';
 
+import {computed} from 'vue';
+import {profileData} from '@/assets/temp-data/profile-temp.js';
+import ProfileIcon from "@/components/profile/ProfileIcon.vue";
+
+const props = defineProps({
+    reviewData: {
+        type: Object,
+        default: 
+        {
+            username: "",
+            content: {
+                "title": "Title of Review",
+                "description": "",
+                "reply": ""
+            },
+            rating: 4,
+            score: 0,
+            mediaSrcs: []
+        },
+    },
+    routeId: {
+        type: String,
+        default: "1"
+    }
+})
+
+const profile = computed(() => profileData[props.reviewData.username]);
+
 </script>
 
 <template>
@@ -9,27 +37,29 @@ import ThumbsButton from '../thumbs-buttons/ThumbsButton.vue';
     p-2 pb-4 gap-4.5 w-105.25 h-fit bg-white dark:bg-[#121422] dark:text-white">
         <!-- Header Container -->
         <div class="w-full flex justify-between items-center">
+            <RouterLink :to="{name: 'profile', params: {id: reviewData.username}}">
             <div class="flex gap-3 items-center">
                 <!-- Profile -->
-                <div class="w-13 h-13 rounded-[50%] bg-amber-100 bg-gradient"></div>
-
+								<ProfileIcon :src="profile.profileImgSrc" size-class="w-13 h-13"></ProfileIcon>
+                
                 <!-- Name -->
                 <div>
-                    <div class="font-medium text-[20px] leading-6">chud student</div>
-                    <div class="font-normal leading-5 italic">67 Reviews</div>
+                    <div class="font-medium text-[20px] leading-6">{{ profile.name }}</div>
+                    <div class="font-normal leading-5 italic">{{ profile.reviewData.reviews.length }} Reviews</div>
                 </div>
             </div>
+            </RouterLink>
 
             <!-- Rating -->
             <div class="flex justify-between items-center w-3/12 px-2">
                 <img src="@\assets\rating-assets\star-full.svg" width="28px">
-                <div class="font-bold text-3xl leading-10">4.0</div>
+                <div class="font-bold text-3xl leading-10">{{ reviewData.rating.toFixed(1) }}</div>
             </div>
         </div>
 
         <!-- Title Container -->
         <div class="w-full h-[14%] flex items-center font-bold leading-8 text-2xl">
-            <slot name = "review-title">Title of Review</slot>
+            <slot name = "review-title">{{ reviewData.content.title }}</slot>
         </div>
 
         <!-- Comment Container -->
@@ -54,7 +84,7 @@ import ThumbsButton from '../thumbs-buttons/ThumbsButton.vue';
             </div>
 
             <!-- CHANGE THIS TO CONDITIONAL SLOTTING -->
-            <template v-if="$slots.ownerReply">
+            <template v-if="$slots.ownerReply"> 
             <!-- Reply Container -->
             <div class="w-full h-[50%] mt-3">
                 <div class="bg-[#D9D9D9] dark:bg-[#111111] h-full rounded-3xl 
@@ -74,13 +104,13 @@ import ThumbsButton from '../thumbs-buttons/ThumbsButton.vue';
         <div class="w-full h-[16%] flex justify-between items-center mt-1">
             <!-- Show More -->
             <div class="font-semibold underline text-[16px] leading-6">
-                <RouterLink to="/reviews">Show More</RouterLink>
+                <RouterLink :to="'/reviews/'+routeId">Show More</RouterLink>
             </div>
 
             <!-- Upvote -->
             <div class="italic font-normal text-[16px] leading-6 flex items-center justify-around gap-2">
                 <ThumbsButton direction="up"/>
-                <div>-69</div>
+                <div>{{ reviewData.score }}</div>
                 <ThumbsButton direction="down"/>
             </div>
         </div>

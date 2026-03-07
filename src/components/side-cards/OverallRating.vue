@@ -18,7 +18,7 @@ const props = defineProps({
             },
             {
                 name: "Price",
-                rating: 2
+                rating: 2 
             }
         ]
     }

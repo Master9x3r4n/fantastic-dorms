@@ -1,15 +1,14 @@
 <script setup>
-// Assuming you have imported your ProfileIcon component
 import ProfileIcon from './ProfileIcon.vue'
 
 const props = defineProps({
   name: {
     type: String,
-    default: 'Charlestrom Kirkland'
+    default: 'User'
   },
   username: {
     type: String,
-    default: '@number1masterdebater'
+    default: '@username'
   },
   joinDate: {
     type: String,
@@ -49,9 +48,10 @@ const props = defineProps({
 
       <div class="flex flex-row justify-center items-center px-[20px] py-[10px] gap-[10px] bg-[#355AFF] rounded-[40px]">
 
-        <svg width="22" height="18" viewBox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M22 6.75L11 0.75L0 6.75L11 12.75L19.25 8.25V15.75H22V6.75ZM11 10.32L3.9875 6.5L11 2.68L18.0125 6.5L11 10.32Z" fill="white"/>
-        </svg>
+				<!-- School Icon -->
+				<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF">
+					<path d="M838.87-271.52v-274.87L480-350.96 23.61-600 480-848.48 936.39-600v328.48h-97.52ZM480-112.09 192.09-267.48V-459L480-302.48 767.91-459v191.52L480-112.09Z"/>
+				</svg>
 
         <span class="font-normal text-[16px] leading-[19px] text-white">
           {{ university }}

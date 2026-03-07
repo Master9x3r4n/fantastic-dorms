@@ -8,6 +8,7 @@ const props = defineProps({
             name: "Apartment Name",
             description: "This apartment is very nice. It has very nice rooms and is placed very nicely.",
             imageSrc: "",
+            routerLink: "/listing",
             ratingData: {
                 rating: 4,
                 reviewCount: 32
@@ -40,7 +41,7 @@ const props = defineProps({
                 <!-- Apartment Name -->
                 <div>
                     <h1 class="font-bold text-[32px] leading-10 dark:text-white hover:underline">
-                        <RouterLink to="/listing">{{ props.cardData.name }}</RouterLink>
+                        <RouterLink :to="props.cardData.routerLink">{{ props.cardData.name }}</RouterLink>
                     </h1>
                 </div>
 

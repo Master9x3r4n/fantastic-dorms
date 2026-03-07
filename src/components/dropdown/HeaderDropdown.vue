@@ -29,40 +29,42 @@ const props = defineProps({
 			<div class="flex flex-col justify-between items-center gap-2">
 
 				<!-- Profile Info -->
-				<div class="flex flex-row items-center w-[231px] h-[58px] gap-[15px]">
+				<div class="flex flex-row items-center w-57.75 h-14.5 gap-3.75">
 					<ProfileIcon
 							:src="profileImg"
 							:alt="profileAlt"
 							size-class="w-[58px] h-[58px]"
 					/>
-					<div class="flex flex-col justify-center items-start w-[158px] h-[48px] grow">
-                <span class="text-[#676767] dark:text-gray-400 text-[16px] leading-[19px]">
+					<div class="flex flex-col justify-center items-start w-39.5 h-12 grow">
+                <span class="text-[#676767] dark:text-gray-400 text-[16px] leading-4.75">
                   Logged in as
                 </span>
 
-						<span class="text-[#355AFF] text-[24px] leading-[29px]">
+						<span class="text-[#355AFF] text-[24px] leading-7.25">
                   @{{ username }}
                 </span>
 					</div>
 				</div>
 
 				<!-- Divider -->
-				<div class="w-full h-[2px] bg-[#C5C5C5] dark:bg-[#3C4583] mx-auto my-2 transition-colors duration-200"></div>
+				<div class="w-full h-0.5 bg-[#C5C5C5] dark:bg-[#3C4583] mx-auto my-2 transition-colors duration-200"></div>
 
 				<!-- Profile Link -->
-				<a class="flex flex-row items-center w-[231px] gap-[10px] p-2 -ml-2 rounded-md
+				<RouterLink to="/profile">
+					<a class="flex flex-row items-center w-57.75 gap-2.5 p-2 -ml-2 rounded-md
             text-gray-900 dark:text-white
             hover:bg-gray-100 dark:hover:bg-[#1E1E1E] hover:text-[#355AFF] dark:hover:text-[#355AFF]
             transition-colors duration-200 cursor-pointer">
-					<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<path d="M2 4H0V18C0 19.1 0.9 20 2 20H16V18H2V4ZM18 0H6C4.9 0 4 0.9 4 2V14C4 15.1 4.9 16 6 16H18C19.1 16 20 15.1 20 14V2C20 0.9 19.1 0 18 0ZM12 2C13.66 2 15 3.34 15 5C15 6.66 13.66 8 12 8C10.34 8 9 6.66 9 5C9 3.34 10.34 2 12 2ZM18 14H6V12.5C6 10.51 10 9.5 12 9.5C14 9.5 18 10.51 18 12.5V14Z"
-									fill="currentColor"/>
-					</svg>
-					<span class="text-[20px]">View profile page</span>
-				</a>
+						<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M2 4H0V18C0 19.1 0.9 20 2 20H16V18H2V4ZM18 0H6C4.9 0 4 0.9 4 2V14C4 15.1 4.9 16 6 16H18C19.1 16 20 15.1 20 14V2C20 0.9 19.1 0 18 0ZM12 2C13.66 2 15 3.34 15 5C15 6.66 13.66 8 12 8C10.34 8 9 6.66 9 5C9 3.34 10.34 2 12 2ZM18 14H6V12.5C6 10.51 10 9.5 12 9.5C14 9.5 18 10.51 18 12.5V14Z"
+										fill="currentColor"/>
+						</svg>
+						<span class="text-[20px]">View profile page</span>
+					</a>
+				</RouterLink>
 
 				<!-- Settings Link -->
-				<a class="flex flex-row items-center w-[231px] gap-[10px] p-2 -ml-2 rounded-md
+				<a class="flex flex-row items-center w-57.75 gap-2.5 p-2 -ml-2 rounded-md
             text-gray-900 dark:text-white
             hover:bg-gray-100 dark:hover:bg-[#1E1E1E] hover:text-[#355AFF] dark:hover:text-[#355AFF]
             transition-colors duration-200 cursor-pointer">
@@ -72,14 +74,18 @@ const props = defineProps({
 					</svg>
 					<span class="text-[20px]">Settings</span>
 				</a>
+				
+				<!-- Divider -->
+				<div class="w-full h-0.5 bg-[#C5C5C5] dark:bg-[#3C4583] mx-auto my-2 transition-colors duration-200"></div>
 
 				<div class="w-full"><DarkModeSlider/></div>
 
 				<!-- Divider -->
-				<div class="w-full h-[2px] bg-[#C5C5C5] dark:bg-[#3C4583] mx-auto my-2 transition-colors duration-200"></div>
+				<div class="w-full h-0.5 bg-[#C5C5C5] dark:bg-[#3C4583] mx-auto my-2 transition-colors duration-200"></div>
 
 				<!-- Sign Out -->
-				<a class="flex flex-row items-center w-[231px] gap-[10px] p-2 -ml-2 rounded-md
+				<RouterLink to="/login">
+				<a class="flex flex-row items-center w-57.75 gap-2.5 p-2 -ml-2 rounded-md
             text-gray-900 dark:text-white
             hover:bg-gray-100 dark:hover:bg-[#1E1E1E] hover:text-[#355AFF] dark:hover:text-[#355AFF]
             transition-colors duration-200 cursor-pointer">
@@ -88,6 +94,7 @@ const props = defineProps({
 					</svg>
 					<span class="text-[20px]">Sign out</span>
 				</a>
+				</RouterLink>
 
 			</div>
 		</template>

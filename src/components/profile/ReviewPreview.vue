@@ -13,16 +13,20 @@ defineProps({
     default: '“This Is the Title of the Review”'
   },
   rating: {
-    type: String,
-    default: '4.0'
+    type: Number,
+    default: 4
+  },
+  listingId: {
+    type: Number,
+    default: 1
   }
 })
 </script>
 
 <template>
   <div class="flex flex-row justify-between items-center w-full max-w-[580px] h-[80px] self-stretch flex-none order-1">
-
-    <div class="flex flex-row items-center gap-[15px]">
+    <RouterLink :to="{name: 'listing', params: {id: listingId}}">
+    <div class="flex flex-row items-center gap-3.75">
 
       <div
           class="w-[117px] h-[80px] bg-[linear-gradient(135deg,#355AFF_-3.87%,#2C0ED6_103.87%)] rounded-[20px] shrink-0 bg-cover bg-center"
@@ -39,6 +43,7 @@ defineProps({
       </div>
 
     </div>
+    </RouterLink>
 
     <div class="flex flex-row justify-center items-center gap-[10px]">
 
@@ -48,8 +53,8 @@ defineProps({
         </svg>
       </div>
 
-      <span class="font-bold text-[24px] leading-[29px] text-black dark:text-white">
-        {{ rating }}
+      <span class="font-bold text-[24px] leading-7.25 text-black dark:text-white">
+        {{ rating.toFixed(1) }}
       </span>
 
     </div>

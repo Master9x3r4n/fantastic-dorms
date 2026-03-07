@@ -33,8 +33,8 @@ const togglePassword = () => {
 
         <!-- Header -->
         <div class="mb-10 text-center lg:text-left">
-          <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-2 transition-colors">Login</h2>
-          <p class="text-slate-500 dark:text-slate-400 transition-colors">We're glad to have you back!</p>
+          <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-2 transition-colors">Create an account</h2>
+          <p class="text-slate-500 dark:text-slate-400 transition-colors">Start your journey to the perfect student home today.</p>
         </div>
 
         <!-- Form -->
@@ -78,20 +78,49 @@ const togglePassword = () => {
             <p class="mt-1.5 text-xs text-slate-400 dark:text-slate-500 transition-colors">Minimum 8 characters with at least one number.</p>
           </div>
 
+          <!-- Bio / Textarea -->
+          <div>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1 transition-colors" for="bio">Tell me about yourself</label>
+            <textarea
+                class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1E1E1E] text-slate-900 dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all resize-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                id="bio"
+                name="bio"
+                placeholder="What are you looking for? e.g., 'Sophomore at university looking for a shared room...'"
+                rows="4"
+            ></textarea>
+          </div>
+
+          <!-- Terms Checkbox -->
+          <div class="flex items-start">
+            <div class="flex items-center h-5">
+              <input
+                  class="h-4 w-4 text-[#355AFF] focus:ring-[#355AFF] border-slate-300 dark:border-slate-600 dark:bg-[#1E1E1E] rounded transition-all cursor-pointer accent-[#355AFF]"
+                  id="terms"
+                  name="terms"
+                  required
+                  type="checkbox"
+              />
+            </div>
+            <div class="ml-3 text-sm">
+              <label class="text-slate-600 dark:text-slate-400 cursor-pointer transition-colors" for="terms">
+                I agree to the <a class="text-[#355AFF] hover:underline font-medium" href="#">Terms of Service</a> and <a class="text-[#355AFF] hover:underline font-medium" href="#">Privacy Policy</a>.
+              </label>
+            </div>
+          </div>
+
           <!-- Submit Button -->
-          <RouterLink to="/">
           <button
               class="w-full bg-[#355AFF] hover:bg-[#2b4bcc] text-white font-semibold py-3.5 px-4 rounded-lg shadow-lg shadow-[#355AFF]/20 transition-all transform active:scale-[0.99]"
               type="submit"
           >
-            Login
+            Register
           </button>
-          </RouterLink>
 
+          <!-- Login Link -->
           <p class="text-center text-slate-600 dark:text-slate-400 text-sm transition-colors">
-            Don't have an account?
-            <RouterLink to="/register">
-            <a class="text-[#355AFF] hover:underline font-semibold" href="#">Create one</a>
+            Already have an account?
+            <RouterLink to="/login">
+            <a class="text-[#355AFF] hover:underline font-semibold" href="#">Login</a>
             </RouterLink>
           </p>
         </form>

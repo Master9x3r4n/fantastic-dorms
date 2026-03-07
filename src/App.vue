@@ -1,20 +1,20 @@
 <script setup>
-  import {RouterView, useRoute} from "vue-router";
-  import FooterComponent from "./components/footer/FooterComponent.vue";
-  import PageHeader from "@/components/header/PageHeader.vue";
+import {RouterView, useRoute} from "vue-router";
+import PageFooter from "./components/footer/PageFooter.vue";
+import PageHeader from "@/components/header/PageHeader.vue";
 
-  const route = useRoute();
+const route = useRoute();
 </script>
 
 <template>
-  <div class="dark:bg-[#121422]">
-    <PageHeader
-        :search="route.meta.search"
-        :logged-in="route.meta.loggedIn"
-    />
-    <RouterView />
-    <FooterComponent/>
-  </div>
+<div class="dark:bg-[#121422]">
+	<PageHeader
+		:search="route.meta.search"
+		:logged-in="route.meta.loggedIn"
+	/>
+	<RouterView />
+	<PageFooter/>
+</div>
 </template>
 
 <style lang = "scss" scoped></style>

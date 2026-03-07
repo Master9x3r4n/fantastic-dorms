@@ -41,7 +41,13 @@ const clearSearch = () => {
 };
 
 //route to search page
-const routeSearch = () => { router.push('/search') }
+const routeSearch = () => { 
+  router.push({
+    name: 'search',
+    query: { q: searchQuery.value }
+  }) 
+
+}
 
 </script>
 

@@ -8,6 +8,7 @@ const props = defineProps({
             name: "Apartment Name",
             description: "This apartment is very nice. It has very nice rooms and is placed very nicely.",
             imageSrc: "",
+            routerLink: "/listing",
             ratingData: {
                 rating: 4,
                 reviewCount: 32
@@ -28,7 +29,7 @@ const props = defineProps({
         "w-full h-5/12 rounded-t-[25px] 
         absolute left-0 right-0 top-0
         bg-gradient">
-            <img v-if="props.imageSrc" :src="props.imageSrc" class="w-full h-5/12 rounded-t-[25px]">
+            <img v-if="cardData.imageSrc" :src="cardData.imageSrc" class="w-full h-full rounded-t-[25px]">
         </div>
 
         <!-- Frame -->
@@ -38,14 +39,14 @@ const props = defineProps({
                 <!-- Apartment Name -->
                 <div>
                     <h1 class="font-bold text-[32px] leading-10 dark:text-white hover:underline">   
-                        <RouterLink to="/listing">{{ props.cardData.name }}</RouterLink>
+                        <RouterLink :to="cardData.routerLink">{{ cardData.name }}</RouterLink>
                     </h1>
                 </div>
 
                 <!-- Apartment Description -->
                 <div>
                     <p class="italic font-normal text-[20px] leading-6 dark:text-white">
-                        {{ props.cardData.description }}
+                        {{ cardData.description }}
                     </p>
                 </div>
             </div>
@@ -53,8 +54,8 @@ const props = defineProps({
             <!-- Lower Review Container -->
             <div class="h-[50%] flex justify-end items-end">
                 <CardRating 
-                :rating="props.cardData.ratingData.rating" 
-                :reviewCount="props.cardData.ratingData.reviewCount"/>
+                :rating="cardData.ratingData.rating" 
+                :reviewCount="cardData.ratingData.reviewCount"/>
             </div>
        </div>
     </div>

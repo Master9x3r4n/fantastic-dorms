@@ -3,43 +3,55 @@ import Carousel from '../carousel/Carousel.vue';
 import MediaContainer from '../carousel/MediaContainer.vue';
 import ThumbsButton from '../thumbs-buttons/ThumbsButton.vue';
 
+import {computed} from 'vue';
+import {profileData} from '@/assets/temp-data/profile-temp.js';
+import ProfileIcon from "@/components/profile/ProfileIcon.vue";
+
 const props = defineProps({
-    rating: {
-        type: Number,
-        default: 0
-    },
-    reviewer: {
+    reviewData: {
         type: Object,
-        default: {
-            name: "chud student",
-            count: 67
-        }
+        default: 
+        {
+            username: "casey_c",
+            content: {
+                "title": "Title of Review",
+                "description": "",
+                "reply": ""
+            },
+            rating: 4,
+            score: 0,
+            mediaSrcs: []
+        },
     }
 })
+
+const profile = computed(() => profileData[props.reviewData.username]);
 
 </script>
 
 <template>
     <!-- 1120 x 769 h-228 -->
-    <div class="w-295 h-fit p-5 flex flex-col items-center justify-center gap-6.5
-    bg-white dark:bg-[#121422] dark:text-white">
+    <div class="w-max-295 h-fit p-5 flex flex-col items-center justify-center gap-6.5
+    bg-white dark:bg-[#121422] dark:text-white w-full rounded-lg border border-solid border-slate-200 shadow-sm transition-colors duration-200 dark:border-slate-700">
         <!-- Header Container -->
         <div class="w-full flex justify-between items-center ">
+            <RouterLink :to="{name: 'profile', params: {id: reviewData.username}}">
             <div class="flex gap-3 items-center">
                 <!-- Profile -->
-                <div class="w-13 h-13 rounded-[50%] bg-blue-300 bg-gradient"></div>
+								<ProfileIcon :src="profile.profileImgSrc" size-class="w-13 h-13"></ProfileIcon>
 
                 <!-- Name -->
                 <div>
-                    <div class="font-medium text-[20px] leading-6">{{ props.reviewer.name }}</div>
-                    <div class="font-normal leading-5 italic">{{ props.reviewer.count }} Reviews</div>
+                    <div class="font-medium text-[20px] leading-6">{{ profile.name }}</div>
+                    <div class="font-normal leading-5 italic">{{ profile.reviewData.reviews.length }} Reviews</div>
                 </div>
             </div>
+            </RouterLink>
 
             <!-- Rating -->
             <div class="flex justify-between items-center w-[8%] text-center">
                 <img src="@\assets\rating-assets\star-full.svg" width="36px">
-                <div class="font-bold text-3xl leading-10">{{ props.rating.toFixed(1) }}</div>
+                <div class="font-bold text-3xl leading-10">{{ reviewData.rating.toFixed(1) }}</div>
             </div>
         </div>
 

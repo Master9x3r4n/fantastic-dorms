@@ -20,10 +20,12 @@ const props = defineProps({
             name: "Apartment Name",
             description: "This apartment is very nice. It has very nice rooms and is placed very nicely.",
             imageSrc: "",
+            routerLink: "/listing",
             ratingData: {
                 rating: 4,
                 reviewCount: 32
-            }
+            },
+            imageSrc: "",
         }]
     }
 })
