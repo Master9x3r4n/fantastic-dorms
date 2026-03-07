@@ -1,12 +1,13 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import ToggleButton from "@/components/page-buttons/ToggleButton.vue"
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
 import RatingBox from "@/components/write-review-content/RatingBox.vue";
-import ReviewEditor from "@/components/write-review-content/ReviewEditor.vue";
+import TextEditor from "@/components/write-review-content/TextEditor.vue";
 import Carousel from "@/components/carousel/Carousel.vue";
 import MediaContainer from "@/components/carousel/MediaContainer.vue";
+import UploadBox from "@/components/write-review-content/UploadBox.vue";
 
 // User info props
 const props = defineProps({
@@ -39,6 +40,10 @@ const isAnonymous = ref(false);
 const reviewTitle = ref('');
 const reviewContent = ref('');
 const isCertified = ref(false);
+
+// Uploaded Files
+const uploadedPhotos = ref([]);
+const previewUrls = ref([]);
 
 // Ratings State
 const ratings = ref({
@@ -89,6 +94,34 @@ const submitReview = () => {
 		tags: tags.value
 	});
 };
+
+// Watch for any changes to the imageFiles array
+watch(uploadedPhotos, (newFiles) => {
+	// 1. CLEANUP: Revoke all existing URLs before creating new ones
+	previewUrls.value.forEach(url => {
+		// Only revoke if it's a blob URL (in case you mix local files with server URLs)
+		if (typeof url === 'string' && url.startsWith('blob:')) {
+			URL.revokeObjectURL(url)
+		}
+	})
+
+	// 2. GENERATE: Create new URLs for the current state of the array
+	previewUrls.value = newFiles.map(file => {
+		if (file instanceof File) {
+			return URL.createObjectURL(file)
+		}
+		return file // Fallback for existing server image URLs
+	})
+}, { deep: true }) // deep: true ensures we catch array mutations
+
+// 3. FINAL CLEANUP: Prevent memory leaks when navigating away from this component
+onBeforeUnmount(() => {
+	previewUrls.value.forEach(url => {
+		if (typeof url === 'string' && url.startsWith('blob:')) {
+			URL.revokeObjectURL(url)
+		}
+	})
+})
 </script>
 
 <template>
@@ -198,21 +231,14 @@ const submitReview = () => {
 					</div>
 
 					<!-- Textarea Content -->
-					<ReviewEditor v-model="reviewContent"
+					<TextEditor v-model="reviewContent"
 												placeholder="My experience with this place was..."
 												:max-length="1000"
 					/>
 
 					<!-- Photo Upload -->
 					<!-- NOT FUNCTIONAL YET -->
-					<div>
-						<label class="block text-sm font-medium text-slate-900 dark:text-white mb-1">Add Photos</label>
-						<div class="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-md p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 bg-white dark:bg-[#121422] transition-colors">
-							<span class="material-symbols-outlined text-slate-400 text-3xl mb-2">cloud_upload</span>
-							<p class="text-sm font-medium text-slate-900 dark:text-white">Click to upload or drag and drop</p>
-							<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">SVG, PNG, JPG or GIF (max. 800x400px)</p>
-						</div>
-					</div>
+					<UploadBox v-model="uploadedPhotos"/>
 
 					<!-- Certification -->
 					<div class="flex items-start">
@@ -239,7 +265,7 @@ const submitReview = () => {
 			</div>
 
 			<!-- Right Column: Live Preview (Hidden on small screens) -->
-			<div class="hidden lg:block w-[500px] xl:w-[600px] shrink-0">
+			<div class="hidden lg:block w-[500px] xl:w-[610px] shrink-0">
 				<div class="sticky top-24">
 					<h2 class="text-2xl font-bold mb-2 text-slate-900 dark:text-white">Live Preview</h2>
 					<p class="text-sm text-slate-500 dark:text-slate-400 mb-6">This is the point of view for all users within the property's page.</p>
@@ -277,12 +303,12 @@ const submitReview = () => {
 						</div>
 
 						<!-- Static Image Carousel-->
-						<div class="my-6 h-[47%] flex w-full justify-center items-center">
-							<Carousel :count="4" buttonStyling="large" :buttonSpacing="4">
+						<div v-if="uploadedPhotos.length > 0" class="my-6 h-[47%] flex w-full justify-center items-center">
+							<Carousel :count="4" buttonStyling="small circular" :buttonSpacing="4">
 								<template #content>
-									<template v-for="i in 10">
+									<template v-for="(url, index) in previewUrls">
 										<div class="flex shrink-0 snap-start pl-2 pr-2">
-											<MediaContainer size="medium"/>
+											<MediaContainer size="medium" :src="url" :alt="uploadedPhotos[index].name" class="border-2 border-dashed border-slate-400 dark:border-slate-200"/>
 										</div>
 									</template>
 								</template>
