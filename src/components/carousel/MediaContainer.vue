@@ -22,7 +22,7 @@ const props = defineProps({
         <div class="flex justify-center items-center rounded-3xl"
         :class="[!props.src? 'bg-gradient': '', props.size]">
             <img v-if="props.src" :src="props.src" width="740px" :alt="props.alt"
-            class="rounded-3xl h-full">
+            class="rounded-3xl h-full object-cover">
         </div>
 </template>
 
