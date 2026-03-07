@@ -4,6 +4,7 @@ import ThumbsButton from '../thumbs-buttons/ThumbsButton.vue';
 
 import {computed} from 'vue';
 import {profileData} from '@/assets/temp-data/profile-temp.js';
+import ProfileIcon from "@/components/profile/ProfileIcon.vue";
 
 const props = defineProps({
     reviewData: {
@@ -39,10 +40,7 @@ const profile = computed(() => profileData[props.reviewData.username]);
             <RouterLink :to="{name: 'profile', params: {id: reviewData.username}}">
             <div class="flex gap-3 items-center">
                 <!-- Profile -->
-                <div class="w-13 h-13 rounded-[50%] bg-amber-100 bg-gradient">
-                    <img :src="profile.profileImgSrc" width="52px" class="w-13 h-13 rounded-[50%]" 
-                    v-if="profile.profileImgSrc">
-                </div>
+								<ProfileIcon :src="profile.profileImgSrc" size-class="w-13 h-13"></ProfileIcon>
                 
                 <!-- Name -->
                 <div>

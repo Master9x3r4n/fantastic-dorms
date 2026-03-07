@@ -90,7 +90,4 @@ const setHover = (category, star) => {
 </template>
 
 <style scoped>
-.material-symbols-outlined.filled{
-	font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-}
 </style>
