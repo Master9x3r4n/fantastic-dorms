@@ -7,6 +7,7 @@ import ReviewsView from '../view/ReviewsView.vue'
 import SearchView from '../view/SearchView.vue'
 import RegisterView from "@/view/RegisterView.vue";
 import LoginView from "@/view/LoginView.vue";
+import WriteView from "@/view/WriteView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -59,6 +60,13 @@ const router = createRouter({
       path: "/reviews/:id",
       name: "reviews",
       component: ReviewsView,
+      meta: { search: true, loggedIn: true },
+      props: true,
+    },
+    {
+      path: "/write",
+      name: "write",
+      component: WriteView,
       meta: { search: true, loggedIn: true },
       props: true,
     },
