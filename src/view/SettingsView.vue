@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
+import {useRouter} from "vue-router";
 import Divider from "@/components/divider/Divider.vue";
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
 
@@ -17,6 +18,13 @@ const props = defineProps({
 		})
 	}
 });
+
+// Previous Page button
+const router = useRouter();
+
+const goBack = () => {
+	router.back();
+};
 
 // Local Form State
 const ogImageFile = ref(props.userInfo.profileImg);
@@ -111,7 +119,14 @@ const handlePasswordUpdate = () => {
 	<div class="min-h-screen flex flex-col bg-white dark:bg-[#121422] text-black dark:text-white transition-colors duration-200">
 		<main class="flex-1 flex items-center justify-center p-4 md:p-10">
 			<div class="w-full max-w-4xl">
-
+				<button class="flex items-center text-sm text-slate-500 dark:text-slate-400 hover:text-[#355AFF]
+											 dark:hover:text-[#355AFF] transition-colors mb-6 border border-slate-200 dark:border-slate-700 rounded-md
+											 px-3 py-1.5 bg-white dark:bg-[#121422] shadow-sm"
+								@click="goBack"
+				>
+					<span class="material-symbols-outlined text-[16px] mr-1">arrow_back</span>
+					Back to previous page
+				</button>
 				<!-- Profile Settings Section -->
 				<div class="bg-white dark:bg-[#121422] mb-6 w-full p-4 rounded-lg border border-solid border-slate-200 shadow-sm transition-colors duration-200 dark:border-slate-700">
 					<div class="p-6 md:p-8">
