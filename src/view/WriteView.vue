@@ -8,6 +8,7 @@ import TextEditor from "@/components/write-review-content/TextEditor.vue";
 import Carousel from "@/components/carousel/Carousel.vue";
 import MediaContainer from "@/components/carousel/MediaContainer.vue";
 import UploadBox from "@/components/write-review-content/UploadBox.vue";
+import Divider from "@/components/divider/Divider.vue";
 
 // User info props
 const props = defineProps({
@@ -162,7 +163,8 @@ onBeforeUnmount(() => {
 						</div>
 						<ToggleButton v-model="isAnonymous"></ToggleButton>
 					</div>
-					<div class="flex items-center mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 transition-colors">
+					<Divider />
+					<div class="flex items-center transition-colors">
 						<div class="w-8 h-8 bg-slate-200 dark:bg-slate-700 rounded-full mr-3 flex items-center justify-center overflow-hidden">
 							<ProfileIcon v-if="!isAnonymous" :src="props.user.icon" alt="user img" size-class="w-full h-full"></ProfileIcon>
 							<span v-else class="material-symbols-outlined text-slate-400 text-sm">person_off</span>
