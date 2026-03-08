@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import Divider from "@/components/divider/Divider.vue";
+import ProfileIcon from "@/components/profile/ProfileIcon.vue";
 
 // Define Props with Default Values
 const props = defineProps({
@@ -17,19 +18,68 @@ const props = defineProps({
 	}
 });
 
-// Local Form State (initialized from props to allow editing)
+// Local Form State
+const ogImageFile = ref(props.userInfo.profileImg);
 const formData = ref({ ...props.userInfo });
+const newImageFile = ref(null);
 
 // Security State
 const currentPassword = ref('');
 const newPassword = ref('');
 const confirmPassword = ref('');
 
+// Refs
+const fileInputRef = ref(null);
+
 // Computed
 const bioCharacterCount = computed(() => formData.value.bio.length);
 const isBioInvalid = computed(() => bioCharacterCount.value > 200);
 
 // Handlers
+const triggerFileInput = () => {
+	if (fileInputRef.value) {
+		fileInputRef.value.click();
+	}
+};
+
+const handleFileUpload = (event) => {
+	const file = event.target.files[0];
+	if (!file) return;
+
+	// Validate file type
+	if (!['image/jpeg', 'image/png'].includes(file.type)) {
+		alert('Please upload a JPG or PNG image.');
+		return;
+	}
+
+	// Validate file size (Max 2MB)
+	const maxSize = 2 * 1024 * 1024; // 2MB in bytes
+	if (file.size > maxSize) {
+		alert('File size exceeds the 2MB limit. Please choose a smaller file.');
+		return;
+	}
+
+	// Store file for backend submission
+	newImageFile.value = file;
+
+	// Create a local preview
+	const reader = new FileReader();
+	reader.onload = (e) => {
+		formData.value.profileImg = e.target.result;
+	};
+	reader.readAsDataURL(file);
+};
+
+const removePhoto = () => {
+	formData.value.profileImg = ogImageFile.value;
+	newImageFile.value = null;
+	if (fileInputRef.value) {
+		fileInputRef.value.value = ''; // Reset the hidden input
+	}
+};
+
+// TODO: for backend ppl, add a username checker to check for similar usernames
+
 const handleProfileSave = () => {
 	// Validation check for bio length
 	if (isBioInvalid.value) {
@@ -38,6 +88,9 @@ const handleProfileSave = () => {
 	}
 
 	console.log('Saving profile data...', formData.value);
+	if (newImageFile.value) {
+		console.log('New image ready to be uploaded to server:', newImageFile.value.name);
+	}
 	alert("Profile saved successfully!");
 
 	// save the stuff to backend
@@ -72,18 +125,27 @@ const handlePasswordUpdate = () => {
 						<!-- Profile Picture Section -->
 						<div class="flex flex-col sm:flex-row items-center gap-6 pb-8">
 							<div class="relative group">
-								<div class="w-24 h-24 rounded-full overflow-hidden border-2 border-slate-100 dark:border-slate-800">
-									<img :src="formData.profileImg" alt="Profile Picture" class="w-full h-full object-cover" />
-								</div>
+								<ProfileIcon :src="formData.profileImg" alt="Profile Picture" size-class="w-24 h-24" />
 							</div>
 							<div class="text-center sm:text-left">
 								<h3 class="font-bold text-black dark:text-white text-lg">Your Profile Picture</h3>
-								<p class="text-slate-500 dark:text-slate-400 text-sm mb-4">JPG, GIF or PNG. Max size 2MB</p>
+								<p class="text-slate-500 dark:text-slate-400 text-sm mb-4">JPG or PNG. Max size 2MB</p>
 								<div class="flex flex-wrap justify-center sm:justify-start gap-3">
-									<button type="button" class="px-4 py-2 bg-[#355AFF] text-white text-sm font-semibold rounded-lg hover:bg-[#355AFF]/90 transition-colors">
+
+									<!-- Hidden File Input -->
+									<input
+											type="file"
+											ref="fileInputRef"
+											class="hidden"
+											accept="image/jpeg, image/png"
+											@change="handleFileUpload"
+									/>
+
+									<button @click="triggerFileInput" type="button" class="px-4 py-2 bg-[#355AFF] text-white text-sm font-semibold rounded-lg hover:bg-[#355AFF]/90 transition-colors">
 										Upload New Photo
 									</button>
-									<button type="button" class="border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-slate-900 dark:text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm">										Remove
+									<button @click="removePhoto" type="button" class="border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-slate-900 dark:text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm">
+										Remove
 									</button>
 								</div>
 							</div>
@@ -102,7 +164,7 @@ const handlePasswordUpdate = () => {
 											v-model="formData.name"
 											type="text"
 											placeholder="Your name"
-											class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF]/20 focus:border-[#355AFF] outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
+											class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
 									/>
 								</div>
 
@@ -115,7 +177,7 @@ const handlePasswordUpdate = () => {
 												v-model="formData.username"
 												type="text"
 												placeholder="username"
-												class="w-full pl-8 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF]/20 focus:border-[#355AFF] outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
+												class="w-full pl-8 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
 										/>
 									</div>
 								</div>
@@ -129,7 +191,7 @@ const handlePasswordUpdate = () => {
 												v-model="formData.school"
 												type="text"
 												placeholder="University name"
-												class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF]/20 focus:border-[#355AFF] outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
+												class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
 										/>
 									</div>
 								</div>
@@ -143,7 +205,7 @@ const handlePasswordUpdate = () => {
 												v-model="formData.home"
 												type="text"
 												placeholder="Dorm or apartment name"
-												class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF]/20 focus:border-[#355AFF] outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
+												class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
 										/>
 									</div>
 								</div>
@@ -160,7 +222,7 @@ const handlePasswordUpdate = () => {
                     'w-full px-4 py-3 rounded-xl border bg-white dark:bg-[#121422] text-black dark:text-white outline-none transition-all resize-none placeholder:text-slate-400 dark:placeholder:text-slate-500',
                     isBioInvalid
                       ? 'border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-500/20 focus:border-red-500'
-                      : 'border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-[#355AFF]/20 focus:border-[#355AFF]'
+                      : 'border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-[#355AFF] focus:border-transparent'
                   ]"
 								></textarea>
 								<p
@@ -204,7 +266,7 @@ const handlePasswordUpdate = () => {
 											v-model="currentPassword"
 											type="password"
 											placeholder="Enter current password"
-											class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF]/20 focus:border-[#355AFF] outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
+											class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
 											required
 									/>
 								</div>
@@ -218,7 +280,7 @@ const handlePasswordUpdate = () => {
 											v-model="newPassword"
 											type="password"
 											placeholder="Enter new password"
-											class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF]/20 focus:border-[#355AFF] outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
+											class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
 											required
 									/>
 								</div>
@@ -230,12 +292,12 @@ const handlePasswordUpdate = () => {
 											v-model="confirmPassword"
 											type="password"
 											placeholder="Confirm new password"
-											class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF]/20 focus:border-[#355AFF] outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
+											class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
 											required
 									/>
 								</div>
 							</div>
-								<Divider />
+							<Divider />
 							<!-- Action Buttons -->
 							<div class="flex justify-end gap-4 py-6 ">
 								<button type="submit" class="bg-[#355AFF] hover:bg-[#2b4bcc] text-white px-6 py-2 rounded-md text-sm font-medium transition-colors shadow-sm">
