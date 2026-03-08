@@ -64,6 +64,7 @@ const props = defineProps({
 				</RouterLink>
 
 				<!-- Settings Link -->
+				<RouterLink to="/settings">
 				<a class="flex flex-row items-center w-57.75 gap-2.5 p-2 -ml-2 rounded-md
             text-gray-900 dark:text-white
             hover:bg-gray-100 dark:hover:bg-[#1E1E1E] hover:text-[#355AFF] dark:hover:text-[#355AFF]
@@ -74,6 +75,7 @@ const props = defineProps({
 					</svg>
 					<span class="text-[20px]">Settings</span>
 				</a>
+				</RouterLink>
 
 				<Divider />
 
