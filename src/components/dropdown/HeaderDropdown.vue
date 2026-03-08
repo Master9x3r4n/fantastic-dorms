@@ -2,6 +2,7 @@
 import Dropdown from "@/components/dropdown/Dropdown.vue";
 import DarkModeSlider from "@/components/darkmode/DarkModeSlider.vue";
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
+import Divider from "@/components/divider/Divider.vue";
 
 const props = defineProps({
 	profileImg: {
@@ -46,8 +47,7 @@ const props = defineProps({
 					</div>
 				</div>
 
-				<!-- Divider -->
-				<div class="w-full h-0.5 bg-[#C5C5C5] dark:bg-[#3C4583] mx-auto my-2 transition-colors duration-200"></div>
+				<Divider />
 
 				<!-- Profile Link -->
 				<RouterLink to="/profile">
@@ -74,14 +74,12 @@ const props = defineProps({
 					</svg>
 					<span class="text-[20px]">Settings</span>
 				</a>
-				
-				<!-- Divider -->
-				<div class="w-full h-0.5 bg-[#C5C5C5] dark:bg-[#3C4583] mx-auto my-2 transition-colors duration-200"></div>
+
+				<Divider />
 
 				<div class="w-full"><DarkModeSlider/></div>
 
-				<!-- Divider -->
-				<div class="w-full h-0.5 bg-[#C5C5C5] dark:bg-[#3C4583] mx-auto my-2 transition-colors duration-200"></div>
+				<Divider />
 
 				<!-- Sign Out -->
 				<RouterLink to="/login">
