@@ -254,7 +254,7 @@ onBeforeUnmount(() => {
 							I certify this review is genuine and true. <span class="text-red-500">*</span>
 						</label>
 					</div>
-
+					<!-- TODO: to the backend devs, make sure to edit this to save the inputs in the form, make sure to also store the date of the review -->
 					<!-- Buttons -->
 					<div class="flex flex-wrap items-center gap-3 pt-4">
 						<button type="submit" class="bg-[#355AFF] hover:bg-[#2b4bcc] text-white px-6 py-2 rounded-md text-sm font-medium transition-colors shadow-sm">Submit</button>
@@ -265,7 +265,7 @@ onBeforeUnmount(() => {
 			</div>
 
 			<!-- Right Column: Live Preview (Hidden on small screens) -->
-			<div class="hidden lg:block w-[500px] xl:w-[610px] shrink-0">
+			<div class="hidden lg:block w-125 xl:w-152.5 shrink-0">
 				<div class="sticky top-24">
 					<h2 class="text-2xl font-bold mb-2 text-slate-900 dark:text-white">Live Preview</h2>
 					<p class="text-sm text-slate-500 dark:text-slate-400 mb-6">This is the point of view for all users within the property's page.</p>
@@ -287,11 +287,11 @@ onBeforeUnmount(() => {
 							</div>
 						</div>
 
-						<h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-3 break-words">
+						<h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-3 wrap-break-word">
 							{{ reviewTitle || 'Review Title Here' }}
 						</h2>
 						<div
-								class="text-slate-800 dark:text-slate-300 mb-6 break-words min-h-[4rem] editor-output"
+								class="text-slate-800 dark:text-slate-300 mb-6 wrap-break-word min-h-16 editor-output"
 								v-html="reviewContent || 'Your detailed review experience will appear here as you type...'"
 						></div>
 
