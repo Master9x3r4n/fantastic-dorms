@@ -77,12 +77,14 @@ const user = computed(() => profileData[props.id]);
 					</h2>
 
 					<!-- Edit button-->
+					<RouterLink to="/settings">
 					<BlueButton @click="$emit('edit')">
 						<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
 							<path d="M0 11.25V14H2.75L10.8625 5.8875L8.1125 3.1375L0 11.25ZM13.0375 3.7125C13.325 3.425 13.325 2.9625 13.0375 2.675L11.325 0.9625C11.0375 0.675 10.575 0.675 10.2875 0.9625L8.9 2.35L11.65 5.1L13.0375 3.7125Z" fill="white"/>
 						</svg>
 						<span class="text-[16px] leading-4.75 text-white">Edit</span>
 					</BlueButton>
+					</RouterLink>
 				</div>
 
 				<!-- Bio text container -->
