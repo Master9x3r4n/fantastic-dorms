@@ -8,6 +8,7 @@ import SearchView from '../view/SearchView.vue'
 import RegisterView from "@/view/RegisterView.vue";
 import LoginView from "@/view/LoginView.vue";
 import WriteView from "@/view/WriteView.vue";
+import SettingsView from "@/view/SettingsView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -68,6 +69,13 @@ const router = createRouter({
       name: "write",
       component: WriteView,
       meta: { search: true, loggedIn: true },
+      props: true,
+    },
+    {
+      path: "/settings",
+      name: "settings",
+      component: SettingsView,
+      meta: { search: false, loggedIn: true },
       props: true,
     },
   ],
