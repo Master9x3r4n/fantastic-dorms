@@ -1,0 +1,62 @@
+[
+    {
+        "listingId": 0,
+        "owner": "The Daily Bugle",
+        "name": "Grand Apartment",
+        "address": "Blk 12 Lt 32 Somebody St., Las Pinas City",
+        "description": "A very grand, beautiful, and luxurious apartment that features multiple rooms and doors. A must stay for the holidays.",
+        "amenities": ["2 Bedrooms", "1 Bathroom", "Air Conditioning"],
+        "contacts": [{"name": "Facebook", "link": "https://facebook.com/the_daily_bugle"}],
+        "media": [
+            "https://youre.outof.games/media/uploads/cb/da/cbda1bb4-ee0d-4c65-989f-05a24edd22cf/daily-bugle-featured-location.jpg"
+        ],
+        "location": {"type": "https://cdn.britannica.com/06/276306-049-A8451874/world-map.jpg"},
+        "rating": [
+            { "name": "Cleanliness", "rating": 4 },
+            { "name": "Comfort", "rating": 4 },
+            { "name": "Spaciousness", "rating": 3 },
+            { "name": "Price", "rating": 2 }
+        ],
+        "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+        "listingId": 1,
+        "owner": "The Future Foundation",
+        "name": "The Baxter Suite",
+        "description": "A very grand, beautiful, and luxurious Inspired by the heroes of the Fantastic Four, this beautiful deluxe suite features 4 bedrooms and a visit from Galactus. It's Fantastic. that features multiple rooms and doors. A must stay for the holidays.",
+        "address": "44 Yancy St., New York City, Earth-616",
+        "amenities": ["4 Bedrooms", "Dining Room", "Giant Lab", "Space Portal"],
+        "contacts": [{"name": "Facebook", "link": "https://facebook.com/the_baxter_suite"}],
+        "media": [
+            "https://static0.cbrimages.com/wordpress/wp-content/uploads/2020/09/rsz-baxter-buildingv1.jpg"
+        ],
+        "location": {"type": "https://cdn.britannica.com/06/276306-049-A8451874/world-map.jpg"},
+        "rating": [
+            { "name": "Cleanliness", "rating": 4 },
+            { "name": "Comfort", "rating": 4 },
+            { "name": "Spaciousness", "rating": 4 },
+            { "name": "Price", "rating": 4 }
+        ],
+        "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+        "listingId": 2,
+        "owner": "Jann Miro Quilantang",
+        "name": "Miro's House",
+        "description": "Freshly doxxed, Miro's house is a beautiful home that features Miro.",
+        "address": "---------- -----., -------- -------, Mandaluyong City",
+        "amenities": ["1 Miro", "3 Bedrooms", "2 Bathrooms"],
+        "contacts": [{"name": "GitHub", "link": "https://github.com/alittletotheleft"}],
+        "media": [
+            "https://static.wikitide.net/peppafanonwiki/thumb/e/ee/Peppa%27s_house_updated.webp/800px-Peppa%27s_house_updated.webp.png"
+        ],
+        "location": {"type": "https://cdn.britannica.com/06/276306-049-A8451874/world-map.jpg"},
+        "rating": [
+            { "name": "Cleanliness", "rating": 2 },
+            { "name": "Comfort", "rating": 5 },
+            { "name": "Spaciousness", "rating": 1 },
+            { "name": "Price", "rating": 1 }
+        ],
+        "createdAt": "2026-01-01T00:00:00Z"
+    }
+]

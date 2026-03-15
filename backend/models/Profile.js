@@ -1,40 +1,25 @@
 const mongoose = require('mongoose');
 
 const ProfileSchema = new mongoose.Schema({
-    // Username will be the PRIMARY KEY ID
     username: { type: String, required: true }, 
-    name: { type: String },
-    joinDate: { type: String }, // Change this to Date?
+    
+    name: {
+        firstName: { type: String },
+        lastName: { type: String }
+    },
+    saltedPassword: { type: String },
+    joinDate: { type: Date, default: Date.now },
+    picture: { type: String },
     bio: { type: String },
-    listingAdmin: { type: String },
-    profileImgSrc: { type: String },
-    schoolData: {
+    school: {
         name: { type: String },
         since: { type: String }
     },
-    dormData: {
+    dorm: {
         name: { type: String },
         since: { type: String }
     },
-    reviewData: {
-        since: { type: String }, //Also a date?
-        //Array of Review Objects (theres a chance this is redundant and will just fetch data from the reviews itself)
-        reviews: [
-        {
-            listing: 
-            {
-            id: { type: Number }, //Listing id
-            thumbnailSrc: { type: String },
-            },
-            content: 
-            {
-            title: { type: String },
-            description: { type: String },
-            },
-            rating: { type: Number }
-        }
-        ]
-    }
+    listingAdmin: { type: String }
 });
 
 module.exports = mongoose.model('Profile', ProfileSchema);

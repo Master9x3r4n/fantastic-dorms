@@ -1,27 +1,25 @@
 const mongoose = require('mongoose');
 
 const ListingSchema = new mongoose.Schema({
-    //Unique identifier
-    listingId: { type: Number, required: true }, 
-
-    //Listing information
+    listingId: { type: Number, required: true },
+    owner: { type: String, required: true },
+    
     name: { type: String },
     address: { type: String },
     description: { type: String },
-    owner: { type: String },
     amenities: [String],
     contacts: [
         {
-        name: { type: String }, //name of contact (i.e. facebook)
-        link: { type: String }, //link to contact (i.e. facebook link)
+            name: { type: String },
+            link: { type: String }
         }
     ],
-    mediaSrcs: [String],
-    locationSrc: { type: String },
+    media: [String],
+    location: { type: String },
     rating: [
         {
-        name: { type: String },
-        rating: { type: Number },
+            name: { type: String },
+            rating: { type: Number }
         }
     ],
     createdAt: { type: Date, default: Date.now }
