@@ -16,7 +16,7 @@ exports.create = (req, res) => {
 
     // Save Listings in the database
     listing
-        .save(listing)
+        .save()
         .then(data => {
         res.send(data);
         })
@@ -62,11 +62,11 @@ exports.findAllUsingDescription = (req, res) => {
         });
 };
 
-// Find a single Listings with a listingId
+// Find a single Listing with a listingId
 exports.findOne = (req, res) => {
     const listingId = req.params.listingId;
 
-    Listing.find(listingId)
+    Listing.findOne( {listingId: listingId} )
         .then(data => {
         if (!data)
             res.status(404).send({ message: "Not found Listings with listingId " + listingId });
@@ -88,8 +88,10 @@ exports.update = (req, res) => {
     }
 
     const listingId = req.params.listingId;
+    const fieldName = req.params.fieldName;
+    const newVal = req.params.newVal;
 
-    Listing.findAndUpdate(listingid, req.body, { useFindAndModify: false })
+    Listing.findAndUpdate( {listingId: listingId}, { fieldName: newval}, { useFindAndModify: false })
         .then(data => {
         if (!data) {
             res.status(404).send({
@@ -108,7 +110,7 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
     const listingId = req.params.listingId;
 
-    Listing.findAndRemove(listingId)
+    Listing.findOneAndDelete( {listingId: listingId} )
         .then(data => {
         if (!data) {
             res.status(404).send({
@@ -142,6 +144,35 @@ exports.deleteAll = (req, res) => {
         });
         });
 };
+
+// Update fields nested in Listing
+exports.updateNested = (req, res) =>{
+
+    const listingId = req.body.listingId;
+
+    // find listing in question 
+    const listing = Listing.findOne( {listingId: listingId} );
+
+    const path = req.body.path;
+    const newVal = req.body.newVal;
+
+    // update nested field
+    listing.set(path, newVal);
+
+    // save it to database
+    listing
+    .save()
+    .then(data => 
+                {
+                res.send(data);
+                })
+                .catch(err => {
+                res.status(500).send({
+                    message:
+                    err.message || "Some error occurred while updating the Listing."
+                });
+            });
+}
 
 // Find all published Listings
 exports.findAllPublished = (req, res) => {

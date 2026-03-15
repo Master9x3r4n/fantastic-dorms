@@ -20,7 +20,7 @@ exports.create = (req, res) => {
     }
 
     
-    const exists = Profile.findOne({username: username});
+    const exists = Profile.findOne( {username: username} );
 
         //checking if username valid
         if (exists)
@@ -41,7 +41,7 @@ exports.create = (req, res) => {
 
             // Save Profile in the database
             profile
-            .save(profile)
+            .save()
             .then(data => 
                 {
                 res.send(data);
@@ -61,7 +61,7 @@ exports.findAll = (req, res) => {
     const tempUsername = req.query.username;
     var condition = tempUsername ? { username: { $regex: new RegExp(tempUsername), $options: "i" } } : {};
 
-    Tutorial.find(condition)
+    Profile.find(condition)
         .then(data => {
         res.send(data);
         })
@@ -77,16 +77,16 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
     const username = req.params.username;
 
-    Tutorial.find(username)
+    Profile.findOne( {username: username} )
         .then(data => {
         if (!data)
-            res.status(404).send({ message: "Not found Tutorial with username:" + username });
+            res.status(404).send({ message: "Not found Profile with username:" + username });
         else res.send(data);
         })
         .catch(err => {
         res
             .status(500)
-            .send({ message: "Error retrieving Tutorial with username=" + username });
+            .send({ message: "Error retrieving Profile with username=" + username });
         });
 };
 
@@ -99,8 +99,10 @@ exports.update = (req, res) => {
     }
 
     const username = req.params.username;
+    const fieldName = req.params.fieldName;
+    const newVal = req.params.newVal;
 
-    Tutorial.findAndUpdate(username, req.body, { useFindAndModify: false })
+    Profile.findAndUpdate( {username: username} , {fieldName: newVal}, { useFindAndModify: false })
         .then(data => {
         if (!data) {
             res.status(404).send({
@@ -119,7 +121,7 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
     const username = req.params.username;
 
-    Tutorial.findAndRemove(username)
+    Profile.findOneAndDelete( {username: username} )
         .then(data => {
         if (!data) {
             res.status(404).send({
@@ -153,6 +155,35 @@ exports.deleteAll = (req, res) => {
         });
         });
 };
+
+// Update fields nested in Profile
+exports.updateNested = (req, res) =>{
+
+    const username = req.body.username;
+
+    // find profile in question 
+    const profile = Profile.findOne( {username: username} );
+
+    const path = req.body.path;
+    const newVal = req.body.newVal;
+
+    // update nested field
+    profile.set(path, newVal);
+
+    // save it to database
+    profile
+    .save()
+    .then(data => 
+                {
+                res.send(data);
+                })
+                .catch(err => {
+                res.status(500).send({
+                    message:
+                    err.message || "Some error occurred while updating the Profile."
+                });
+            });
+}
 
 // Find all published Profile
 exports.findAllBySomethingLater = (req, res) => {
