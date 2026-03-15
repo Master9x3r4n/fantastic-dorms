@@ -7,7 +7,7 @@ const ProfileSchema = new mongoose.Schema({
         firstName: { type: String },
         lastName: { type: String }
     },
-    salt: {type: String },
+    salt: { type: String },
     saltedPassword: { type: String },
     joinDate: { type: Date, default: Date.now },
     picture: { type: String },
