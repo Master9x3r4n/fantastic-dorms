@@ -1,6 +1,8 @@
+// reference:
+// https://www.bezkoder.com/node-express-mongodb-crud-rest-api/
+
 const Profile = require('./Profile'); 
 const { generateDigest, generateSalt } = require('../passwords');
-
 
 /*
     NOTE TO MIRO:

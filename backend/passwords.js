@@ -1,3 +1,5 @@
+import { sha384 } from 'js-sha3';
+
 function generateSalt() {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const charactersLength = characters.length;
@@ -8,9 +10,6 @@ function generateSalt() {
     }
     return result;
 }
-
-
-import { sha384 } from 'js-sha3';
 
 function generateDigest(input) {
     const hash = sha384(input);

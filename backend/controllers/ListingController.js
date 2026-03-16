@@ -1,3 +1,6 @@
+// reference:
+// https://www.bezkoder.com/node-express-mongodb-crud-rest-api/
+
 const Listing = require('./Listing'); 
 
 // Create and Save a new Listings
