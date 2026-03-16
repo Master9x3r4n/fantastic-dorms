@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const ReviewSchema = new mongoose.Schema({
-    reviewId: { type: Number, required: true },
+    _id: { type: Number, required: true },
     listingId: { type: Number, required: true },
     username: { type: String, required: true },
     
@@ -10,7 +10,12 @@ const ReviewSchema = new mongoose.Schema({
         description: { type: String },
         reply: { type: String }
     },
-    rating: { type: Number },
+    rating: [
+        {
+            name: { type: String },
+            value: { type: Number }
+        }
+    ],
     score: { type: Number },
     media: [String],     
     createdAt: { type: Date, default: Date.now }

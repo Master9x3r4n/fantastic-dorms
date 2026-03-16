@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const ListingSchema = new mongoose.Schema({
-    listingId: { type: Number, required: true },
+    _id: { type: Number, required: true },
     owner: { type: String, required: true },
     
     name: { type: String },
@@ -19,7 +19,7 @@ const ListingSchema = new mongoose.Schema({
     rating: [
         {
             name: { type: String },
-            rating: { type: Number }
+            value: { type: Number }
         }
     ],
     createdAt: { type: Date, default: Date.now }
