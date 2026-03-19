@@ -30,11 +30,11 @@ const props = defineProps({
 </script>
 
 <template>
-  <header class="sticky top-0 z-50 flex h-[76px] w-full items-center bg-white dark:bg-[#111111] px-4 py-3 shadow-md justify-between transition-colors duration-200">
+  <header class="sticky top-0 z-50 flex h-19 w-full items-center bg-white dark:bg-[#111111] px-4 py-3 shadow-md justify-between transition-colors duration-200">
     <Logo />
 
     <!-- Centered Search Bar-->
-    <div :class="[{'invisible': !props.search}, 'w-full flex justify-center']">
+    <div :class="[{'invisible': !props.search}, 'w-full flex justify-center mx-3']">
       <SearchBar />
     </div>
 
