@@ -17,11 +17,10 @@
     import SkeletonApCardLarge from '@/components/skeleton/SkeletonApCardLarge.vue';
     import SkeletonOverallRating from '@/components/skeleton/SkeletonOverallRating.vue';
     import SkeletonReviewCard from '@/components/skeleton/SkeletonReviewCard.vue';
-
+    import SkeletonFullReview from '@/components/skeleton/SkeletonFullReview.vue';
+    import Divider from '@/components/divider/Divider.vue';
 
     import {ref, computed} from 'vue'
-import SkeletonFullReview from '@/components/skeleton/SkeletonFullReview.vue';
-import Divider from '@/components/divider/Divider.vue';
     
     const items= [1, 2, 3, 4, 5]
 
@@ -60,6 +59,9 @@ import Divider from '@/components/divider/Divider.vue';
 
     <TestContainer dir ="col" class="gap-4">
         <TestLabel>Loading Components</TestLabel>
+        <SkeletonApCardSmall/>
+        <SkeletonApCardLarge/>
+        <SkeletonOverallRating/>
         <SkeletonReviewCard/>
 
         <div class="w-[75%] flex flex-col">
