@@ -18,6 +18,7 @@
 
     import {ref} from 'vue'
 import SkeletonApCardLarge from '@/components/skeleton/SkeletonApCardLarge.vue';
+import SkeletonOverallRating from '@/components/skeleton/SkeletonOverallRating.vue';
 
     const items= [1, 2, 3, 4, 5]
 
@@ -57,8 +58,8 @@ import SkeletonApCardLarge from '@/components/skeleton/SkeletonApCardLarge.vue';
         <TestLabel>Loading Components</TestLabel>
 
         <SkeletonApCardSmall/>
-
         <SkeletonApCardLarge/>
+        <SkeletonOverallRating/>
     </TestContainer>
 
     <!-- Search Bar -->
