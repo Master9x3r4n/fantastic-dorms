@@ -3,7 +3,7 @@
 
 <template>
     <footer class="h-55 w-full flex flex-col justify-center items-center gap-10
-    bg-[#EAEAEA] dark:bg-[#111111] dark:text-white">
+    bg-[#EAEAEA] dark:bg-[#111111] dark:text-white font-['Inter']">
         <!-- Pages -->
         <div class="w-[90%] flex">
             <div class="flex flex-col w-[51%] gap-0.5">
