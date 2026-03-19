@@ -1,6 +1,16 @@
 // reference:
 // https://www.bezkoder.com/node-express-mongodb-crud-rest-api/
 
+// Read the cloudinary environment variable
+require('dotenv').config();
+
+// Require the cloudinary library
+const cloudinary = require('cloudinary').v2;
+
+// configure cloudinary
+console.log(cloudinary.config().cloud_name);
+
+
 const Profile = require('../models/Profile.js'); 
 const { generateDigest, generateSalt } = require('../passwords.js');
 
@@ -38,20 +48,39 @@ exports.find = (req, res) => {
 exports.create = (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
+    const byteStr  = req.body.picture;
+    let cldnryJson;
 
     // Check if a Profile with the username exists already
     Profile.findOne({ username: username })
-        .then(data => {
+        .then( async data => {
             if (data)
                 res.status(409).send({ message: `Profile ${username} already exists.` });
             else {
+                // Check if image can be uploaded
+                try {
+                    cldnryJson = await cloudinary.uploader.
+                        upload(byteStr, {
+                            resource_type: "image",
+                            public_id: username,
+                            folder: 'profilePictures'
+                        })
+
+                } catch (error) {
+                    console.log(error);
+                    return  res.status(500).send({
+                        message: 'An error occured while uploading picture'
+                    });
+                }
+
                 // Create a Profile
                 const salt = generateSalt();
                 const digest = generateDigest(password + salt);
                 const profile = new Profile({
                     username: username,
                     salt: salt,
-                    saltedPassword: digest
+                    saltedPassword: digest,
+                    picture: cldnryJson.secure_url
                 })
 
                 // Save Profile in the database
@@ -70,7 +99,7 @@ exports.create = (req, res) => {
 };
     
 // Update a Profile by the username in the request
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
     if (!req.body) {
         return res.status(400).send({
             message: "Data to update can not be empty!"
@@ -80,20 +109,59 @@ exports.update = (req, res) => {
     const username = req.params.username;
     const fieldName = req.params.fieldName;
     const newVal = req.params.newVal;
+    const byteStr = req.body.picture;
+    let cldnryJson;
 
-    Profile.findAndUpdate( {username: username} , {fieldName: newVal}, { useFindAndModify: false })
-        .then(data => {
-        if (!data) {
-            res.status(404).send({
-            message: `Cannot update Profile with username=${username}. Maybe Profile was not found!`
+    if (fieldName === 'picture')
+    {
+        // Check if image can be uploaded
+        try {
+            cldnryJson = await cloudinary.uploader.
+                upload(byteStr, {
+                    resource_type: 'image',
+                    public_id: username,
+                    folder: 'profilePictures',
+                    overwrite: true
+                })
+
+        } catch (error) {
+            console.log(error);
+            return  res.status(500).send({
+                message: 'An error occured while uploading new picture'
             });
-        } else res.send({ message: "Profile was updated successfully." });
-        })
-        .catch(err => {
-        res.status(500).send({
-            message: "Error updating Profile with username=" + username
-        });
-        });
+        }
+
+        // Replace the profile's old url
+        Profile.findOneAndUpdate( {username: username} , {picture: cldnryJson.secure_url}, { useFindAndModify: false })
+            .then(data => {
+            if (!data) {
+                res.status(404).send({
+                message: `Cannot update Profile with username=${username}. Maybe Profile was not found!`
+                });
+            } else res.send({ message: "Profile was updated successfully." });
+            })
+            .catch(err => {
+            res.status(500).send({
+                message: "Error updating Profile with username=" + username
+            });
+            });
+    }
+    else
+    {
+        Profile.findOneAndUpdate( {username: username} , {[fieldName]: newVal}, { useFindAndModify: false })
+            .then(data => {
+            if (!data) {
+                res.status(404).send({
+                message: `Cannot update Profile with username=${username}. Maybe Profile was not found!`
+                });
+            } else res.send({ message: "Profile was updated successfully." });
+            })
+            .catch(err => {
+            res.status(500).send({
+                message: "Error updating Profile with username=" + username
+            });
+            });
+    }      
 };
 
 // Delete a Profile with the specified username in the request
@@ -107,6 +175,17 @@ exports.delete = (req, res) => {
             message: `Cannot delete Profile with username=${username}. Maybe Profile was not found!`
             });
         } else {
+            // Delete image from cloudinary
+            try {
+                cloudinary.uploader
+                    .destroy(username, {
+                        resource_type: 'image'
+                    })
+                    .then(result => console.log(result))
+            } catch (error) {
+                console.log(error);
+            }
+
             res.send({
             message: "Username was deleted successfully!"
             });
