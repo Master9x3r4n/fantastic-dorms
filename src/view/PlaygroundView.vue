@@ -17,6 +17,7 @@
     import PageButtons from "@/components/page-buttons/PageButtons.vue";
 
     import {ref} from 'vue'
+import SkeletonApCardLarge from '@/components/skeleton/SkeletonApCardLarge.vue';
 
     const items= [1, 2, 3, 4, 5]
 
@@ -52,10 +53,12 @@
         </div>
     </TestContainer>
 
-    <TestContainer dir ="col">
+    <TestContainer dir ="col" class="gap-4">
         <TestLabel>Loading Components</TestLabel>
 
         <SkeletonApCardSmall/>
+
+        <SkeletonApCardLarge/>
     </TestContainer>
 
     <!-- Search Bar -->
