@@ -1,59 +1,13 @@
 <script setup>
-  import { ref } from 'vue';
-  import { useRouter } from 'vue-router';
-  import Divider from "@/components/divider/Divider.vue";
-  import ProfileService from "../services/ProfileService";
-  import PasswordsUtils from "../../backend/passwords.js";
-  const router = useRouter();
+import { ref } from 'vue';
+import Divider from "@/components/divider/Divider.vue";
 
-  // Form-related stuff
-  // https://test-utils.vuejs.org/guide/essentials/forms
-  const processing = ref(false);
-  const invalid = ref(false);
-  const form = ref({
-    username: '',
-    password: ''
-  });
+// State for password visibility toggle
+const showPassword = ref(false);
 
-  const loginForm = ref(null);
-  const isFormValid = ref(false);
-  const checkFormValidity = () => {
-    isFormValid.value = loginForm.value?.checkValidity();
-  }
-
-  const login = () => {
-    processing.value = true;
-
-    ProfileService.get(form.value.username)
-      .then(res => {
-        const salt = res.data.salt
-        const hash = res.data.saltedPassword
-        const newHash = PasswordsUtils.generateDigest(form.value.password + salt);
-        // console.log(`salt: ${salt}`);
-        // console.log(`hash: ${hash}`);
-        // console.log(`newHash: ${newHash}`);
-        
-        if (newHash === hash) {
-          console.log("Yippeeee");
-          router.push('/');
-        } else {
-          console.log("Oooooops");
-          processing.value = false;
-          invalid.value = true
-        }
-      })
-      .catch(error => {
-        console.log(error);
-        processing.value = false;
-        invalid.value = true
-      })
-  }
-
-  // State for password visibility toggle
-  const showPassword = ref(false);
-  const togglePassword = () => {
-    showPassword.value = !showPassword.value;
-  };
+const togglePassword = () => {
+  showPassword.value = !showPassword.value;
+};
 </script>
 
 <template>
@@ -78,38 +32,24 @@
       <div class="max-w-md w-full">
 
         <!-- Header -->
-        <div class="mb-5 text-center lg:text-left">
-          <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-2 transition-colors">Log into your account</h2>
-          <!-- <p class="text-slate-500 dark:text-slate-400 transition-colors">We're glad to have you back!</p> -->
+        <div class="mb-10 text-center lg:text-left">
+          <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-2 transition-colors">Login</h2>
+          <p class="text-slate-500 dark:text-slate-400 transition-colors">We're glad to have you back!</p>
         </div>
 
         <!-- Form -->
-        <form ref="loginForm" action="#" class="space-y-6" method="POST" @submit.prevent="login" @input="checkFormValidity">
-          <!-- Errors -->
-          <div 
-            class="bg-red-200 border-l-5 border-red-500 p-3 rounded-r-lg"
-            v-if="invalid"
-          >
-            <div class="flex flex-row gap-2">
-              <span class="text-red-900 material-symbols-outlined text-xl select-none">error</span>
-              <!-- <svg class="h-12 w-12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={4} stroke="currentColor" className="size-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
-              </svg> -->
-              <p class="text-red-900">Invalid credentials</p>
-            </div>
-          </div>
-          
-          <!-- Username -->
+        <form action="#" class="space-y-6" method="POST" @submit.prevent>
+
+          <!-- Email -->
           <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1 transition-colors" for="username">Username</label>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1 transition-colors" for="email">Email Address</label>
             <input
                 class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1E1E1E] text-slate-900 dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
-                id="username"
-                name="username"
-                placeholder="really_good_username"
+                id="email"
+                name="email"
+                placeholder="you@university.edu"
                 required
-                type="text"
-                v-model="form.username"
+                type="email"
             />
           </div>
 
@@ -124,7 +64,6 @@
                   name="password"
                   placeholder="••••••••"
                   required
-                  v-model="form.password"
               />
               <button
                   @click="togglePassword"
@@ -136,34 +75,18 @@
                 </span>
               </button>
             </div>
-            <!-- <p class="mt-1.5 text-xs text-slate-400 dark:text-slate-500 transition-colors">Minimum 8 characters with at least one number.</p> -->
+            <p class="mt-1.5 text-xs text-slate-400 dark:text-slate-500 transition-colors">Minimum 8 characters with at least one number.</p>
           </div>
 
           <!-- Submit Button -->
-          <!-- <RouterLink to="/">
-            <button
-                class="w-full bg-[#355AFF] hover:bg-[#2b4bcc] text-white font-semibold py-3.5 px-4 rounded-lg shadow-lg shadow-[#355AFF]/20 transition-all transform active:scale-[0.99]"
-                type="submit"
-            >
-              Login
-            </button>
-          </RouterLink> -->
+          <RouterLink to="/">
           <button
-              :disabled="!isFormValid"
-              class="
-                w-full bg-[#355AFF] hover:bg-[#2b4bcc] text-white 
-                disabled:bg-gray-300 disabled:hover:bg-gray-200 disabled:dark:bg-gray-800 disabled:dark:hover:bg-gray-700 disabled:shadow-transparent
-                font-semibold py-3.5 px-4 rounded-lg shadow-lg shadow-[#355AFF]/20 transition-all transform active:scale-[0.99]
-              "
+              class="w-full bg-[#355AFF] hover:bg-[#2b4bcc] text-white font-semibold py-3.5 px-4 rounded-lg shadow-lg shadow-[#355AFF]/20 transition-all transform active:scale-[0.99]"
               type="submit"
           >
-            <div v-if="!processing">
-              Login
-            </div>
-            <div v-else>
-              Processing...
-            </div>
+            Login
           </button>
+          </RouterLink>
 
           <p class="text-center text-slate-600 dark:text-slate-400 text-sm transition-colors">
             Don't have an account?

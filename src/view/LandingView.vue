@@ -2,43 +2,43 @@
 import SearchBar from '@/components/header/SearchBar.vue';
 import LandingCategory from '@/components/landing/LandingCategory.vue';
 
-// const props = defineProps({
-//     searchResults: {
-//         type: Array,
-//         default: [
-//         {
-//             name: "Grand Apartment", 
-//             description: "A very grand, beautiful, and luxurious apartment that features multiple rooms and doors. A must stay for the holidays.",
-//             ratingData: {
-//                 rating: 4.5,
-//                 reviewCount: 124,
-//             },
-// 			routerLink: "/listing/1",
-//             imageSrc: "https://youre.outof.games/media/uploads/cb/da/cbda1bb4-ee0d-4c65-989f-05a24edd22cf/daily-bugle-featured-location.jpg"
-//         },
-//         {
-//             name: "The Baxter Suite",
-//             description: "Inspired by the heroes of the Fantastic Four, this beautiful deluxe suite features 4 bedrooms and a visit from Galactus. It's Fantastic.",
-//             ratingData: {
-//                 rating: 4,
-//                 reviewCount: 44, 
-//             },
-// 			routerLink: "/listing/2",
-//             imageSrc: "https://static0.cbrimages.com/wordpress/wp-content/uploads/2020/09/rsz-baxter-buildingv1.jpg"
-//         },
-//         {
-//             name: "Miro's House",
-//             description: "Freshly doxxed, Miro's house is a beautiful home that features Miro.",
-//             ratingData: {
-//                 rating: 3.5,
-//                 reviewCount: 67,
-//             },
-// 			routerLink: "/listing/3",
-//             imageSrc: "https://static.wikitide.net/peppafanonwiki/thumb/e/ee/Peppa%27s_house_updated.webp/800px-Peppa%27s_house_updated.webp.png"
-//         },
-//         ]
-//     }
-// })
+const props = defineProps({
+    searchResults: {
+        type: Array,
+        default: [
+        {
+            name: "Grand Apartment", 
+            description: "A very grand, beautiful, and luxurious apartment that features multiple rooms and doors. A must stay for the holidays.",
+            ratingData: {
+                rating: 4.5,
+                reviewCount: 124,
+            },
+			routerLink: "/listing/1",
+            imageSrc: "https://youre.outof.games/media/uploads/cb/da/cbda1bb4-ee0d-4c65-989f-05a24edd22cf/daily-bugle-featured-location.jpg"
+        },
+        {
+            name: "The Baxter Suite",
+            description: "Inspired by the heroes of the Fantastic Four, this beautiful deluxe suite features 4 bedrooms and a visit from Galactus. It's Fantastic.",
+            ratingData: {
+                rating: 4,
+                reviewCount: 44, 
+            },
+			routerLink: "/listing/2",
+            imageSrc: "https://static0.cbrimages.com/wordpress/wp-content/uploads/2020/09/rsz-baxter-buildingv1.jpg"
+        },
+        {
+            name: "Miro's House",
+            description: "Freshly doxxed, Miro's house is a beautiful home that features Miro.",
+            ratingData: {
+                rating: 3.5,
+                reviewCount: 67,
+            },
+			routerLink: "/listing/3",
+            imageSrc: "https://static.wikitide.net/peppafanonwiki/thumb/e/ee/Peppa%27s_house_updated.webp/800px-Peppa%27s_house_updated.webp.png"
+        },
+        ]
+    }
+})
 
 const universityFilters = [
 	"De La Salle University", "University of Santo Thomas",
@@ -48,6 +48,8 @@ const universityFilters = [
 const homeTypes = [
 	"Studio", "1 bedroom", "2 bedrooms", "Dormitory"
 ]
+
+
 
 </script>
 

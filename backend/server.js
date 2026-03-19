@@ -1,44 +1,23 @@
-// require('dotenv').config();
-// const express = require('express');
-// const mongoose = require('mongoose');
-// const cors = require('cors');
-// const app = express();
-// const PORT = process.env.PORT || 3000;
-
-import express from 'express';
-import mongoose from 'mongoose';
-import cors from 'cors';
-
-// import 'dotenv/config.js';
-// i want to kill whoever designed it this way
-import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors()); // Connects vue to server
-app.use(express.json()); // Allows server to read JSON
-
-// Database routers
-import ProfileRouter from './routers/ProfileRouter.js';
-app.use('/api/profiles', ProfileRouter);
+app.use(cors()); // connect vue to server
+app.use(express.json()); // allow server to read json
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log("MongoDB connected."))
-    .catch(err => console.log("Connection error:", err));
+  .then(() => console.log("MongoDB Connected!"))
+  .catch(err => console.log("Connection Error:", err));
 
+// A simple test route
 app.get('/', (req, res) => {
-    res.send('i want to cry');    
+  res.send('Fantastic Dorms Server is Online');
 });
 
-app.get('/api', (req, res) => {
-    res.send('i want to die');
-})
-
-app.listen(PORT, () => console.log(`[Server started on port ${PORT}]`));
+const PORT = 3000;
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

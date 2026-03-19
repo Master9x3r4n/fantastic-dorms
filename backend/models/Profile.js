@@ -1,26 +1,40 @@
-// const mongoose = require('mongoose');
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const ProfileSchema = new mongoose.Schema({
+    // Username will be the PRIMARY KEY ID
     username: { type: String, required: true }, 
-    name: {
-        firstName: { type: String, default: 'Firstname' },
-        lastName: { type: String, default: 'McLastname' }
+    name: { type: String },
+    joinDate: { type: String }, // Change this to Date?
+    bio: { type: String },
+    listingAdmin: { type: String },
+    profileImgSrc: { type: String },
+    schoolData: {
+        name: { type: String },
+        since: { type: String }
     },
-    salt: { type: String },
-    saltedPassword: { type: String },
-    joinDate: { type: Date, default: Date.now },
-    picture: { type: String, default: '' },
-    bio: { type: String, default: 'Goodbye cruel world' },
-    school: {
-        name: { type: String, default: '' },
-        since: { type: String, default: '' }
+    dormData: {
+        name: { type: String },
+        since: { type: String }
     },
-    dorm: {
-        name: { type: String, default: '' },
-        since: { type: String, default: '' }
+    reviewData: {
+        since: { type: String }, //Also a date?
+        //Array of Review Objects (theres a chance this is redundant and will just fetch data from the reviews itself)
+        reviews: [
+        {
+            listing: 
+            {
+            id: { type: Number }, //Listing id
+            thumbnailSrc: { type: String },
+            },
+            content: 
+            {
+            title: { type: String },
+            description: { type: String },
+            },
+            rating: { type: Number }
+        }
+        ]
     }
 });
 
-const model = mongoose.model('Profile', ProfileSchema);
-export default model;
+module.exports = mongoose.model('Profile', ProfileSchema);
