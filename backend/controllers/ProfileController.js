@@ -1,105 +1,82 @@
 // reference:
 // https://www.bezkoder.com/node-express-mongodb-crud-rest-api/
 
-const Profile = require('./Profile'); 
-const { generateDigest, generateSalt } = require('../passwords');
+const Profile = require('../models/Profile.js'); 
+const { generateDigest, generateSalt } = require('../passwords.js');
 
-/*
-    NOTE TO MIRO:
-        WHEN MAKING THE BODY OF THE REQUEST USED FOR THIS FUNCTION
-        INCLUDE 2 FIELDS, THE USERNAME USER INPUT AND PASSWORD INPUT
-*/
-// Create and Save a new Profile
-exports.create = (req, res) => {
-
-    const username = req.body.username;
-    const pwInput = req.body.pwInput;
-
-    // Validate request
-    if (!username) {
-        res.status(400).send({ message: "Username can not be empty!" });
-        return;
-    }
-
-    
-    const exists = Profile.findOne( {username: username} );
-
-        //checking if username valid
-        if (exists)
-        {
-            console.log('Username taken!');
-        }
-        else
-        {
-            console.log('Username available!');
-            salt = generateSalt();
-
-            // Create a Profile
-            const profile = new Profile({
-                username: username,
-                salt: salt,
-                saltedPassword: generateDigest(pwInput + salt)
-            })
-
-            // Save Profile in the database
-            profile
-            .save()
-            .then(data => 
-                {
-                res.send(data);
-                })
-                .catch(err => {
-                res.status(500).send({
-                    message:
-                    err.message || "Some error occurred while creating the Profile."
-                });
-            });
-        }
-    
-};
-
-// Retrieve all Profiles from the database.
+// Retrieves all profiles from the database
 exports.findAll = (req, res) => {
-    const tempUsername = req.query.username;
-    var condition = tempUsername ? { username: { $regex: new RegExp(tempUsername), $options: "i" } } : {};
-
-    Profile.find(condition)
+    Profile.find({})
         .then(data => {
-        res.send(data);
+            res.send(data);
         })
         .catch(err => {
-        res.status(500).send({
-            message:
-            err.message || "Some error occurred while retrieving profiles."
-        });
+            res.status(500).send({
+                message: err.message || "An error occurred while attempting to retrieve all profiles."
+            });
         });
 };
 
-// Find a single Profile with a specific username
-exports.findOne = (req, res) => {
+// Retrieve a single Profile with a specific username
+// Usernames act as a primary ID and cannot be repeated
+exports.find = (req, res) => {
     const username = req.params.username;
-
-    Profile.findOne( {username: username} )
+    
+    Profile.findOne({ username: username })
         .then(data => {
-        if (!data)
-            res.status(404).send({ message: "Not found Profile with username:" + username });
-        else res.send(data);
+            if (!data)
+                res.status(404).send({ message: `Profile \'${username}\' could not be found.` });
+            else
+                res.send(data);
         })
         .catch(err => {
-        res
-            .status(500)
-            .send({ message: "Error retrieving Profile with username=" + username });
+            res.status(500).send({ message: `An error occurred while retrieving profile \'${username}\'.` });
         });
 };
 
+// Create and save a new Profile
+exports.create = (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    // Check if a Profile with the username exists already
+    Profile.findOne({ username: username })
+        .then(data => {
+            if (data)
+                res.status(409).send({ message: `Profile ${username} already exists.` });
+            else {
+                // Create a Profile
+                const salt = generateSalt();
+                const digest = generateDigest(password + salt);
+                const profile = new Profile({
+                    username: username,
+                    salt: salt,
+                    saltedPassword: digest
+                })
+
+                // Save Profile in the database
+                profile.save()
+                    .then(data => 
+                        {
+                            res.send(data);
+                        })
+                    .catch(err => {
+                        res.status(500).send({
+                            message: `An error occurred while creating Profile ${username}.`
+                        });
+                    });
+            }
+        })
+};
+    
 // Update a Profile by the username in the request
 exports.update = (req, res) => {
     if (!req.body) {
         return res.status(400).send({
-        message: "Data to update can not be empty!"
+            message: "Data to update can not be empty!"
         });
     }
-
+    
     const username = req.params.username;
     const fieldName = req.params.fieldName;
     const newVal = req.params.newVal;

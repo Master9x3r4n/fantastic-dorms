@@ -1,6 +1,9 @@
-import { sha384 } from 'js-sha3';
+// import js_sha3 from 'js-sha3';
+// const sha3_384 = js_sha3.sha3_384;
+const js_sha3 = require('js-sha3');
+const sha3_384 = js_sha3.sha3_384;
 
-function generateSalt() {
+const generateSalt = () => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const charactersLength = characters.length;
     let result = '';
@@ -9,11 +12,12 @@ function generateSalt() {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
-}
+};
 
-function generateDigest(input) {
-    const hash = sha384(input);
+const generateDigest = (input) => {
+    const hash = sha3_384(input);
     return hash; 
 }
 
-console.log(generateSalt());
+// export default { generateSalt, generateDigest };
+module.exports = { generateSalt, generateDigest };

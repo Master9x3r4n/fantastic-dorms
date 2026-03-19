@@ -2,25 +2,23 @@ const mongoose = require('mongoose');
 
 const ProfileSchema = new mongoose.Schema({
     username: { type: String, required: true }, 
-    
     name: {
-        firstName: { type: String },
-        lastName: { type: String }
+        firstName: { type: String, default: 'Firstname' },
+        lastName: { type: String, default: 'McLastname' }
     },
     salt: { type: String },
     saltedPassword: { type: String },
     joinDate: { type: Date, default: Date.now },
-    picture: { type: String },
-    bio: { type: String },
+    picture: { type: String, default: '' },
+    bio: { type: String, default: 'Goodbye cruel world' },
     school: {
-        name: { type: String },
-        since: { type: String }
+        name: { type: String, default: '' },
+        since: { type: String, default: '' }
     },
     dorm: {
-        name: { type: String },
-        since: { type: String }
-    },
-    listingAdmin: { type: String }
+        name: { type: String, default: '' },
+        since: { type: String, default: '' }
+    }
 });
 
 module.exports = mongoose.model('Profile', ProfileSchema);

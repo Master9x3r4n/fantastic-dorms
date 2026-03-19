@@ -31,6 +31,18 @@ exports.create = (req, res) => {
         });
 };
 
+exports.findAll = (req, res) => {
+    Listing.find({})
+        .then(data => {
+            res.send(data);
+        })
+        .catch(error => {
+            res.status(500).send({
+                message: error.message || 'An error occurred while retrieving all listings.'
+            });
+        });
+}
+
 // Retrieve all Listings from the database.
 exports.findAllUsingName = (req, res) => {
     const name = req.query.name;

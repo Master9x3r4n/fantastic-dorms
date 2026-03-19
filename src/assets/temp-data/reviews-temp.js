@@ -1,3 +1,4 @@
+export const reviewsData = {};
 // export const reviewsData = {
 //     "1": [
 //         {

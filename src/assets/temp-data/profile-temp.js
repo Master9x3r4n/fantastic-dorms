@@ -1,3 +1,4 @@
+export const profileData = {};
 // export const profileData = {
 //     "casey_c": {
 // 	    "name": "Casey Cruz",

@@ -1,3 +1,4 @@
+export const listingData = {};
 // export const listingData = {
 //     "1": {
 //         "name": "Grand Apartment",
