@@ -1,8 +1,0 @@
-<!-- ONLY COPY PASTE THIS AS A REFERENCE -->
-<script setup>
-	/* JS BACKEND AND MODULE IMPORTING GOES IN HERE */
-</script>
-
-<template>
-  	<!-- HTML CONTENT + TAILWIND STYLING GOES IN HERE -->
-</template>
