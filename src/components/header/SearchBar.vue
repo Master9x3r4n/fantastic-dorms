@@ -13,7 +13,6 @@ const props = defineProps({
 
 const searchQuery = ref("");
 const inputRef = ref(null);
-inputRef.value = undefined;
 
 // Style Configuration
 const styles = {
