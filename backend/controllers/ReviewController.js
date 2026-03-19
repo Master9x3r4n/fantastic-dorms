@@ -4,6 +4,15 @@
 const models = require("../models");
 const Review = models.Review;
 
+// Read the cloudinary environment variable
+require('dotenv').config();
+
+// Require the cloudinary library
+const cloudinary = require('cloudinary').v2;
+
+// configure cloudinary
+console.log(cloudinary.config().cloud_name);
+
 exports.create = async (req, res) => {
     if (!req.body.content.title) {
         res.status(400).send({message: "Title cannot be empty."});
