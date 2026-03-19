@@ -124,7 +124,7 @@ const handlePasswordUpdate = () => {
 											 px-3 py-1.5 bg-white dark:bg-[#121422] shadow-sm"
 								@click="goBack"
 				>
-					<span class="material-symbols-outlined text-[16px] mr-1">arrow_back</span>
+					<span class="material-symbols-outlined text-[16px]! mr-1">arrow_back</span>
 					Back to previous page
 				</button>
 				<!-- Profile Settings Section -->
@@ -201,7 +201,7 @@ const handlePasswordUpdate = () => {
 								<div class="space-y-2">
 									<label class="text-sm font-semibold text-black dark:text-white">Current School</label>
 									<div class="relative">
-										<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 dark:text-slate-500 text-lg">school</span>
+										<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 dark:text-slate-500 text-lg!">school</span>
 										<input
 												v-model="formData.school"
 												type="text"
@@ -215,7 +215,7 @@ const handlePasswordUpdate = () => {
 								<div class="space-y-2">
 									<label class="text-sm font-semibold text-black dark:text-white">Current Home</label>
 									<div class="relative">
-										<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 dark:text-slate-500 text-lg">apartment</span>
+										<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 dark:text-slate-500 text-lg!">apartment</span>
 										<input
 												v-model="formData.home"
 												type="text"
