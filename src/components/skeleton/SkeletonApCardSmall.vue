@@ -28,6 +28,14 @@ const props = defineProps({
         <div class="w-full h-5/12 rounded-t-[25px] absolute left-0 right-0 top-0 
         bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
 
+        <!-- 
+        <div class=
+        "w-full h-5/12 rounded-t-[25px] 
+        absolute left-0 right-0 top-0
+        bg-gradient">
+            <img v-if="cardData.imageSrc" :src="cardData.imageSrc" class="w-full h-full rounded-t-[25px]">
+        </div> -->
+
         <!-- Frame -->
        <div class=" absolute top-[45%] w-[90%] h-[50%] ">
             <!-- Upper Container -->
@@ -35,17 +43,29 @@ const props = defineProps({
                 <!-- Apartment Name -->
                 <div class="h-10 w-3/4 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse"></div>
 
+                <!-- <div>
+                    <h1 class="font-bold text-[32px] leading-10 dark:text-white hover:underline">   
+                        <RouterLink :to="cardData.routerLink">{{ cardData.name }}</RouterLink>
+                    </h1>
+                </div> -->
+
                 <!-- Apartment Description -->
                 <div class="space-y-2">
                     <div class="h-5 w-full bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse my-2"></div>
                     <div class="h-5 w-4/5 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse"></div>
                 </div>
+
+                <!-- <div>
+                    <p class="italic font-normal text-[20px] leading-6 dark:text-white">
+                        {{ cardData.description }}
+                    </p>
+                </div> -->
             </div>
 
             <!-- Lower Review Container TODO: fix this -->
             <div class="h-[50%] flex justify-end items-end flex-col">
-                <div class="h-4 w-12 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse" />
-                <div class="h-5 w-24 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse" />
+                <div class="h-4 w-12 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse"></div>
+                <div class="h-5 w-24 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse"></div>
             </div>
        </div>
     </div>
