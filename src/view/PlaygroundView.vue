@@ -13,6 +13,7 @@
     import FilterButton from '@/components/page-buttons/FilterButton.vue';
     import ListingInformation from '@/components/listing-content/ListingInformation.vue';
     import DarkModeSlider from '@/components/darkmode/DarkModeSlider.vue';
+    import SkeletonApCardSmall from '@/components/skeleton/SkeletonApCardSmall.vue';
     import PageButtons from "@/components/page-buttons/PageButtons.vue";
 
     import {ref} from 'vue'
@@ -49,6 +50,12 @@
             <DarkModeButton />
             <DarkModeSlider />
         </div>
+    </TestContainer>
+
+    <TestContainer dir ="col">
+        <TestLabel>Loading Components</TestLabel>
+
+        <SkeletonApCardSmall/>
     </TestContainer>
 
     <!-- Search Bar -->
