@@ -24,7 +24,7 @@ import Skeleton from './Skeleton.vue';
             <!-- Upper Container -->
             <div class="flex flex-col justify-start text-right items-end gap-6 grow">
                 <!-- Apartment Name -->
-                <Skeleton class="h-8 w-3/4" />
+                <Skeleton class="h-10 w-3/4" />
                 <!-- <div>
                     <h1 class="font-bold text-[32px] leading-10 dark:text-white hover:underline">
                         <RouterLink :to="props.cardData.routerLink">{{ props.cardData.name }}</RouterLink>

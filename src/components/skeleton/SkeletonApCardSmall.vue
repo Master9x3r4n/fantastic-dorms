@@ -41,7 +41,7 @@ const props = defineProps({
             <!-- Upper Container -->
             <div class="h-[50%] flex flex-col justify-between">
                 <!-- Apartment Name -->
-                <Skeleton class="h-8 w-3/4" />
+                <Skeleton class="h-9 w-3/4 mb-1" />
 
                 <!-- <div>
                     <h1 class="font-bold text-[32px] leading-10 dark:text-white hover:underline">   
