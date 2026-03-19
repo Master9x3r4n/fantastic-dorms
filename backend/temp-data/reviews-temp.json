@@ -1,0 +1,116 @@
+[
+    {
+        "_id": 0,
+        "listingId": 0,
+        "username": "casey_c",
+        "content": {
+            "title": "Le Grand Apartment",
+            "description": "One of my favorite places ever. I am glad that i decided to visit this place.",
+            "reply": "Glad to hear that you were satisfied with our space! ^_^"
+        },
+        "rating": [
+            { "name": "Cleanliness", "rating": 4 },
+            { "name": "Comfort", "rating": 5 },
+            { "name": "Spaciousness", "rating": 4 },
+            { "name": "Price", "rating": 3 }
+        ],
+        "score": 67,
+        "media": [],
+        "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+        "_id": 1,
+        "listingId": 0,
+        "username": "jlee_99",
+        "content": {
+            "title": "My review",
+            "description": "Absolutely Grand! That is all I have to say for this wonderful place.",
+            "reply": ""
+        },
+        "rating": [
+            { "name": "Cleanliness", "rating": 4 },
+            { "name": "Comfort", "rating": 5 },
+            { "name": "Spaciousness", "rating": 5 },
+            { "name": "Price", "rating": 4 }
+        ],
+        "score": 52,
+        "media": [],
+        "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+        "_id": 2,
+        "listingId": 1,
+        "username": "casey_c",
+        "content": {
+            "title": "Fantastic For Us",
+            "description": "I have stayed at this apartment for a while, and let me say, it is as the name says. It's a really cool apartment and it has a lot of the amenities that a student would want from...",
+            "reply": "Glad to hear that you were satisfied with our space! ^_^"
+        },
+        "rating": [
+            { "name": "Cleanliness", "rating": 3 },
+            { "name": "Comfort", "rating": 5 },
+            { "name": "Spaciousness", "rating": 5 },
+            { "name": "Price", "rating": 4 }
+        ],
+        "score": 44,
+        "media": [],
+        "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+        "_id": 3,
+        "listingId": 1,
+        "username": "tmorgan_med",
+        "content": {
+            "title": "I Love it!",
+            "description": "Easy 4 stars 4 me. I even got to meet the Human Torch! Fantastic!",
+            "reply": "Happy to hear that!"
+        },
+        "rating": [
+            { "name": "Cleanliness", "rating": 5 },
+            { "name": "Comfort", "rating": 5 },
+            { "name": "Spaciousness", "rating": 4 },
+            { "name": "Price", "rating": 4 }
+        ],
+        "score": 44,
+        "media": [],
+        "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+        "_id": 4,
+        "listingId": 2,
+        "username": "jlee_99",
+        "content": {
+            "title": "Cool ig",
+            "description": "Honestly, not too bad, but just very mid. I didn't even get to see Miro. Fuck.",
+            "reply": ""
+        },
+        "rating": [
+            { "name": "Cleanliness", "rating": 2 },
+            { "name": "Comfort", "rating": 3 },
+            { "name": "Spaciousness", "rating": 2 },
+            { "name": "Price", "rating": 2 }
+        ],
+        "score": 7,
+        "media": [],
+        "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+        "_id": 5,
+        "listingId": 2,
+        "username": "casey_c",
+        "content": {
+            "title": "Very very meh",
+            "description": "Miro wasn't even there and the apartment doesn't match what was advertised. It is driving me insane.",
+            "reply": ""
+        },
+        "rating": [
+            { "name": "Cleanliness", "rating": 1 },
+            { "name": "Comfort", "rating": 1 },
+            { "name": "Spaciousness", "rating": 1 },
+            { "name": "Price", "rating": 5 }
+        ],
+        "score": 5,
+        "media": [],
+        "createdAt": "2026-01-01T00:00:00Z"
+    }
+]

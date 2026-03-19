@@ -1,18 +1,84 @@
 <script setup>
-import { ref } from 'vue';
-import Divider from "@/components/divider/Divider.vue";
+  import { ref, computed } from 'vue';
+  import { useRouter } from 'vue-router';
+  import Divider from "@/components/divider/Divider.vue";
+  import ProfileService from "../services/ProfileService";
+  const router = useRouter();
 
-// State for password visibility toggle
-const showPassword = ref(false);
+  /*
+    just so you all know, i have never written js code until now.
+    believe it. there isn't another excuse. okay thank you.
+  */
 
-const togglePassword = () => {
-  showPassword.value = !showPassword.value;
-};
+  const inputs = ref({
+    fields: { username: "", password: "", confirm: "" },
+    valids: { username: false, password: false, confirm: false, terms: false }
+  });
+
+  const isEmpty = (input) => { return input === "" || input === false; }
+  const areFieldsValid = computed(() => { console.log(inputs); return Object.values(inputs.value?.valids).every(value => {return value === true}); });
+  
+  const isValidUsername = (input) => {
+    if (isEmpty(input)) {
+      return !(inputs.value.valids['username'] = false);
+    }
+
+    let reg = /^[\w]{8,32}$/;
+    return inputs.value.valids['username'] = reg.test(input);
+  };
+
+  const isValidPassword = (input) => {
+    if (isEmpty(input)) {
+      return !(inputs.value.valids['password'] = false);
+    }
+
+    // lmao
+    // https://stackoverflow.com/questions/12090077/javascript-regular-expression-password-validation-having-special-characters
+    let reg = /^(?=.*[0-9])(?=.*[!@#$%^&*_])[\w!@#$%^&*]{8,32}$/;
+    return inputs.value.valids['password'] = reg.test(input);
+  };
+
+  const isValidConfirm = (input) => {
+    if (isEmpty(input)) {
+      return !(inputs.value.valids['confirm'] = false);
+    }
+    return inputs.value.valids['confirm'] = (inputs.value.fields['password'] === input);
+  };
+
+  const showPassword = ref(false);
+  const togglePassword = () => {
+    showPassword.value = !showPassword.value;
+  };
+
+  const processing = ref(false);
+  const register = () => {
+    processing.value = true;
+    
+    // Attempt to create account
+    
+    const data = { 
+      username: inputs.value.fields.username,
+      password: inputs.value.fields.password,
+    }
+
+    ProfileService.create(data)
+      .then(res => {
+        console.log("THANK FUCK. THANK FUCKING GOD. GODDDDDD FUCKKKKKK");
+        router.push('/')
+      })
+      .catch(error => {
+        console.log(error.message);
+        processing.value = false;
+      });
+  }
+
+  const test = () => {
+    console.log("Kill everyone on this planet");
+  }
 </script>
 
 <template>
   <div class="flex min-h-screen bg-white dark:bg-[#111111] transition-colors duration-200 font-['Inter']">
-
     <!-- Left Side -->
     <div class="hidden lg:flex lg:w-1/2 bg-gradient p-12 flex-col justify-center text-white relative overflow-hidden">
       <div class="relative z-10 max-w-xl">
@@ -28,42 +94,47 @@ const togglePassword = () => {
     </div>
 
     <!-- Right Side: Form -->
-    <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white dark:bg-[#111111] transition-colors duration-200">
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-transparent transition-colors duration-200">
       <div class="max-w-md w-full">
-
         <!-- Header -->
-        <div class="mb-10 text-center lg:text-left">
+        <div class="mb-5 text-center lg:text-left">
           <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-2 transition-colors">Create an account</h2>
-          <p class="text-slate-500 dark:text-slate-400 transition-colors">Start your journey to the perfect student home today.</p>
+          <!-- <p class="text-slate-500 dark:text-slate-400 transition-colors">Fantastic homes are waiting for you!!!</p> -->
         </div>
 
         <!-- Form -->
         <form action="#" class="space-y-6" method="POST" @submit.prevent>
-
-          <!-- Email -->
+          <!-- Username -->
           <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1 transition-colors" for="email">Email Address</label>
+            <label class="block text-base font-medium text-slate-900 dark:text-slate-300 mb-1 transition-colors" for="username">Username</label>
             <input
-                class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1E1E1E] text-slate-900 dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
-                id="email"
-                name="email"
-                placeholder="you@university.edu"
-                required
-                type="email"
+              class="w-full px-4 py-3 rounded-lg border-2 text-slate-900 dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500 pr-10"
+              :class="isValidUsername(inputs.fields?.username) ? 'border-slate-300 dark:border-slate-700 bg-transparent' : 'border-red-400 bg-red-100 dark:bg-red-600/10'"
+              id="username"
+              name="username"
+              placeholder="really_good_username"
+              required
+              type="text"
+              maxlength="32"
+              v-model="inputs.fields.username"
             />
+            <p class="mt-1.5 text-sm text-slate-900 dark:text-white transition-colors">Minimum of 8 characters, with only alphanumeric characters and underscores.</p>
           </div>
 
           <!-- Password -->
           <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1 transition-colors" for="password">Password</label>
+            <label class="block text-base font-medium text-slate-700 dark:text-slate-300 mb-1 transition-colors" for="password">Password</label>
             <div class="relative">
               <input
-                  :type="showPassword ? 'text' : 'password'"
-                  class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1E1E1E] text-slate-900 dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500 pr-10"
-                  id="password"
-                  name="password"
-                  placeholder="••••••••"
-                  required
+                class="w-full px-4 py-3 rounded-lg border-2 text-slate-900 dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500 pr-10"
+                :class="isValidPassword(inputs.fields?.password) ? 'border-slate-200 dark:border-slate-700 bg-transparent' : 'border-red-400 bg-red-100 dark:bg-red-600/10'"
+                id="password"
+                name="password"
+                placeholder="••••••••"
+                required
+                :type="showPassword ? 'text' : 'password'"
+                maxlength="32"
+                v-model="inputs.fields.password"
               />
               <button
                   @click="togglePassword"
@@ -75,33 +146,50 @@ const togglePassword = () => {
                 </span>
               </button>
             </div>
-            <p class="mt-1.5 text-xs text-slate-400 dark:text-slate-500 transition-colors">Minimum 8 characters with at least one number.</p>
+            <p class="mt-1.5 text-sm text-slate-900 dark:text-white transition-colors">Minimum of 8 characters, with at least one number and one symbol.</p>
           </div>
 
-          <!-- Bio / Textarea -->
+          <!-- Password Confirmation -->
           <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1 transition-colors" for="bio">Tell me about yourself</label>
-            <textarea
-                class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1E1E1E] text-slate-900 dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all resize-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
-                id="bio"
-                name="bio"
-                placeholder="What are you looking for? e.g., 'Sophomore at university looking for a shared room...'"
-                rows="4"
-            ></textarea>
+            <label class="block text-base font-medium text-slate-700 dark:text-slate-300 mb-1 transition-colors" for="password">Confirm password</label>
+            <div class="relative">
+              <input
+                class="w-full px-4 py-3 rounded-lg border-2 text-slate-900 dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500 pr-10"
+                :class="isValidConfirm(inputs.fields?.confirm) ? 'border-slate-200 dark:border-slate-700 bg-transparent' : 'border-red-400 bg-red-100 dark:bg-red-600/10'"
+                id="password"
+                name="password"
+                placeholder="••••••••"
+                required
+                :type="showPassword ? 'text' : 'password'"
+                maxlength="32"
+                v-model="inputs.fields.confirm"
+              />
+              <button
+                  @click="togglePassword"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 focus:outline-none"
+                  type="button"
+              >
+                <span class="material-symbols-outlined text-xl select-none">
+                  {{ showPassword ? 'visibility' : 'visibility_off' }}
+                </span>
+              </button>
+            </div>
+            <!-- <p class="mt-1.5 text-xs text-slate-400 dark:text-slate-500 transition-colors">Minimum 8 characters with at least one number.</p> -->
           </div>
 
           <!-- Terms Checkbox -->
           <div class="flex items-start">
             <div class="flex items-center h-5">
               <input
-                  class="h-4 w-4 text-[#355AFF] focus:ring-[#355AFF] border-slate-300 dark:border-slate-600 dark:bg-[#1E1E1E] rounded transition-all cursor-pointer accent-[#355AFF]"
-                  id="terms"
-                  name="terms"
-                  required
-                  type="checkbox"
+                class="h-4 w-4 text-[#355AFF] focus:ring-[#355AFF] border-slate-300 dark:border-slate-600 dark:bg-[#1E1E1E] rounded transition-all cursor-pointer accent-[#355AFF]"
+                id="terms"
+                name="terms"
+                required
+                type="checkbox"
+                v-model="inputs.valids.terms"
               />
             </div>
-            <div class="ml-3 text-sm">
+            <div class="ml-3 text-base">
               <label class="text-slate-600 dark:text-slate-400 cursor-pointer transition-colors" for="terms">
                 I agree to the <a class="text-[#355AFF] hover:underline font-medium" href="#">Terms of Service</a> and <a class="text-[#355AFF] hover:underline font-medium" href="#">Privacy Policy</a>.
               </label>
@@ -110,17 +198,25 @@ const togglePassword = () => {
 
           <!-- Submit Button -->
           <button
-              class="w-full bg-[#355AFF] hover:bg-[#2b4bcc] text-white font-semibold py-3.5 px-4 rounded-lg shadow-lg shadow-[#355AFF]/20 transition-all transform active:scale-[0.99]"
-              type="submit"
+            @click="register"
+            class="w-full font-semibold py-3.5 px-4 rounded-lg transition-all transform active:scale-[0.99]"
+            :class="areFieldsValid ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-[#355AFF]/20' : 'bg-gray-300 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-white'"
+            type="button"
+            :disabled="!areFieldsValid || processing"
           >
-            Register
+            <div v-if="processing">
+              Processing...
+            </div>
+            <div v-else>
+              Create account
+            </div>
           </button>
 
           <!-- Login Link -->
           <p class="text-center text-slate-600 dark:text-slate-400 text-sm transition-colors">
             Already have an account?
             <RouterLink to="/login">
-            <a class="text-[#355AFF] hover:underline font-semibold" href="#">Login</a>
+              <a class="text-[#355AFF] hover:underline font-semibold" href="#">Login</a>
             </RouterLink>
           </p>
         </form>
@@ -137,7 +233,6 @@ const togglePassword = () => {
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0');
-
 
 .bg-gradient {
   background: linear-gradient(-90deg, rgba(0, 0, 0, 0) 0%, #355AFF 27.7%);

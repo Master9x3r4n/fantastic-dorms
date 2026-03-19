@@ -1,21 +1,27 @@
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const ReviewSchema = new mongoose.Schema({
-    //Not exactly sure how review IDs are linked but they will all contain their listing ID they belong to.
-    listingId: { type: Number }, 
+    _id: { type: Number, required: true },
+    listingId: { type: Number, required: true },
+    username: { type: String, required: true },
     
-    username: { type: String },
     content: {
         title: { type: String },
-        description: { type: String }, //the actual review
-        reply: { type: String }, //owner reply
+        description: { type: String },
+        reply: { type: String }
     },
-    
-    rating: { type: Number }, //rating of review
-    score: { type: Number }, //score receive by review
-    mediaSrcs: [String],     
-    
+    rating: [
+        {
+            name: { type: String },
+            value: { type: Number }
+        }
+    ],
+    score: { type: Number },
+    media: [String],     
     createdAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model("Review", ReviewSchema);
+// module.exports = mongoose.model("Review", ReviewSchema);
+const model = mongoose.model('Review', ProfileSchema);
+export default model;
