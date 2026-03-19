@@ -16,11 +16,12 @@
     import SkeletonApCardSmall from '@/components/skeleton/SkeletonApCardSmall.vue';
     import SkeletonApCardLarge from '@/components/skeleton/SkeletonApCardLarge.vue';
     import SkeletonOverallRating from '@/components/skeleton/SkeletonOverallRating.vue';
-    import { reviewsData } from "@/assets/temp-data/reviews-temp";
+    import SkeletonReviewCard from '@/components/skeleton/SkeletonReviewCard.vue';
+
 
     import {ref, computed} from 'vue'
+import SkeletonFullReview from '@/components/skeleton/SkeletonFullReview.vue';
 import Divider from '@/components/divider/Divider.vue';
-import SkeletonReviewCard from '@/components/review-cards/SkeletonReviewCard.vue';
     
     const items= [1, 2, 3, 4, 5]
 
@@ -45,8 +46,6 @@ import SkeletonReviewCard from '@/components/review-cards/SkeletonReviewCard.vue
 
     const selectedItems = ref([])
 
-    const reviews = computed(() => reviewsData["1"]);
-    const i = reviews.value[1];
 </script>
 
 <template>
@@ -62,6 +61,10 @@ import SkeletonReviewCard from '@/components/review-cards/SkeletonReviewCard.vue
     <TestContainer dir ="col" class="gap-4">
         <TestLabel>Loading Components</TestLabel>
         <SkeletonReviewCard/>
+
+        <div class="w-[75%] flex flex-col">
+            <SkeletonFullReview/>
+        </div>
     </TestContainer>
 
     <!-- Search Bar -->
