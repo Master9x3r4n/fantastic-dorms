@@ -1,11 +1,9 @@
 import axios from "axios";
 
-// fuck my life
-
-// require('dotenv').config();
-// console.log(`${process.env.PORT}`);
+const port = import.meta.env.VITE_PORT;
+console.log(`PORT FROM http.js: ${port}`);
 const api = axios.create({
-    baseURL: `http://localhost:${3000}/api`,
+    baseURL: `http://localhost:${port}/api`,
     headers: {
         "Content-type": "application/json"
     }

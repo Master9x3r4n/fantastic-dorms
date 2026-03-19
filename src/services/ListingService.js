@@ -1,7 +1,7 @@
 // reference:
 // https://www.bezkoder.com/node-express-mongodb-crud-rest-api/
 
-import http from "../http";
+import http from "../http.js";
 
 class ListingService {
     getAll() {

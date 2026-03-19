@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const ReviewSchema = new mongoose.Schema({
     _id: { type: Number, required: true },
@@ -21,4 +22,6 @@ const ReviewSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model("Review", ReviewSchema);
+// module.exports = mongoose.model("Review", ReviewSchema);
+const model = mongoose.model('Review', ProfileSchema);
+export default model;

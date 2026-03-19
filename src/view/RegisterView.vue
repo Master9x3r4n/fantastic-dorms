@@ -2,7 +2,7 @@
   import { ref, computed } from 'vue';
   import { useRouter } from 'vue-router';
   import Divider from "@/components/divider/Divider.vue";
-  import ProfileService from "../../backend/services/ProfileService";
+  import ProfileService from "../services/ProfileService";
   const router = useRouter();
 
   /*

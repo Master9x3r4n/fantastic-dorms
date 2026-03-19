@@ -10,11 +10,12 @@
 // https://www.bezkoder.com/node-express-mongodb-crud-rest-api/
 // https://dev.to/kjdowns/building-a-basic-api-using-express-node-and-mongodb-160f
 
-const router = require('express').Router();
-let controller = require('../controllers/ProfileController.js');
+import express from 'express';
+import ProfileController from '../controllers/ProfileController.js';
+const router = express.Router();
 
-router.get('/', controller.findAll);
-router.get('/:username', controller.find);
-router.post('/', controller.create);
+router.get('/', ProfileController.findAll);
+router.get('/:username', ProfileController.find);
+router.post('/', ProfileController.create);
 
-module.exports = router;
+export default router;

@@ -1,8 +1,22 @@
-require('dotenv').config();
+// require('dotenv').config();
+// const express = require('express');
+// const mongoose = require('mongoose');
+// const cors = require('cors');
+// const app = express();
+// const PORT = process.env.PORT || 3000;
 
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+
+// import 'dotenv/config.js';
+// i want to kill whoever designed it this way
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -11,7 +25,8 @@ app.use(cors()); // Connects vue to server
 app.use(express.json()); // Allows server to read JSON
 
 // Database routers
-app.use('/api/profiles', require('./routers/ProfileRouter.js'))
+import ProfileRouter from './routers/ProfileRouter.js';
+app.use('/api/profiles', ProfileRouter);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)

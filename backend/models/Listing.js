@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const ListingSchema = new mongoose.Schema({
     _id: { type: Number, required: true },
@@ -25,4 +26,6 @@ const ListingSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Listing', ListingSchema);
+// module.exports = mongoose.model('Listing', ListingSchema);
+const model = mongoose.model('Listing', ProfileSchema);
+export default model;
