@@ -1,6 +1,7 @@
 <script setup>
 import SearchBar from '@/components/header/SearchBar.vue';
 import LandingCategory from '@/components/landing/LandingCategory.vue';
+// import LandingCategory from '@/components/landing/LandingCategory.vue';
 
 // const props = defineProps({
 //     searchResults: {

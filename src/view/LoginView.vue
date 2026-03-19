@@ -24,23 +24,12 @@
   const login = () => {
     processing.value = true;
 
-    ProfileService.get(form.value.username)
+    ProfileService.login({ 
+      username: form.value.username, password: form.value.password 
+    })
       .then(res => {
-        const salt = res.data.salt
-        const hash = res.data.saltedPassword
-        const newHash = PasswordsUtils.generateDigest(form.value.password + salt);
-        // console.log(`salt: ${salt}`);
-        // console.log(`hash: ${hash}`);
-        // console.log(`newHash: ${newHash}`);
-        
-        if (newHash === hash) {
-          console.log("Yippeeee");
-          router.push('/');
-        } else {
-          console.log("Oooooops");
-          processing.value = false;
-          invalid.value = true
-        }
+        console.log('Yippeeeeeeee');
+        router.push('/');
       })
       .catch(error => {
         console.log(error);
@@ -87,7 +76,7 @@
         <form ref="loginForm" action="#" class="space-y-6" method="POST" @submit.prevent="login" @input="checkFormValidity">
           <!-- Errors -->
           <div 
-            class="bg-red-200 border-l-5 border-red-500 p-3 rounded-r-lg"
+            class="bg-red-200 dark:bg-red-300 border-l-5 border-red-500 dark:border-red-900 p-3 rounded-r-lg"
             v-if="invalid"
           >
             <div class="flex flex-row gap-2">

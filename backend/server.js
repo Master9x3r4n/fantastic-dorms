@@ -25,8 +25,10 @@ app.use(cors()); // Connects vue to server
 app.use(express.json()); // Allows server to read JSON
 
 // Database routers
+import AuthRouter from './routers/AuthRouter.js';
 import ProfileRouter from './routers/ProfileRouter.js';
-app.use('/api/profiles', ProfileRouter);
+app.use('/api/auth/', AuthRouter);
+app.use('/api/p/', ProfileRouter);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)

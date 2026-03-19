@@ -162,11 +162,32 @@ class ProfileController {
                     err.message || "Some error occurred while updating the Profile."
                 });
             });
-    }
+    };
 
     // Find all published Profile
     findAllBySomethingLater(req, res) {
         
+    };
+
+    login(req, res) {
+        const username = req.body.username;
+        const password = req.body.password;
+
+        Profile.findOne({ username: username })
+            .then(data => {
+                const salt = data.salt
+                const hash = data.saltedPassword
+                const newHash = PasswordsUtils.generateDigest(password + salt);
+
+                if (hash === newHash) {
+                    res.status(200).send({ message: 'OK' });
+                } else {
+                    res.status(401).send({ message: 'Unauthorized' });
+                }
+            })
+            .catch(error => {
+                res.status(500).send({ message: error })
+            })
     };
 }
 
