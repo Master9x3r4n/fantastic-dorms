@@ -10,11 +10,18 @@ const props = defineProps({
     type: String,
     default: "User profile"
   },
-
   sizeClass: {
     type: String,
     default: "w-9 h-9",
   },
+	isAnonymous: {
+		type: Boolean,
+		default: false
+	},
+	iconSize: {
+		type: String,
+		default: ""
+	}
 })
 
 const imageLoadError = ref(false)
@@ -32,12 +39,13 @@ watch(() => props.src, () => {
     ]"
   >
     <img
-        v-if="props.src && !imageLoadError"
+        v-if="props.src && !imageLoadError && !isAnonymous"
         :src="props.src"
         :alt="props.alt"
         class="w-full h-full object-cover"
         @error="imageLoadError = true"
     />
+		<span v-else-if="isAnonymous" class="material-symbols-outlined text-slate-400 text-sm!" :class="iconSize">person_off</span>
 
     <div v-else class="w-full h-full flex items-center justify-center">
       <svg
