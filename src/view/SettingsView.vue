@@ -140,7 +140,7 @@ const handlePasswordUpdate = () => {
 						<!-- Profile Picture Section -->
 						<div class="flex flex-col sm:flex-row items-center gap-6 pb-8">
 							<div class="relative group">
-								<ProfileIcon :src="formData.profileImg" alt="Profile Picture" size-class="w-24 h-24" />
+								<ProfileIcon :src="formData.profileImg" alt="Profile Picture" sizeClass="w-24 h-24" />
 							</div>
 							<div class="text-center sm:text-left">
 								<h3 class="font-bold text-black dark:text-white text-lg">Your Profile Picture</h3>
