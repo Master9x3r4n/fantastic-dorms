@@ -40,7 +40,7 @@ const profile = computed(() => profileData[props.reviewData.username]);
             <RouterLink :to="{name: 'profile', params: {id: reviewData.username}}">
             <div class="flex gap-3 items-center">
                 <!-- Profile -->
-								<ProfileIcon :src="profile.profileImgSrc" size-class="w-13 h-13"></ProfileIcon>
+				<ProfileIcon :src="profile.profileImgSrc" size-class="w-13 h-13"></ProfileIcon>
                 
                 <!-- Name -->
                 <div>

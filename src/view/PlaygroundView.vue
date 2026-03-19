@@ -14,12 +14,14 @@
     import ListingInformation from '@/components/listing-content/ListingInformation.vue';
     import DarkModeSlider from '@/components/darkmode/DarkModeSlider.vue';
     import SkeletonApCardSmall from '@/components/skeleton/SkeletonApCardSmall.vue';
-    import PageButtons from "@/components/page-buttons/PageButtons.vue";
+    import SkeletonApCardLarge from '@/components/skeleton/SkeletonApCardLarge.vue';
+    import SkeletonOverallRating from '@/components/skeleton/SkeletonOverallRating.vue';
+    import { reviewsData } from "@/assets/temp-data/reviews-temp";
 
-    import {ref} from 'vue'
-import SkeletonApCardLarge from '@/components/skeleton/SkeletonApCardLarge.vue';
-import SkeletonOverallRating from '@/components/skeleton/SkeletonOverallRating.vue';
-
+    import {ref, computed} from 'vue'
+import Divider from '@/components/divider/Divider.vue';
+import SkeletonReviewCard from '@/components/review-cards/SkeletonReviewCard.vue';
+    
     const items= [1, 2, 3, 4, 5]
 
     const ratings = [
@@ -42,6 +44,9 @@ import SkeletonOverallRating from '@/components/skeleton/SkeletonOverallRating.v
     ]
 
     const selectedItems = ref([])
+
+    const reviews = computed(() => reviewsData["1"]);
+    const i = reviews.value[1];
 </script>
 
 <template>
@@ -56,10 +61,7 @@ import SkeletonOverallRating from '@/components/skeleton/SkeletonOverallRating.v
 
     <TestContainer dir ="col" class="gap-4">
         <TestLabel>Loading Components</TestLabel>
-
-        <SkeletonApCardSmall/>
-        <SkeletonApCardLarge/>
-        <SkeletonOverallRating/>
+        <SkeletonReviewCard/>
     </TestContainer>
 
     <!-- Search Bar -->
