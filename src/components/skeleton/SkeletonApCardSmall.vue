@@ -1,5 +1,4 @@
 <script setup>
-import CardRating from '@/components/rating/CardRating.vue';  
 import Skeleton from './Skeleton.vue';
 
 const props = defineProps({
