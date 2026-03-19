@@ -1,8 +1,10 @@
 <script setup>
   import { ref } from 'vue';
+  import { useRouter } from 'vue-router';
   import Divider from "@/components/divider/Divider.vue";
   import ProfileService from "../services/ProfileService";
   import PasswordsUtils from "../../backend/passwords.js";
+  const router = useRouter();
 
   // Form-related stuff
   // https://test-utils.vuejs.org/guide/essentials/forms
@@ -25,8 +27,12 @@
     ProfileService.get(form.value.username)
       .then(res => {
         const salt = res.data.salt
-        const hash = res.data.password
+        const hash = res.data.saltedPassword
         const newHash = PasswordsUtils.generateDigest(form.value.password + salt);
+        // console.log(`salt: ${salt}`);
+        // console.log(`hash: ${hash}`);
+        // console.log(`newHash: ${newHash}`);
+        
         if (newHash === hash) {
           console.log("Yippeeee");
           router.push('/');
