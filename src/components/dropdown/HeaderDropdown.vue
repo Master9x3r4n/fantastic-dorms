@@ -34,7 +34,7 @@ const props = defineProps({
 					<ProfileIcon
 							:src="profileImg"
 							:alt="profileAlt"
-							size-class="w-[58px] h-[58px]"
+							sizeClass="w-[58px] h-[58px]"
 					/>
 					<div class="flex flex-col justify-center items-start w-39.5 h-12 grow">
                 <span class="text-[#676767] dark:text-gray-400 text-[16px] leading-4.75">
