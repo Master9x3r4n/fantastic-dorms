@@ -30,7 +30,7 @@ const PORT = process.env.PORT || 3000;
 // }));
 app.use(cors());
 app.use(express.json()); // Allows server to read JSON
-cloudinary.config()
+cloudinary.config(process.env.CLOUDINARY_URL)
 
 // Database routers
 import AuthRouter from './routers/AuthRouter.js';

@@ -45,7 +45,7 @@ class ProfileController {
         const username = req.body.username;
         const password = req.body.password;
         const byteStr  = req.body.picture;
-        let cldnryJson;
+        // let cldnryJson;
 
         // Check if a Profile with the username exists already
         Profile.findOne({ username: username })
@@ -54,20 +54,20 @@ class ProfileController {
                     res.status(409).send({ message: `Profile ${username} already exists.` });
                 else {
                     // Check if image can be uploaded
-                    try {
-                        cldnryJson = await cloudinary.uploader.
-                            upload(byteStr, {
-                                resource_type: "image",
-                                public_id: username,
-                                folder: 'profilePictures'
-                            })
+                    // try {
+                    //     cldnryJson = await cloudinary.uploader.
+                    //         upload(byteStr, {
+                    //             resource_type: "image",
+                    //             public_id: username,
+                    //             folder: 'profilePictures'
+                    //         })
 
-                    } catch (error) {
-                        console.log(error);
-                        return  res.status(500).send({
-                            message: 'An error occured while uploading picture'
-                        });
-                    }
+                    // } catch (error) {
+                    //     console.log(error);
+                    //     return  res.status(500).send({
+                    //         message: 'An error occured while uploading picture'
+                    //     });
+                    // }
 
                     // Create a Profile
                     const salt = PasswordsUtils.generateSalt();

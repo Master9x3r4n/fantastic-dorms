@@ -3,7 +3,6 @@
 
 import Review from '../models/Review.js'; 
 import { v2 as cloudinary } from 'cloudinary';
-
 const maxMedia = 4;
 
 class ReviewController {
