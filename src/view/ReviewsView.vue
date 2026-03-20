@@ -1,19 +1,35 @@
 <script setup>
+import { ref } from 'vue';
 import Divider from '@/components/divider/Divider.vue';
 import FullReviewCard from '@/components/review-cards/FullReviewCard.vue';
-
-import { reviewsData } from '@/assets/temp-data/reviews-temp.js';
-import { computed } from 'vue';
+import ReviewService from '../services/ReviewService.js';
  
 const props = defineProps({
-    id: {
-		type: String,
-		default: "1"
-	}
+    id: { type: String, default: null }
 })
 
-const reviews = computed(() => reviewsData[props.id])
-
+const reviews = ref([]);
+if (props.id) {
+    ReviewService.get(props.id)
+        .then(res => {
+            console.log(`Review with ID ${props.id}:`);
+            console.log(res.data);
+            reviews.value.push(res.data);
+        })
+        .catch(error => {
+            console.log(`Error retrieving review with ID ${props.id}: ${error.message}`);
+        });
+} else {
+    ReviewService.getAll()
+        .then(res => {
+            console.log(`Reviews:`);
+            console.log(res.data);
+            reviews.value = res.data;
+        })
+        .catch(error => {
+            console.log(`Error retrieving reviews: ${error.message}`);
+        });
+}
 </script>
 
 <template>
@@ -22,23 +38,25 @@ const reviews = computed(() => reviewsData[props.id])
         <!-- Body Header -->
         <div class="w-full flex justify-between items-center px-4.5">
             <!-- Search Result -->
-            <div class="font-light text-[20px] italic leading-6">
-                Found {{ reviews.length }} review<template v-if="reviews.length != 1">s</template>...
+            <div v-if="reviews.length > 1">
+                <div class="font-light text-[20px] italic leading-6">
+                    Found {{ reviews.length }} review<template v-if="reviews.length != 1">s</template>...
+                </div>
             </div>
         </div>
 
         <!-- Body Content -->
         <div class="h-fit w-full flex flex-col gap-6">
-            <template v-for="(i, index) in reviews" :key="i.id || index">
+            <template v-for="i in reviews" :key="i.id">
             <div>
-                <FullReviewCard :reviewData="i">
+                <FullReviewCard :review="i">
                     <template #review-title>{{i.content.title}}</template>
                     <template #review-content>{{i.content.description}}</template>
                     <template v-if="i.content.reply" #ownerReply>{{ i.content.reply }}</template>
                     <template #score>{{ i.score }}</template>
                 </FullReviewCard>
             </div>
-            <Divider v-if="index != reviews.length - 1"/>
+            <Divider />
             </template>
         </div>
     </div>

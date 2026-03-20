@@ -14,12 +14,10 @@ const info = ref({
 const data = JSON.parse(localStorage.getItem('USER'));
 const isLoggedIn = ref(false);
 
-console.log(data);
 if (data) {
 	isLoggedIn.value = true;
 	info.value.username = data.username;
 	info.value.picture = data.picture;
-	console.log('fiyahhhh');
 } else {
 	isLoggedIn.value = false;
 }
@@ -27,12 +25,6 @@ if (data) {
 const logout = () => {
 	localStorage.removeItem('USER');
 	router.push('/login')
-	// i want to die
-		// .then(router.go(0));
-	// window.location.reload();
-	// router.push('/login')
-		// .then(router.go(0));
-	// router.
 }
 </script>
 

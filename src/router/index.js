@@ -55,6 +55,10 @@ const router = createRouter({
       props: true,
     },
     {
+      path: "/profile",
+      redirect: "/",
+    },
+    {
       path: "/profile/:id",
       name: "profile",
       component: ProfileView,
@@ -62,8 +66,15 @@ const router = createRouter({
       props: true,
     },
     {
-      path: "/reviews/:id",
+      path: "/reviews",
       name: "reviews",
+      component: ReviewsView,
+      meta: { search: true, loggedIn: true },
+      props: true,
+    },
+    {
+      path: "/reviews/:id",
+      name: "reviews-one",
       component: ReviewsView,
       meta: { search: true, loggedIn: true },
       props: true,

@@ -1,31 +1,23 @@
 <script setup>
-// import { computed } from 'vue';
+import { ref } from 'vue';
 import Carousel from '../carousel/Carousel.vue';
 import MediaContainer from '../carousel/MediaContainer.vue';
 import ThumbsButton from '../thumbs-buttons/ThumbsButton.vue';
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
+import ProfileService from '../../services/ProfileService.js';
 
-// const props = defineProps({
-//     reviewData: {
-//         type: Object,
-//         default: 
-//         {
-//             username: "casey_c",
-//             content: {
-//                 "title": "Title of Review",
-//                 "description": "",
-//                 "reply": ""
-//             },
-//             rating: 4,
-//             score: 0,
-//             mediaSrcs: []
-//         },
-//     }
-// })
+const props = defineProps({ review: {} });
 
-const props = defineProps({ reviewData: {} })
-
-// const profile = computed(() => profileData[props.reviewData.username]);
+const profile = ref(null);
+ProfileService.get(props.review.username)
+    .then(res => {
+        console.log('Profile:');
+        console.log(res.data);
+        profile.value = res.data;
+    })
+    .catch(error => {
+        console.log(`Error retrieving profile \'${props.review.username}\': ${error.message}`)
+    });
 
 </script>
 
@@ -35,15 +27,18 @@ const props = defineProps({ reviewData: {} })
     bg-white dark:bg-[#121422] dark:text-white w-full rounded-lg border border-solid border-slate-200 shadow-sm transition-colors duration-200 dark:border-slate-700">
         <!-- Header Container -->
         <div class="w-full flex justify-between items-center ">
-            <RouterLink :to="{name: 'profile', params: {id: reviewData.username}}">
-            <div class="flex gap-3 items-center">
-                <!-- Profile -->
-                <ProfileIcon :src="profile.profileImgSrc" size-class="w-13 h-13"></ProfileIcon>
+            <RouterLink :to="{name: 'profile', params: {id: review.username}}">
+            <div v-if="profile">
+                <div class="flex gap-3 items-center">
+                    <!-- Profile -->
+                    <ProfileIcon :src="profile.picture" size-class="w-13 h-13"></ProfileIcon>
 
-                <!-- Name -->
-                <div>
-                    <div class="font-medium text-[20px] leading-6">{{ profile.name }}</div>
-                    <div class="font-normal leading-5 italic">{{ profile.reviewData.reviews.length }} Reviews</div>
+                    <!-- Name -->
+                    <div>
+                        <div class="font-medium text-[20px] leading-6">{{ profile.name.firstName }} {{ profile.name.lastName }}</div>
+                        <!-- <div class="font-normal leading-5 italic">{{ profile.reviewData.reviews.length }} Reviews</div> -->
+                        <div class="font-normal leading-5 italic">(-) Reviews</div>
+                    </div>
                 </div>
             </div>
             </RouterLink>
@@ -51,7 +46,7 @@ const props = defineProps({ reviewData: {} })
             <!-- Rating -->
             <div class="flex justify-between items-center w-[8%] text-center">
                 <img src="@\assets\rating-assets\star-full.svg" width="36px">
-                <div class="font-bold text-3xl leading-10">{{ reviewData.rating[0].value.toFixed(1) }}</div>
+                <div class="font-bold text-3xl leading-10">{{ review.rating[0].value.toFixed(1) }}</div>
             </div>
         </div>
 

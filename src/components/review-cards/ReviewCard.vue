@@ -7,11 +7,14 @@ import ProfileService from "../../services/ProfileService.js";
 
 const props = defineProps({
     review: {},
-    routeId: {
+    id: {
         type: String,
         default: "1"
     }
 })
+
+console.log('PROPS.ID:');
+console.log(props.id);
 
 const review = props.review;
 const profile = ref(null);
@@ -101,7 +104,7 @@ ProfileService.get(review.username)
         <div class="w-full h-[16%] flex justify-between items-center mt-1">
             <!-- Show More -->
             <div class="font-semibold underline text-[16px] leading-6">
-                <RouterLink :to="'/reviews/'+routeId">Show More</RouterLink>
+                <RouterLink :to="'/reviews/'+id" :review="review" :profile="profile" :id="id">Show More</RouterLink>
             </div>
 
             <!-- Upvote -->

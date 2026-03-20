@@ -43,6 +43,8 @@
             reviews.value = res.data;
             // console.log(`Reviews data:`);
             // console.log(reviews.value);
+            // console.log(reviews.value[0].username);
+            // console.log(reviews.value[0]._id);
         })
         .catch(err => {
             console.log(`Error retrieving reviews: ${err.message}`);
@@ -102,7 +104,7 @@
                 <!-- Reviews -->
                 <template v-if="reviews">
                     <template v-for="i in reviews">
-                        <ReviewCard :review="i" :routeId="id"> 
+                        <ReviewCard :review="i" :id="i._id"> 
                             <template #review-title>
                                 {{ i.content.title }}
                             </template>
