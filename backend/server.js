@@ -6,6 +6,8 @@
 // const PORT = process.env.PORT || 3000;
 
 import express from 'express';
+// import session from 'express-session';
+// import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 import cors from 'cors';
 
@@ -21,7 +23,11 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors()); // Connects vue to server
+// app.use(cors({
+//     origin: 'http://localhost:5173',
+//     credentials: true
+// }));
+app.use(cors());
 app.use(express.json()); // Allows server to read JSON
 
 // Database routers
@@ -35,8 +41,18 @@ mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log("MongoDB connected."))
     .catch(err => console.log("Connection error:", err));
 
+// Session object
+// app.use(
+//     session({
+//         secret: process.env.SECRET_KEY,
+//         resave: false,
+//         saveUninitialized: false
+//     })
+// );
+// app.use(cookieParser());
+
 app.get('/', (req, res) => {
-    res.send('i want to cry');    
+    res.send('i want to cry');
 });
 
 app.get('/api', (req, res) => {

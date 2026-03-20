@@ -1,12 +1,12 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 
-const props = defineProps({
-	width: {
-		type: String,
-		default: "311px"
-	}
-})
+// const props = defineProps({
+// 	width: {
+// 		type: String,
+// 		default: "311px"
+// 	}
+// })
 
 const isOpen = ref(false)
 const dropdownRef = ref(null)
@@ -50,22 +50,31 @@ onUnmounted(() => {
 		</div>
 
 		<transition
-				enter-active-class="transition-all ease-out duration-200"
-				enter-from-class="transform opacity-0 scale-95"
-				enter-to-class="transform opacity-100 scale-100"
-				leave-active-class="transition-all ease-in duration-200"
-				leave-from-class="transform opacity-100 scale-100"
-				leave-to-class="transform opacity-0 scale-95"
+			enter-active-class="transition-all ease-out duration-200"
+			enter-from-class="transform opacity-0 scale-95"
+			enter-to-class="transform opacity-100 scale-100"
+			leave-active-class="transition-all ease-in duration-200"
+			leave-from-class="transform opacity-100 scale-100"
+			leave-to-class="transform opacity-0 scale-95"
 		>
+			<!-- <div
+				v-show="isOpen"
+				class="absolute right-0 top-full z-50 mt-2
+					h-fit w-screen
+					flex flex-col justify-center items-center gap-5
+					origin-top-right focus:outline-none
+					bg-white dark:bg-[#121422] p-4 rounded-lg border border-solid
+					border-slate-200 shadow-sm dark:border-slate-700"
+				:style="{ maxWidth: width }"
+			> -->
 			<div
-					v-show="isOpen"
-					class="absolute right-0 top-full z-50 mt-2
-                 h-fit w-screen
-                 flex flex-col justify-center items-center gap-5
-                 origin-top-right focus:outline-none
-                 bg-white dark:bg-[#121422] p-4 rounded-lg border border-solid
-                 border-slate-200 shadow-sm dark:border-slate-700"
-					:style="{ maxWidth: width }"
+				v-show="isOpen"
+				class="absolute right-0 top-full z-50 mt-2
+					h-fit w-fit
+					flex flex-col justify-center items-center gap-5
+					origin-top-right focus:outline-none
+					bg-white dark:bg-[#121422] p-4 rounded-lg border border-solid
+					border-slate-200 shadow-sm dark:border-slate-700"
 			>
 				<div class="py-1 w-full">
 					<slot name="content"></slot>

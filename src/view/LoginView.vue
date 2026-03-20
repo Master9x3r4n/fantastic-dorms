@@ -3,7 +3,6 @@
   import { useRouter } from 'vue-router';
   import Divider from "@/components/divider/Divider.vue";
   import ProfileService from "../services/ProfileService";
-  import PasswordsUtils from "../../backend/passwords.js";
   const router = useRouter();
 
   // Form-related stuff
@@ -29,6 +28,8 @@
     })
       .then(res => {
         console.log('Yippeeeeeeee');
+        // i don't give a damn
+        localStorage.setItem('USER', JSON.stringify(res.data));
         router.push('/');
       })
       .catch(error => {
@@ -138,7 +139,7 @@
             </button>
           </RouterLink> -->
           <button
-              :disabled="!isFormValid"
+              :disabled="!isFormValid || processing"
               class="
                 w-full bg-[#355AFF] hover:bg-[#2b4bcc] text-white 
                 disabled:bg-gray-300 disabled:hover:bg-gray-200 disabled:dark:bg-gray-800 disabled:dark:hover:bg-gray-700 disabled:shadow-transparent

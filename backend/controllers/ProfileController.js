@@ -180,7 +180,7 @@ class ProfileController {
                 const newHash = PasswordsUtils.generateDigest(password + salt);
 
                 if (hash === newHash) {
-                    res.status(200).send({ message: 'OK' });
+                    res.status(200).send(data);
                 } else {
                     res.status(401).send({ message: 'Unauthorized' });
                 }

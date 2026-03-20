@@ -64,6 +64,7 @@
     ProfileService.create(data)
       .then(res => {
         console.log("THANK FUCK. THANK FUCKING GOD. GODDDDDD FUCKKKKKK");
+        localStorage.setItem('USER', JSON.stringify(res.data));
         router.push('/')
       })
       .catch(error => {
