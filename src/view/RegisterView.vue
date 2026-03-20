@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import Divider from "@/components/divider/Divider.vue";
+import PasswordToggleButton from "@/components/page-buttons/PasswordToggleButton.vue";
 
 // State for password visibility toggle
 const showPassword = ref(false);
@@ -65,15 +66,7 @@ const togglePassword = () => {
                   placeholder="••••••••"
                   required
               />
-              <button
-                  @click="togglePassword"
-                  class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 focus:outline-none"
-                  type="button"
-              >
-                <span class="material-symbols-outlined text-xl select-none">
-                  {{ showPassword ? 'visibility' : 'visibility_off' }}
-                </span>
-              </button>
+							<PasswordToggleButton v-model="showPassword" />
             </div>
             <p class="mt-1.5 text-xs text-slate-400 dark:text-slate-500 transition-colors">Minimum 8 characters with at least one number.</p>
           </div>
