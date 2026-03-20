@@ -1,35 +1,29 @@
 <script setup>
+import { ref } from 'vue';
 import MediaContainer from '../carousel/MediaContainer.vue';
 import ThumbsButton from '../thumbs-buttons/ThumbsButton.vue';
-
-import {computed} from 'vue';
-import {profileData} from '@/assets/temp-data/profile-temp.js';
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
+import ProfileService from "../../services/ProfileService.js";
 
 const props = defineProps({
-    reviewData: {
-        type: Object,
-        default: 
-        {
-            username: "",
-            content: {
-                "title": "Title of Review",
-                "description": "",
-                "reply": ""
-            },
-            rating: 4,
-            score: 0,
-            mediaSrcs: []
-        },
-    },
+    review: {},
     routeId: {
         type: String,
         default: "1"
     }
 })
 
-const profile = computed(() => profileData[props.reviewData.username]);
-
+const review = props.review;
+const profile = ref(null);
+ProfileService.get(review.username)
+    .then(res => {
+        profile.value = res.data;
+        console.log('Profile:');
+        console.log(profile.value);
+    })
+    .catch(error => {
+        console.log(`Error occurred retrieving profile data of user ${review.username} for review: ${error.message}`);
+    });
 </script>
 
 <template>
@@ -37,29 +31,32 @@ const profile = computed(() => profileData[props.reviewData.username]);
     p-2 pb-4 gap-4.5 w-105.25 h-fit bg-white dark:bg-[#121422] dark:text-white">
         <!-- Header Container -->
         <div class="w-full flex justify-between items-center">
-            <RouterLink :to="{name: 'profile', params: {id: reviewData.username}}">
-            <div class="flex gap-3 items-center">
-                <!-- Profile -->
-								<ProfileIcon :src="profile.profileImgSrc" size-class="w-13 h-13"></ProfileIcon>
-                
-                <!-- Name -->
-                <div>
-                    <div class="font-medium text-[20px] leading-6">{{ profile.name }}</div>
-                    <div class="font-normal leading-5 italic">{{ profile.reviewData.reviews.length }} Reviews</div>
+            <div v-if="profile">
+                <RouterLink :to="{name: 'profile', params: {id: review.username}}">
+                <div class="flex gap-3 items-center">
+                    <!-- Profile -->
+                    <ProfileIcon :src="profile.picture" size-class="w-13 h-13"></ProfileIcon>
+
+                    <!-- Name -->
+                    <div>
+                        <div class="font-medium text-[20px] leading-6">{{ profile.name.firstName }} {{ profile.name.lastName }}</div>
+                        <!-- <div class="font-normal leading-5 italic"> {{ review.length }} Reviews</div> -->
+                        <div class="font-normal leading-5 italic">(-) Reviews</div>
+                    </div>
                 </div>
+                </RouterLink>
             </div>
-            </RouterLink>
 
             <!-- Rating -->
             <div class="flex justify-between items-center w-3/12 px-2">
                 <img src="@\assets\rating-assets\star-full.svg" width="28px">
-                <div class="font-bold text-3xl leading-10">{{ reviewData.rating.toFixed(1) }}</div>
+                <div class="font-bold text-3xl leading-10">{{ review.rating[0].value.toFixed(1) }}</div>
             </div>
         </div>
 
         <!-- Title Container -->
         <div class="w-full h-[14%] flex items-center font-bold leading-8 text-2xl">
-            <slot name = "review-title">{{ reviewData.content.title }}</slot>
+            <slot name = "review-title">{{ review.content.title }}</slot>
         </div>
 
         <!-- Comment Container -->
@@ -110,7 +107,7 @@ const profile = computed(() => profileData[props.reviewData.username]);
             <!-- Upvote -->
             <div class="italic font-normal text-[16px] leading-6 flex items-center justify-around gap-2">
                 <ThumbsButton direction="up"/>
-                <div>{{ reviewData.score }}</div>
+                <div>{{ review.score }}</div>
                 <ThumbsButton direction="down"/>
             </div>
         </div>

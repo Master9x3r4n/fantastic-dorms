@@ -1,78 +1,108 @@
 <script setup>
-import Carousel from '@/components/carousel/Carousel.vue';
-import ListingInformation from '@/components/listing-content/ListingInformation.vue';
-import OverallRating from '@/components/side-cards/OverallRating.vue';
-import MediaContainer from '@/components/carousel/MediaContainer.vue';
-import ReviewCard from '@/components/review-cards/ReviewCard.vue';
-import Divider from '@/components/divider/Divider.vue';
+    import { ref } from 'vue';
+    import { useRoute, useRouter } from 'vue-router';
+    import ListingService from '../services/ListingService.js';
+    import ReviewService from '../services/ReviewService.js';
+    const route = useRoute();
+    const router = useRouter();
 
-import { listingData } from "@/assets/temp-data/listing-temp"
-import { reviewsData } from "@/assets/temp-data/reviews-temp";
-import { computed } from 'vue';
-import BlueButton from "@/components/page-buttons/BlueButton.vue";
+    import Carousel from '@/components/carousel/Carousel.vue';
+    import ListingInformation from '@/components/listing-content/ListingInformation.vue';
+    import OverallRating from '@/components/side-cards/OverallRating.vue';
+    import MediaContainer from '@/components/carousel/MediaContainer.vue';
+    import ReviewCard from '@/components/review-cards/ReviewCard.vue';
+    import Divider from '@/components/divider/Divider.vue';
+    import BlueButton from "@/components/page-buttons/BlueButton.vue";
 
-const props = defineProps({
-    id: {
-		type: String,
-		default: "1"
-	}
-})
+    const props = defineProps({
+        id: {
+            type: String,
+            default: "1"
+        }
+    })
 
-const listing = computed(() => listingData[props.id]);
-const reviews = computed(() => reviewsData[props.id]);
+    const listingId = route.params.id; 
+    if (!listingId) {
+        throw new Error('Invalid ID');
+    }
 
+    const listing = ref(null);
+    const reviews = ref(null);
+
+    ListingService.get(listingId)
+        .then(res => {
+            listing.value = res.data;
+            // console.log(`Listing data:`);
+            // console.log(listing.value);
+        })
+        .catch(err => {
+            console.log(`Error retrieving listing: ${err.message}`);
+        });
+    ReviewService.getAllFromListing(listingId)
+        .then(res => {
+            reviews.value = res.data;
+            // console.log(`Reviews data:`);
+            // console.log(reviews.value);
+        })
+        .catch(err => {
+            console.log(`Error retrieving reviews: ${err.message}`);
+        });
 </script>
 
 <template>
     <div class="flex justify-around gap-8 m-8 font-['Inter']">
         <!-- Main Listing -->
-        <div class="flex flex-col gap-4 w-fit grow max-w-5xl">
-            <!-- Media Carousel -->
-            <Carousel :count="1" buttonStyling="large">
-            <template #content>
-                <template v-for="i in listing.mediaSrcs">
-                    <MediaContainer class="flex shrink-0 snap-start" :src="i"/>
+        <div v-if="listing">
+            <div class="flex flex-col gap-4 w-fit grow max-w-5xl">
+                <!-- Media Carousel -->
+                <Carousel :count="1" buttonStyling="large">
+                <template #content>
+                    <template v-for="i in listing.media">
+                        <MediaContainer class="flex shrink-0 snap-start" :src="i"/>
+                    </template>
                 </template>
-            </template>
-            </Carousel>
+                </Carousel>
 
-            <!-- Listing Information -->
-            <ListingInformation :listingData="listing">
-                <template #listing-name>
-                    {{ listing.name }}
-                </template>
-                <template #listing-address>
-                    {{ listing.address }}
-                </template>
-                <template #listing-owner>
-                    {{ listing.owner }}
-                </template>
-                <template #description> 
-                    {{ listing.description }}
-                </template>
-            </ListingInformation> 
+                <!-- Listing Information -->
+                <ListingInformation :listingData="listing">
+                    <template #listing-name>
+                        {{ listing.name }}
+                    </template>
+                    <template #listing-address>
+                        {{ listing.address }}
+                    </template>
+                    <template #listing-owner>
+                        {{ listing.owner }}
+                    </template>
+                    <template #description> 
+                        {{ listing.description }}
+                    </template>
+                </ListingInformation> 
+            </div>
         </div>
 
         <!-- Reviews -->
         <div class="flex flex-col gap-4 w-fit">
-            <OverallRating :ratings="listing.rating"/>
+            <div v-if="listing">
+                <OverallRating :ratings="listing.rating"/>
+            </div>
 
             <!-- Reviews List -->
             <div class="flex flex-col gap-1">
                 <div class="flex flex-row justify-between items-center gap-2">
                     <span class="font-bold text-3xl leading-10 dark:text-white">Reviews</span>
-									<RouterLink to="/write">
-										<BlueButton>
-											<span class="material-symbols-outlined text-white text-[14px]">edit</span>
-											<span class="font-normal text-[16px] leading-4.75 text-white">Write</span>
-										</BlueButton>
-									</RouterLink>
+                    <RouterLink to="/write">
+                        <BlueButton>
+                            <span class="material-symbols-outlined text-white text-[14px]">edit</span>
+                            <span class="font-normal text-[16px] leading-4.75 text-white">Write</span>
+                        </BlueButton>
+                    </RouterLink>
                 </div>
 
                 <!-- Reviews -->
                 <template v-if="reviews">
                     <template v-for="i in reviews">
-                        <ReviewCard :reviewData="i" :routeId="id"> 
+                        <ReviewCard :review="i" :routeId="id"> 
                             <template #review-title>
                                 {{ i.content.title }}
                             </template>

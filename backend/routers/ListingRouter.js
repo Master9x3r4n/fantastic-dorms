@@ -1,13 +1,14 @@
 // reference:
 // https://www.bezkoder.com/node-express-mongodb-crud-rest-api/
 
-module.exports = app => {
-    const listings = require("../controllers/ListingController.js");
-    let router = require("express").Router();
-    // router.post("/", listings.create);
-    router.get("/", listings.findAll);
-    // router.get("/:id", listings.findOne);
-    // router.put("/:id", listings.update);
-    // router.delete("/:id", listings.delete);
-    // app.use('/api/tutorials', router);
-};
+import express from 'express';
+import ListingController from '../controllers/ListingController.js';
+const router = express.Router();
+
+router.get("/", ListingController.findAll);
+router.get("/:id", ListingController.find);
+router.post("/", ListingController.create);
+router.put("/:id", ListingController.update);
+router.delete("/:id", ListingController.delete);
+
+export default router;

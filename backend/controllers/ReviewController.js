@@ -1,20 +1,48 @@
 // reference:
 // https://www.bezkoder.com/node-express-mongodb-crud-rest-api/
 
-import Review from './Review'; 
-
-// Read the cloudinary environment variable
-require('dotenv').config();
-
-// Require the cloudinary library
-const cloudinary = require('cloudinary').v2;
-
-// configure cloudinary
-console.log(cloudinary.config().cloud_name);
+import Review from '../models/Review.js'; 
+import { v2 as cloudinary } from 'cloudinary';
 
 const maxMedia = 4;
 
 class ReviewController {
+    async findAll(req, res) {
+        let condition = {}
+        if (req.query.listingId) condition['listingId'] = req.query.listingId;
+        if (req.query.title) condition['title'] =  { $regex: `/${title}/`, $options: 'i' };
+        
+        Review.find({})
+            .then(data => {
+                if (data)
+                    res.status(200).send(data);
+                else
+                    res.status(404).send({ message: 'Reviews could not be found.' });
+            })
+            .catch(err => {
+                res.status(500).send({
+                    message: err.message || "An error occurred while retrieving reviews."
+                })
+            });
+    }
+        
+    async find(req, res) {
+        const id = req.params.id;
+        
+        Review.findById(id)
+            .then(data => {
+                if (data)
+                    res.status(200).send(data);
+                else
+                    res.status(404).send({ message: `Review with ID ${id} could not be found.` });
+            })
+            .catch(err => {
+                res.status(500).send({
+                    message: err.message || `An error occurred.`
+                });
+            });
+    }
+    
     async create(req, res) {
         if (!req.body.content.title) {
             res.status(400).send({message: "Title cannot be empty."});
@@ -81,7 +109,6 @@ class ReviewController {
             createdAt: req.body.createdAt
         });
 
-
         newReview
             .save(newReview)
             .then(data => {
@@ -94,13 +121,17 @@ class ReviewController {
             });
     };
 
-    findAllByTitle(req, res) {
-        const title = req.query.title;
-        var condition = title ? { title: { $regex: new RegExp(title), $options: "i" } } : {};
+    async findAll(req, res) {
+        let condition = {}
+        if (req.query.listingId) condition['listingId'] = { $regex: new RegExp(req.query.listingId), $options: "i" };
+        if (req.query.title) condition['title'] = { $regex: new RegExp(req.query.title), $options: "i" };
 
         Review.find(condition)
             .then(data => {
-                res.send(data);
+                if (data)
+                    res.send(data);
+                else
+                    res.status(404).send({ message: 'Reviews could not be found.' });
             })
             .catch(err => {
                 res.status(500).send({
@@ -109,7 +140,7 @@ class ReviewController {
             });
     }
 
-    findOneById(req, res) {
+    async find(req, res) {
         const id = req.params.id;
 
         Review.findById(id)
@@ -125,10 +156,10 @@ class ReviewController {
     }
 
     async update(req, res) {
-        if (!req.content.title) {
+        if (!req.body.title) {
             res.status(400).send({ message: "Title cannot be empty." });
             return;
-        } else if (!req.content.description) {
+        } else if (!req.body.description) {
             res.status(400).send({ message: "Content cannot be empty." });
             return;
         }
@@ -241,6 +272,10 @@ class ReviewController {
             .catch(err => {
                 res.status(500).send({ message: `Could not delete Review with id ${id}.` });
             });
+    }
+
+    async deleteByUser(req, res) {
+
     }
 }
 

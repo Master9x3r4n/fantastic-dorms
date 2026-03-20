@@ -1,6 +1,6 @@
 [
     {
-        "_id": 0,
+        "listingId": "the-daily-bugle",
         "owner": "The Daily Bugle",
         "name": "Grand Apartment",
         "address": "Blk 12 Lt 32 Somebody St., Las Pinas City",
@@ -20,7 +20,7 @@
         "createdAt": "2026-01-01T00:00:00Z"
     },
     {
-        "_id": 1,
+        "listingId": "the-future-foundation",
         "owner": "The Future Foundation",
         "name": "The Baxter Suite",
         "description": "A very grand, beautiful, and luxurious Inspired by the heroes of the Fantastic Four, this beautiful deluxe suite features 4 bedrooms and a visit from Galactus. It's Fantastic. that features multiple rooms and doors. A must stay for the holidays.",
@@ -40,7 +40,7 @@
         "createdAt": "2026-01-01T00:00:00Z"
     },
     {
-        "_id": 2,
+        "listingId": "miros-house",
         "owner": "Jann Miro Quilantang",
         "name": "Miro's House",
         "description": "Freshly doxxed, Miro's house is a beautiful home that features Miro.",

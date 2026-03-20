@@ -1,39 +1,31 @@
 // reference:
 // https://www.bezkoder.com/node-express-mongodb-crud-rest-api/
 
-
 import Profile from '../models/Profile.js';
 import PasswordsUtils from '../passwords.js';
-
-// Read the cloudinary environment variable
-require('dotenv').config();
-
-// Require the cloudinary library
-const cloudinary = require('cloudinary').v2;
-
-// configure cloudinary
-console.log(cloudinary.config().cloud_name);
-
+import { v2 as cloudinary } from 'cloudinary';
 
 class ProfileController {
     // Retrieves all profiles from the database
-    findAll(req, res) {
+    async findAll(req, res) {
         Profile.find({})
             .then(data => {
-                res.send(data);
+                if (data)
+                    res.status(200).send(data);
+                else
+                    res.status(404).send({ message: `Profiles could not be found.` })
             })
             .catch(err => {
                 res.status(500).send({
-                    message: err.message || 'An error occurred while attempting to retrieve all profiles.'
+                    message: err.message || 'An error occurred.'
                 });
             });
     };
 
     // Retrieve a single Profile with a specific username
     // Usernames act as a primary ID and cannot be repeated
-    find(req, res) {
+    async find(req, res) {
         const username = req.params.username;
-        
         Profile.findOne({ username: username })
             .then(data => {
                 if (!data)
@@ -42,12 +34,14 @@ class ProfileController {
                     res.send(data);
             })
             .catch(err => {
-                res.status(500).send({ message: `An error occurred while retrieving profile \'${username}\'.` });
+                res.status(500).send({ 
+                    message: err.message || `An error occurred while retrieving profile \'${username}\'.`
+                });
             });
     };
 
     // Create and save a new Profile
-    create(req, res) {
+    async create(req, res) {
         const username = req.body.username;
         const password = req.body.password;
         const byteStr  = req.body.picture;
@@ -167,7 +161,7 @@ class ProfileController {
 
 
     // Delete a Profile with the specified username in the request
-    delete(req, res) {
+    async delete(req, res) {
         const username = req.params.username;
 
         Profile.findOneAndDelete( {username: username} )
@@ -201,7 +195,7 @@ class ProfileController {
     };
 
     // Delete all Profile from the database.
-    deleteAll(req, res) {
+    async deleteAll(req, res) {
         Profile.deleteMany({})
             .then(data => {
                 res.send({
@@ -217,7 +211,7 @@ class ProfileController {
     };
 
     // Update fields nested in Profile
-    updateNested(req, res) {
+    async updateNested(req, res) {
         const username = req.body.username;
 
         // find profile in question 
@@ -245,11 +239,11 @@ class ProfileController {
     };
 
     // Find all published Profile
-    findAllBySomethingLater(req, res) {
+    async findAllBySomethingLater(req, res) {
         
     };
 
-    login(req, res) {
+    async login(req, res) {
         const username = req.body.username;
         const password = req.body.password;
 

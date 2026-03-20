@@ -44,6 +44,10 @@ const router = createRouter({
       meta: { search: true, loggedIn: true },
     },
     {
+      path: "/listing",
+      redirect: "/",
+    },
+    {
       path: "/listing/:id",
       name: "listing",
       component: ListingView,

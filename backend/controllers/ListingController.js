@@ -1,11 +1,11 @@
 // reference:
 // https://www.bezkoder.com/node-express-mongodb-crud-rest-api/
 
-import Listing from './Listing'; 
+import Listing from '../models/Listing.js'; 
 
 class ListingController {
     // Create and Save a new Listings
-    create(req, res) {
+    async create(req, res) {
         // Validate request
         if (!req.body.owner) {
             res.status(400).send({ message: "Owner has to exist!" });
@@ -27,76 +27,45 @@ class ListingController {
             .catch(err => {
             res.status(500).send({
                 message:
-                err.message || "Some error occurred while creating the Listings."
+                err.message || "An error occurred."
             });
             });
     };
 
-    findAll(req, res) {
-        Listing.find({})
+    async findAll(req, res) {
+        let condition = {};
+        if (req.query.name) condition['name'] = { $regex: new RegExp(req.query.name), $options: "i" };
+        if (req.query.description) condition['description'] = { $regex: new RegExp(description), $options: "i" };
+        
+        Listing.find(condition)
             .then(data => {
                 res.send(data);
             })
             .catch(error => {
                 res.status(500).send({
-                    message: error.message || 'An error occurred while retrieving all listings.'
+                    message: error.message || 'An error occurred.'
                 });
             });
     }
 
-    // Retrieve all Listings from the database.
-    findAllUsingName(req, res) {
-        const name = req.query.name;
-        var condition = name ? { name: { $regex: new RegExp(name), $options: "i" } } : {};
-
-        Listing.find(condition)
+    async find(req, res) {
+        const listingId = req.params.id;
+        Listing.findOne({ listingId: listingId })
             .then(data => {
-            res.send(data);
+                if (data)
+                    res.status(200).send(data);
+                else
+                    res.status(404).send({ message: `Listing with ID ${listingId} could not be found.` });
             })
             .catch(err => {
-            res.status(500).send({
-                message:
-                err.message || "Some error occurred while retrieving Listings."
-            });
-            });
-    };
-
-    // Retrieve all Listings from the database.
-    findAllUsingDescription(req, res) {
-        const description = req.query.description;
-        var condition = description ? { description: { $regex: new RegExp(description), $options: "i" } } : {};
-
-        Listing.find(condition)
-            .then(data => {
-            res.send(data);
-            })
-            .catch(err => {
-            res.status(500).send({
-                message:
-                err.message || "Some error occurred while retrieving Listings."
-            });
-            });
-    };
-
-    // Find a single Listing with a listingId
-    findOne(req, res) {
-        const listingId = req.params.listingId;
-
-        Listing.findOne( {listingId: listingId} )
-            .then(data => {
-            if (!data)
-                res.status(404).send({ message: "Not found Listings with listingId " + listingId });
-            else res.send(data);
-            })
-            .catch(err => {
-            res
-                .status(500)
-                .send({ message: "Error retrieving Listings with listingId=" + listingId });
+                res.status(500).send({ 
+                    message: err.message || 'An error occurred.'
+                });
             });
     };
 
     // Update a Listings by the listingId in the request
-    update(req, res) {
+    async update(req, res) {
         if (!req.body) {
             return res.status(400).send({
             message: "Data to update can not be empty!"
@@ -123,7 +92,7 @@ class ListingController {
     };
 
     // Delete a Listings with the specified listingId in the request
-    delete(req, res) {
+    async delete(req, res) {
         const listingId = req.params.listingId;
 
         Listing.findOneAndDelete( {listingId: listingId} )
@@ -146,7 +115,7 @@ class ListingController {
     };
 
     // Delete all Listings from the database.
-    deleteAll(req, res) {
+    async deleteAll(req, res) {
         Listing.deleteMany({})
             .then(data => {
                 res.send({
@@ -162,7 +131,7 @@ class ListingController {
     };
 
     // Update fields nested in Listing
-    updateNested(req, res) {
+    async updateNested(req, res) {
         const listingId = req.body.listingId;
 
         // find listing in question 
@@ -190,7 +159,7 @@ class ListingController {
     }
 
     // Find all published Listings
-    findAllPublished(req, res) {
+    async findAllPublished(req, res) {
     
     };
 }

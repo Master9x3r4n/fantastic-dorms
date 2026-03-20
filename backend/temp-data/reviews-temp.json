@@ -1,7 +1,6 @@
 [
     {
-        "_id": 0,
-        "listingId": 0,
+        "listingId": "the-daily-bugle",
         "username": "casey_c",
         "content": {
             "title": "Le Grand Apartment",
@@ -19,8 +18,7 @@
         "createdAt": "2026-01-01T00:00:00Z"
     },
     {
-        "_id": 1,
-        "listingId": 0,
+        "listingId": "the-daily-bugle",
         "username": "jlee_99",
         "content": {
             "title": "My review",
@@ -38,8 +36,7 @@
         "createdAt": "2026-01-01T00:00:00Z"
     },
     {
-        "_id": 2,
-        "listingId": 1,
+        "listingId": "the-future-foundation",
         "username": "casey_c",
         "content": {
             "title": "Fantastic For Us",
@@ -57,8 +54,7 @@
         "createdAt": "2026-01-01T00:00:00Z"
     },
     {
-        "_id": 3,
-        "listingId": 1,
+        "listingId": "the-future-foundation",
         "username": "tmorgan_med",
         "content": {
             "title": "I Love it!",
@@ -76,8 +72,7 @@
         "createdAt": "2026-01-01T00:00:00Z"
     },
     {
-        "_id": 4,
-        "listingId": 2,
+        "listingId": "miros-house",
         "username": "jlee_99",
         "content": {
             "title": "Cool ig",
@@ -95,8 +90,7 @@
         "createdAt": "2026-01-01T00:00:00Z"
     },
     {
-        "_id": 5,
-        "listingId": 2,
+        "listingId": "miros-house",
         "username": "casey_c",
         "content": {
             "title": "Very very meh",

@@ -10,6 +10,7 @@ import express from 'express';
 // import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import { v2 as cloudinary } from 'cloudinary';
 
 // import 'dotenv/config.js';
 // i want to kill whoever designed it this way
@@ -29,12 +30,17 @@ const PORT = process.env.PORT || 3000;
 // }));
 app.use(cors());
 app.use(express.json()); // Allows server to read JSON
+cloudinary.config()
 
 // Database routers
 import AuthRouter from './routers/AuthRouter.js';
 import ProfileRouter from './routers/ProfileRouter.js';
+import ReviewRouter from './routers/ReviewRouter.js';
+import ListingRouter from './routers/ListingRouter.js';
 app.use('/api/auth/', AuthRouter);
 app.use('/api/p/', ProfileRouter);
+app.use('/api/r/', ReviewRouter);
+app.use('/api/l/', ListingRouter);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)

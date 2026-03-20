@@ -1,31 +1,31 @@
 <script setup>
+// import { computed } from 'vue';
 import Carousel from '../carousel/Carousel.vue';
 import MediaContainer from '../carousel/MediaContainer.vue';
 import ThumbsButton from '../thumbs-buttons/ThumbsButton.vue';
-
-import {computed} from 'vue';
-import {profileData} from '@/assets/temp-data/profile-temp.js';
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
 
-const props = defineProps({
-    reviewData: {
-        type: Object,
-        default: 
-        {
-            username: "casey_c",
-            content: {
-                "title": "Title of Review",
-                "description": "",
-                "reply": ""
-            },
-            rating: 4,
-            score: 0,
-            mediaSrcs: []
-        },
-    }
-})
+// const props = defineProps({
+//     reviewData: {
+//         type: Object,
+//         default: 
+//         {
+//             username: "casey_c",
+//             content: {
+//                 "title": "Title of Review",
+//                 "description": "",
+//                 "reply": ""
+//             },
+//             rating: 4,
+//             score: 0,
+//             mediaSrcs: []
+//         },
+//     }
+// })
 
-const profile = computed(() => profileData[props.reviewData.username]);
+const props = defineProps({ reviewData: {} })
+
+// const profile = computed(() => profileData[props.reviewData.username]);
 
 </script>
 
@@ -38,7 +38,7 @@ const profile = computed(() => profileData[props.reviewData.username]);
             <RouterLink :to="{name: 'profile', params: {id: reviewData.username}}">
             <div class="flex gap-3 items-center">
                 <!-- Profile -->
-								<ProfileIcon :src="profile.profileImgSrc" size-class="w-13 h-13"></ProfileIcon>
+                <ProfileIcon :src="profile.profileImgSrc" size-class="w-13 h-13"></ProfileIcon>
 
                 <!-- Name -->
                 <div>
@@ -51,7 +51,7 @@ const profile = computed(() => profileData[props.reviewData.username]);
             <!-- Rating -->
             <div class="flex justify-between items-center w-[8%] text-center">
                 <img src="@\assets\rating-assets\star-full.svg" width="36px">
-                <div class="font-bold text-3xl leading-10">{{ reviewData.rating.toFixed(1) }}</div>
+                <div class="font-bold text-3xl leading-10">{{ reviewData.rating[0].value.toFixed(1) }}</div>
             </div>
         </div>
 
