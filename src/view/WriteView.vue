@@ -9,6 +9,7 @@ import Carousel from "@/components/carousel/Carousel.vue";
 import MediaContainer from "@/components/carousel/MediaContainer.vue";
 import UploadBox from "@/components/write-review-content/UploadBox.vue";
 import Divider from "@/components/divider/Divider.vue";
+import ReviewTag from "@/components/write-review-content/ReviewTag.vue";
 
 // User info props
 const props = defineProps({
@@ -238,7 +239,6 @@ onBeforeUnmount(() => {
 					/>
 
 					<!-- Photo Upload -->
-					<!-- NOT FUNCTIONAL YET -->
 					<UploadBox v-model="uploadedPhotos"/>
 
 					<!-- Certification -->
@@ -296,11 +296,7 @@ onBeforeUnmount(() => {
 						></div>
 
 						<!-- Tags Preview -->
-						<div v-if="tags.length > 0" class="flex flex-wrap gap-2 mb-6">
-              <span v-for="tag in tags" :key="tag" class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-md text-xs font-medium">
-                {{ tag }}
-              </span>
-						</div>
+						<ReviewTag :tags="tags"/>
 
 						<!-- Static Image Carousel-->
 						<div v-if="uploadedPhotos.length > 0" class="my-6 h-[47%] flex w-full justify-center items-center">

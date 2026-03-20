@@ -6,6 +6,7 @@ import ThumbsButton from '../thumbs-buttons/ThumbsButton.vue';
 import {computed} from 'vue';
 import {profileData} from '@/assets/temp-data/profile-temp.js';
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
+import ReviewTag from "@/components/write-review-content/ReviewTag.vue";
 
 const props = defineProps({
     reviewData: {
@@ -20,7 +21,8 @@ const props = defineProps({
             },
             rating: 4,
             score: 0,
-            mediaSrcs: []
+            mediaSrcs: [],
+						tags: ["Fantastic", "Review"],
         },
     }
 })
@@ -71,6 +73,9 @@ const profile = computed(() => profileData[props.reviewData.username]);
                 </slot>
             </div>
 
+							<slot name="review-tags">
+								<ReviewTag :tags="props.reviewData.tags"></ReviewTag>
+							</slot>
             <!-- Carousel Container -->
             <div class="mt-3 h-[47%] flex w-full justify-center items-center">
                 <Carousel :count="4" buttonStyling="large" :buttonSpacing="4">
