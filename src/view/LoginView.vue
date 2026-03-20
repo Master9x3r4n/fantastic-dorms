@@ -5,10 +5,6 @@ import PasswordToggleButton from "@/components/page-buttons/PasswordToggleButton
 
 // State for password visibility toggle
 const showPassword = ref(false);
-
-const togglePassword = () => {
-  showPassword.value = !showPassword.value;
-};
 </script>
 
 <template>
