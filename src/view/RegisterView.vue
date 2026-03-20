@@ -8,7 +8,7 @@ const showPassword = ref(false);
 </script>
 
 <template>
-  <div class="flex min-h-screen bg-white dark:bg-[#111111] transition-colors duration-200 font-['Inter']">
+  <div class="flex min-h-screen bg-white dark:bg-[#121422] transition-colors duration-200 font-['Inter']">
 
     <!-- Left Side -->
     <div class="hidden lg:flex lg:w-1/2 bg-gradient p-12 flex-col justify-center text-white relative overflow-hidden">
@@ -25,7 +25,7 @@ const showPassword = ref(false);
     </div>
 
     <!-- Right Side: Form -->
-    <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white dark:bg-[#111111] transition-colors duration-200">
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white dark:bg-[#121422] transition-colors duration-200">
       <div class="max-w-md w-full">
 
         <!-- Header -->
