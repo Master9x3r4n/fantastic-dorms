@@ -9,7 +9,8 @@ export const reviewsData = {
             },
             "rating": 4.5,
             "score": 67,
-            "mediaSrcs": []
+            "mediaSrcs": [],
+            "tags": ["fantastic"]
         },
         {
             "username": "jlee_99",
@@ -20,7 +21,8 @@ export const reviewsData = {
             },
             "rating": 5,
             "score": 52,
-            "mediaSrcs": []
+            "mediaSrcs": [],
+            "tags": ["fantastic"]
         },
     ],
 
@@ -34,7 +36,8 @@ export const reviewsData = {
             },
             "rating": 4,
             "score": 44,
-            "mediaSrcs": []
+            "mediaSrcs": [],
+            "tags": ["fantastic"]
         },
         {
             "username": "tmorgan_med",
@@ -45,7 +48,8 @@ export const reviewsData = {
             },
             "rating": 4,
             "score": 44,
-            "mediaSrcs": []
+            "mediaSrcs": [],
+            "tags": ["fantastic"]
         },
     ],
 
@@ -59,7 +63,8 @@ export const reviewsData = {
             },
             "rating": 2,
             "score": 7,
-            "mediaSrcs": []
+            "mediaSrcs": [],
+            "tags": ["fantastic"]
         },
         {
             "username": "casey_c",
@@ -70,7 +75,8 @@ export const reviewsData = {
             },
             "rating": 1,
             "score": 5,
-            "mediaSrcs": []
+            "mediaSrcs": [],
+            "tags": ["fantastic"]
         },
     ],    
 }
