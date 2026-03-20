@@ -43,73 +43,81 @@ class ReviewController {
     }
     
     async create(req, res) {
-        if (!req.body.content.title) {
-            res.status(400).send({message: "Title cannot be empty."});
-            return;
-        } else if (!req.body.content.description) {
-            res.status(400).send({message: "Content cannot be empty."});
-            return;
-        } else if (!req.body.listingId) {
-            res.status(400).send({message: "Given listing is invalid."});
-            return;
-        } else if (!req.body.username) {
-            res.status(400).send({message: "User/author is invalid."});
-            return;
-        }
+        // if (!req.body.content.title) {
+        //     res.status(400).send({message: "Title cannot be empty."});
+        //     return;
+        // } else if (!req.body.content.body) {
+        //     res.status(400).send({message: "Content cannot be empty."});
+        //     return;
+        // } else if (!req.body.listingId) {
+        //     res.status(400).send({message: "Given listing is invalid."});
+        //     return;
+        // } else if (!req.body.username) {
+        //     res.status(400).send({message: "User/author is invalid."});
+        //     return;
+        // }
         
-        let cldnryJson;
-        const pictures = req.body.media;
-        const mediaCount = pictures.length;
-        let urls = [];
+        // let cldnryJson;
+        // const pictures = req.body.media;
+        // const mediaCount = pictures.length;
+        // let urls = [];
         
         // Check if image can be uploaded
-        try {
-            for (let i = 0; i < maxMedia; i++){
-                if (i < mediaCount)
-                {
-                    cldnryJson = await cloudinary.uploader.
-                    upload(pictures[i], {
-                        resource_type: "image",
-                        public_id: `${req.body._id}-${i}`,
-                        folder: 'reviewPictures',
-                    })
-                    urls[i] = cldnryJson.secure_url;
-                }
-                else
-                {
-                    urls[i] = '';
-                }
-            }
+        // try {
+        //     for (let i = 0; i < maxMedia; i++){
+        //         if (i < mediaCount)
+        //         {
+        //             cldnryJson = await cloudinary.uploader.
+        //             upload(pictures[i], {
+        //                 resource_type: "image",
+        //                 public_id: `${req.body._id}-${i}`,
+        //                 folder: 'reviewPictures',
+        //             })
+        //             urls[i] = cldnryJson.secure_url;
+        //         }
+        //         else
+        //         {
+        //             urls[i] = '';
+        //         }
+        //     }
 
-        } catch (error) {
-            console.log(error);
-            return  res.status(500).send({
-                message: 'An error occured while uploading picture'
-            });
-        }
+        // } catch (error) {
+        //     console.log(error);
+        //     return  res.status(500).send({
+        //         message: 'An error occured while uploading picture'
+        //     });
+        // }
 
-        const newReview = new Review({
-            listingId: req.body.listingId,
-            username: req.body.username,
-            
-            content: {
-                title: req.body.content.title,
-                description: req.body.content.description,
-                reply: ""
-            },
-            rating: [
-                { name: "Cleanliness",  value: req.body.rating[0].value },
-                { name: "Comfort",      value: req.body.rating[1].value },
-                { name: "Spaciousness", value: req.body.rating[2].value },
-                { name: "Price",        value: req.body.rating[3].value }
-            ],
-            score: 0,
-            media: urls,     
-            createdAt: req.body.createdAt
-        });
-
-        newReview
-            .save(newReview)
+        // console.log(req.body);
+        // console.log(req.body.username);
+        // console.log(req.body._value.username);
+        // console.log(req.body._value.content);
+        // console.log(req.body._value.content.title);
+        // const newReview = new Review({
+        //     listingId: req.body.listingId,
+        //     username: req.body.username,
+        //     content: {
+        //         title: req.body._value.content.title,
+        //         description: req.body._value.content.description,
+        //         reply: ""
+        //     },
+        //     rating: {
+        //         cleanliness:    req.body._value.rating.cleanliness,
+        //         comfort:        req.body._value.rating.comfort,
+        //         communication:  req.body._value.rating.communication,
+        //         location:       req.body._value.rating.location       
+        //     },
+        //     score: req.body.score,
+        //     media: req.body.media,     
+        //     createdAt: req.body.createdAt
+        // });
+        
+        // console.log('i <3 milk');
+        // console.log('i <3 cookies');
+        // console.log(newReview);
+        // const newReview = new Review(req.body);
+        const newReview = new Review(req.body);
+        newReview.save()
             .then(data => {
                 res.send(data);
             })

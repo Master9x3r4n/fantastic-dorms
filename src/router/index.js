@@ -24,6 +24,11 @@ const router = createRouter({
       name: "login",
       component: LoginView,
       meta: { search: false, loggedIn: false },
+      beforeEnter: (to, from, next) => {
+        const user = localStorage.getItem('USER');
+        if (user && from.path !== '/register')
+          return next('/');
+      }
     },
     {
       path: "/register",
@@ -74,17 +79,28 @@ const router = createRouter({
     },
     {
       path: "/reviews/:id",
-      name: "reviews-one",
+      name: "review",
       component: ReviewsView,
       meta: { search: true, loggedIn: true },
       props: true,
     },
     {
       path: "/write",
+      redirect: "/"
+    },
+    {
+      path: "/write/:id",
       name: "write",
       component: WriteView,
       meta: { search: true, loggedIn: true },
       props: true,
+      beforeEnter: (to, from, next) => {
+        const user = localStorage.getItem('USER');
+        if (!user)
+          return next('/login');
+        else
+          return next();
+      }
     },
     {
       path: "/settings",
@@ -92,6 +108,13 @@ const router = createRouter({
       component: SettingsView,
       meta: { search: false, loggedIn: true },
       props: true,
+      beforeEnter: (to, from, next) => {
+        const user = localStorage.getItem('USER');
+        if (!user)
+          return next('/login');
+        else
+          return next();
+      }
     },
   ],
 })

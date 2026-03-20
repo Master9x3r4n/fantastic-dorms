@@ -109,7 +109,7 @@
                                 {{ i.content.title }}
                             </template>
                             <template #review>
-                                {{ i.content.description }}
+                                {{ i.content.body }}
                             </template>
                             <template #ownerReply v-if="i.content.reply">
                                 {{ i.content.reply }}

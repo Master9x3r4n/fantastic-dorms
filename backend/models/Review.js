@@ -3,32 +3,21 @@ import mongoose from 'mongoose';
 const ReviewSchema = new mongoose.Schema({
     listingId: { type: String, required: true },
     username: { type: String, required: true },
-    
+    isAnonymous: { type: Boolean, default: false },
     content: {
         title: { type: String, default: '' },
-        description: { type: String, default: '' },
+        body: { type: String, default: '' },
         reply: { type: String, default: '' }
     },
-    rating: [
-        {
-            name: { type: String, default: '' },
-            value: { type: Number, default: 0 }
-        },
-        {
-            name: { type: String, default: '' },
-            value: { type: Number, default: 0 }
-        },
-        {
-            name: { type: String, default: '' },
-            value: { type: Number, default: 0 }
-        },
-        {
-            name: { type: String, default: '' },
-            value: { type: Number, default: 0 }
-        }
-    ],
+    rating: {
+        cleanliness: { type: Number, default: 0 },
+        comfort: { type: Number, default: 0 },
+        communication: { type: Number, default: 0 },
+        location: { type: Number, default: 0 }
+    },
     score: { type: Number, default: 0 },
-    media: [String],     
+    media: [String],
+    tags: [String],
     createdAt: { type: Date, default: Date.now }
 });
 
