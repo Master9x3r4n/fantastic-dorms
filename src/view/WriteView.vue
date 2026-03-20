@@ -50,10 +50,10 @@ const previewUrls = ref([]);
 
 // Ratings State
 const ratings = ref({
-	cleanliness: 0,
-	accuracy: 0,
-	communication: 0,
-	location: 0
+	cleanliness: 1,
+	accuracy: 1,
+	communication: 1,
+	location: 1
 });
 
 // Tags State
