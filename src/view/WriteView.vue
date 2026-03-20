@@ -10,6 +10,7 @@ import MediaContainer from "@/components/carousel/MediaContainer.vue";
 import UploadBox from "@/components/write-review-content/UploadBox.vue";
 import Divider from "@/components/divider/Divider.vue";
 import ReviewTag from "@/components/write-review-content/ReviewTag.vue";
+import ThumbsButton from "@/components/thumbs-buttons/ThumbsButton.vue";
 
 // User info props
 const props = defineProps({
@@ -318,13 +319,9 @@ onBeforeUnmount(() => {
 						</div>
 
 						<div class="flex items-center gap-4 text-slate-500 dark:text-slate-400">
-							<div class="flex items-center gap-1 cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors">
-								<span class="material-symbols-outlined text-[20px]!">thumb_up_off_alt</span>
-								<span class="text-sm font-medium">67</span>
-							</div>
-							<div class="flex items-center gap-1 cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors">
-								<span class="material-symbols-outlined text-[20px]!">thumb_down_off_alt</span>
-							</div>
+							<ThumbsButton direction="up" />
+							<span class="text-sm font-medium">67</span>
+							<ThumbsButton direction="down" />
 						</div>
 					</div>
 				</div>
