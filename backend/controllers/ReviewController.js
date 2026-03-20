@@ -12,6 +12,8 @@ const cloudinary = require('cloudinary').v2;
 // configure cloudinary
 console.log(cloudinary.config().cloud_name);
 
+const maxMedia = 4;
+
 class ReviewController {
     async create(req, res) {
         if (!req.body.content.title) {
@@ -35,14 +37,21 @@ class ReviewController {
         
         // Check if image can be uploaded
         try {
-            for (let i = 0; i < mediaCount; i++){
-                cldnryJson = await cloudinary.uploader.
-                upload(pictures[i], {
-                    resource_type: "image",
-                    public_id: `${req.body._id}-${i}`,
-                    folder: 'reviewPictures',
-                })
-                urls[i] = cldnryJson.secure_url;
+            for (let i = 0; i < maxMedia; i++){
+                if (i < mediaCount)
+                {
+                    cldnryJson = await cloudinary.uploader.
+                    upload(pictures[i], {
+                        resource_type: "image",
+                        public_id: `${req.body._id}-${i}`,
+                        folder: 'reviewPictures',
+                    })
+                    urls[i] = cldnryJson.secure_url;
+                }
+                else
+                {
+                    urls[i] = '';
+                }
             }
 
         } catch (error) {
@@ -137,15 +146,24 @@ class ReviewController {
         {
             // Check if image can be uploaded
             try {
-                for (let i = 0; i < mediaCount; i++){
-                    cldnryJson = await cloudinary.uploader.
-                    upload(pictures[i], {
-                        resource_type: "image",
-                        public_id: `${req.body._id}-${i}`,
-                        folder: 'reviewPictures',
-                        overwrite: true
-                    })
-                    urls[i] = cldnryJson.secure_url;
+                for (let i = 0; i < maxMedia; i++){
+
+                    if (i < mediaCount)
+                    {
+                        cldnryJson = await cloudinary.uploader.
+                        upload(pictures[i], {
+                            resource_type: "image",
+                            public_id: `${req.body._id}-${i}`,
+                            folder: 'reviewPictures',
+                            overwrite: true
+                        })
+                        urls[i] = cldnryJson.secure_url;
+                    }
+                    else
+                    {
+                        urls[i] = '';
+                    }
+                    
                 }
 
             } catch (error) {
