@@ -27,6 +27,15 @@ ProfileService.get(review.username)
     .catch(error => {
         console.log(`Error occurred retrieving profile data of user ${review.username} for review: ${error.message}`);
     });
+
+const getOverallRating = (ratings) => {
+    let overall = 0;
+    for (let p in ratings) {
+        overall += ratings[p];
+        console.log(ratings[p]);
+    }
+    return (overall/4).toFixed(1);
+}
 </script>
 
 <template>
@@ -54,7 +63,8 @@ ProfileService.get(review.username)
             <div class="flex justify-between items-center w-3/12 px-2">
                 <img src="@\assets\rating-assets\star-full.svg" width="28px">
                 <!-- <div class="font-bold text-3xl leading-10">{{ (review.score/4).toFixed(1) }}</div> -->
-                <div class="font-bold text-3xl leading-10">{{ review.score.toFixed(1) }}</div>
+                <!-- <div class="font-bold text-3xl leading-10">{{ review.score.toFixed(1) }}</div> -->
+                <div class="font-bold text-3xl leading-10">{{ getOverallRating(review.rating) }}</div>
             </div>
         </div>
 
@@ -81,7 +91,6 @@ ProfileService.get(review.username)
                     <div class="absolute bg-white dark:bg-[#111111] p-auto pl-1 rounded-full size-6 top-16 right-2 text-[14px] dark:text-white">+3</div>
                     <MediaContainer size="small"/>
                 </div>
-
             </div>
 
             <!-- CHANGE THIS TO CONDITIONAL SLOTTING -->

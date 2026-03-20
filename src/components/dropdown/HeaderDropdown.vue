@@ -35,7 +35,7 @@ const logout = () => {
 		</template>
 
 		<template #content>
-			<div class="w-fit p-2 flex flex-col justify-between gap-2">
+			<div class="w-fit min-w-60 p-2 flex flex-col justify-between gap-2">
 				<!-- Profile Info -->
 				<div class="flex flex-row justify-around w-full gap-3">
 					<ProfileIcon

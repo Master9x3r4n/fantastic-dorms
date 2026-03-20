@@ -19,6 +19,14 @@ ProfileService.get(props.review.username)
         console.log(`Error retrieving profile \'${props.review.username}\': ${error.message}`)
     });
 
+const getOverallRating = (ratings) => {
+    let overall = 0;
+    for (let p in ratings) {
+        overall += ratings[p];
+        console.log(ratings[p]);
+    }
+    return (overall/4).toFixed(1);
+}
 </script>
 
 <template>
@@ -47,7 +55,8 @@ ProfileService.get(props.review.username)
             <div class="flex justify-between items-center w-[8%] text-center">
                 <img src="@\assets\rating-assets\star-full.svg" width="36px">
                 <!-- <div class="font-bold text-3xl leading-10">{{ (review.score/4).toFixed(1) }}</div> -->
-                <div class="font-bold text-3xl leading-10">{{ review.score.toFixed(1) }}</div>
+                <!-- <div class="font-bold text-3xl leading-10">{{ review.score.toFixed(1) }}</div> -->
+                <div class="font-bold text-3xl leading-10">{{ getOverallRating(review.rating) }}</div>
             </div>
         </div>
 
@@ -68,7 +77,7 @@ ProfileService.get(props.review.username)
             </div>
 
             <!-- Carousel Container -->
-            <div class="mt-3 h-[47%] flex w-full justify-center items-center">
+            <!-- <div class="mt-3 h-[47%] flex w-full justify-center items-center">
                 <Carousel :count="4" buttonStyling="large" :buttonSpacing="4">
                 <template #content>
                     <template v-for="i in 10">
@@ -78,7 +87,7 @@ ProfileService.get(props.review.username)
                     </template>
                 </template>
                 </Carousel>
-            </div>
+            </div> -->
 
             <!-- Reply Container -->
             <div v-if="$slots.ownerReply && $slots.ownerReply !== ''" class="w-full h-[23%] mt-3 pl-2 pr-2">

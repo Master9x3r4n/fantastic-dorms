@@ -93,7 +93,7 @@
             <div class="flex flex-col gap-1">
                 <div class="flex flex-row justify-between items-center gap-2">
                     <span class="font-bold text-3xl leading-10 dark:text-white">Reviews</span>
-                    <RouterLink to="/write">
+                    <RouterLink :to="{ name: 'write', params: { id: props.id } }">
                         <BlueButton>
                             <span class="material-symbols-outlined text-white text-[14px]">edit</span>
                             <span class="font-normal text-[16px] leading-4.75 text-white">Write</span>

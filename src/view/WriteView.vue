@@ -69,8 +69,7 @@ const overallRating = computed(() => {
 	const activeCount = values.filter(val => val > 0).length;
 
 	if (activeCount === 0) return '0.0';
-	form.value.score = (sum / activeCount).toFixed(1);
-	return form.value.score;
+	return (sum / activeCount).toFixed(1);
 });
 
 /////// Methods ///////
@@ -108,7 +107,7 @@ const submitReview = () => {
 			communication: form.value.rating.communication,
 			location: form.value.rating.location
 		},
-		score: form.value.score,
+		score: 0,
 		media: form.value.media,
 		tags: form.value.tags,
 		createdAt: Date.now()

@@ -24,11 +24,11 @@ const router = createRouter({
       name: "login",
       component: LoginView,
       meta: { search: false, loggedIn: false },
-      beforeEnter: (to, from, next) => {
-        const user = localStorage.getItem('USER');
-        if (user && from.path !== '/register')
-          return next('/');
-      }
+      // beforeEnter: (to, from, next) => {
+      //   const user = localStorage.getItem('USER');
+      //   if (user && from.path !== '/register')
+      //     return next('/');
+      // }
     },
     {
       path: "/register",
