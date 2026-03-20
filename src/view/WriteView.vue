@@ -69,7 +69,8 @@ const overallRating = computed(() => {
 	const activeCount = values.filter(val => val > 0).length;
 
 	if (activeCount === 0) return '0.0';
-	return (sum / activeCount).toFixed(1);
+	form.value.score = (sum / activeCount).toFixed(1);
+	return form.value.score;
 });
 
 /////// Methods ///////

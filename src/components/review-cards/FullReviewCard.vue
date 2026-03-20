@@ -23,7 +23,7 @@ ProfileService.get(props.review.username)
 
 <template>
     <!-- 1120 x 769 h-228 -->
-    <div class="w-max-295 h-fit p-5 flex flex-col items-center justify-center gap-6.5
+    <div class="w-max-295 h-fit p-10 flex flex-col items-center justify-center gap-6.5
     bg-white dark:bg-[#121422] dark:text-white w-full rounded-lg border border-solid border-slate-200 shadow-sm transition-colors duration-200 dark:border-slate-700">
         <!-- Header Container -->
         <div class="w-full flex justify-between items-center ">
@@ -46,7 +46,8 @@ ProfileService.get(props.review.username)
             <!-- Rating -->
             <div class="flex justify-between items-center w-[8%] text-center">
                 <img src="@\assets\rating-assets\star-full.svg" width="36px">
-                <div class="font-bold text-3xl leading-10">{{ review.rating[0].value.toFixed(1) }}</div>
+                <!-- <div class="font-bold text-3xl leading-10">{{ (review.score/4).toFixed(1) }}</div> -->
+                <div class="font-bold text-3xl leading-10">{{ review.score.toFixed(1) }}</div>
             </div>
         </div>
 

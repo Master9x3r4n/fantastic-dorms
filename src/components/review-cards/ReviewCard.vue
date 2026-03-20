@@ -53,7 +53,8 @@ ProfileService.get(review.username)
             <!-- Rating -->
             <div class="flex justify-between items-center w-3/12 px-2">
                 <img src="@\assets\rating-assets\star-full.svg" width="28px">
-                <div class="font-bold text-3xl leading-10">{{ review.rating[0].value.toFixed(1) }}</div>
+                <!-- <div class="font-bold text-3xl leading-10">{{ (review.score/4).toFixed(1) }}</div> -->
+                <div class="font-bold text-3xl leading-10">{{ review.score.toFixed(1) }}</div>
             </div>
         </div>
 
