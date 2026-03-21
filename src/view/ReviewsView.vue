@@ -3,7 +3,8 @@ import { ref } from 'vue';
 import Divider from '@/components/divider/Divider.vue';
 import FullReviewCard from '@/components/review-cards/FullReviewCard.vue';
 import ReviewService from '../services/ReviewService.js';
- 
+import ReviewTag from "@/components/write-review-content/ReviewTag.vue";
+
 const props = defineProps({
     id: { type: String, default: null }
 })
@@ -40,23 +41,24 @@ if (props.id) {
             <!-- Search Result -->
             <div v-if="reviews.length > 1">
                 <div class="font-light text-[20px] italic leading-6">
-                    Found {{ reviews.length }} review<template v-if="reviews.length != 1">s</template>...
+                    Found {{ reviews.length }} review<template v-if="reviews.length !== 1">s</template>...
                 </div>
             </div>
         </div>
 
         <!-- Body Content -->
         <div class="h-fit w-full flex flex-col gap-6">
-            <template v-for="i in reviews" :key="i.id">
+            <template v-for="(i, index) in reviews" :key="i.id">
             <div>
                 <FullReviewCard :review="i">
                     <template #review-title>{{i.content.title}}</template>
                     <template #review-content>{{i.content.description}}</template>
+                    <template #review-tags><ReviewTag :tags="i.tags"  tags=""/></template>
                     <template v-if="i.content.reply" #ownerReply>{{ i.content.reply }}</template>
                     <template #score>{{ i.score }}</template>
                 </FullReviewCard>
             </div>
-            <Divider />
+            <Divider v-if="index !== reviews.length - 1"/>
             </template>
         </div>
     </div>

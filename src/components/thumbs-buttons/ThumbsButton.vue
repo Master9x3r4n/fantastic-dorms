@@ -1,32 +1,33 @@
 <script setup>
-import { ref } from 'vue'
-import Icon from '../icon/Icon.vue';
-
+import { ref, computed } from 'vue'
+// Astaghfirullah stephen stop leaving stuff to be fixed in the future
 const props = defineProps({
-    direction: {
-        type: String,
-        default: "up"
-    }
+	direction: {
+		type: String,
+		default: "up" // Expects "up" or "down"
+	}
 })
 
 const toggled = ref(false);
 
-// This exists cause of older code, deal with it
-const getDirection = () => {
-    return props.direction.charAt(0).toUpperCase() + props.direction.slice(1).toLowerCase();
-}
-
-const getIconName = () => {
-    const toggle = toggled.value? 'Fill' : ''
-    return `thumbs${getDirection()}${toggle}`
-}
-
+// Dynamically construct the material symbol name based on the direction prop
+const iconName = computed(() => `thumb_${props.direction.toLowerCase()}_off_alt`);
 </script>
 
 <template>
-    <div class="flex items-center justify-center">
-        <button @click="toggled = !toggled">
-            <Icon :name="getIconName()"/>
-        </button>
-    </div>
+	<div
+			class="flex items-center gap-1 cursor-pointer transition-colors text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+			@click="toggled = !toggled"
+	>
+    <span
+				class="material-symbols-outlined text-[20px]!"
+				:class="{ 'filled': toggled }"
+		>
+      {{ iconName }}
+    </span>
+	</div>
 </template>
+
+<style scoped>
+@reference "tailwindcss";
+</style>

@@ -3,6 +3,7 @@ import { ref, computed } from 'vue';
 import {useRouter} from "vue-router";
 import Divider from "@/components/divider/Divider.vue";
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
+import PasswordToggleButton from "@/components/page-buttons/PasswordToggleButton.vue";
 
 // Define Props with Default Values
 const props = defineProps({
@@ -36,6 +37,10 @@ const currentPassword = ref('');
 const newPassword = ref('');
 const confirmPassword = ref('');
 
+// Show Password Toggle States
+const showCurrent = ref(false);
+const showNew = ref(false);
+const showConfirm = ref(false);
 // Refs
 const fileInputRef = ref(null);
 
@@ -277,13 +282,16 @@ const handlePasswordUpdate = () => {
 								<!-- Current Password -->
 								<div class="space-y-2">
 									<label class="text-sm font-semibold text-black dark:text-white">Current Password</label>
-									<input
-											v-model="currentPassword"
-											type="password"
-											placeholder="Enter current password"
-											class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
-											required
-									/>
+									<div class="relative">
+										<input
+												v-model="currentPassword"
+												:type="showCurrent ? 'text' : 'password'"
+												placeholder="Enter current password"
+												class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
+												required
+										/>
+										<PasswordToggleButton  v-model="showCurrent"/>
+									</div>
 								</div>
 
 								<div class="hidden md:block"></div>
@@ -291,25 +299,31 @@ const handlePasswordUpdate = () => {
 								<!-- New Password -->
 								<div class="space-y-2">
 									<label class="text-sm font-semibold text-black dark:text-white">New Password</label>
-									<input
+									<div class="relative">
+										<input
 											v-model="newPassword"
-											type="password"
+											:type="showNew ? 'text' : 'password'"
 											placeholder="Enter new password"
 											class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
 											required
-									/>
+										/>
+										<PasswordToggleButton  v-model="showNew"/>
+									</div>
 								</div>
 
 								<!-- Confirm New Password -->
 								<div class="space-y-2">
 									<label class="text-sm font-semibold text-black dark:text-white">Confirm New Password</label>
-									<input
-											v-model="confirmPassword"
-											type="password"
-											placeholder="Confirm new password"
-											class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
-											required
-									/>
+									<div class="relative">
+										<input
+												v-model="confirmPassword"
+												:type="showConfirm ? 'text' : 'password'"
+												placeholder="Confirm new password"
+												class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
+												required
+										/>
+										<PasswordToggleButton v-model="showConfirm"/>
+									</div>
 								</div>
 							</div>
 							<Divider />

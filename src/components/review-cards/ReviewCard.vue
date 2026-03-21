@@ -45,17 +45,17 @@ const getOverallRating = (ratings) => {
         <div class="w-full flex justify-between items-center">
             <div v-if="profile">
                 <RouterLink :to="{name: 'profile', params: {id: review.username}}">
-                <div class="flex gap-3 items-center">
-                    <!-- Profile -->
-                    <ProfileIcon :src="profile.picture" size-class="w-13 h-13"></ProfileIcon>
+                    <div class="flex gap-3 items-center">
+                        <!-- Profile -->
+                        <ProfileIcon :src="profile.picture" sizeClass="w-13 h-13"></ProfileIcon>
 
-                    <!-- Name -->
-                    <div>
-                        <div class="font-medium text-[20px] leading-6">{{ profile.name.firstName }} {{ profile.name.lastName }}</div>
-                        <!-- <div class="font-normal leading-5 italic"> {{ review.length }} Reviews</div> -->
-                        <div class="font-normal leading-5 italic">(-) Reviews</div>
+                        <!-- Name -->
+                        <div>
+                            <div class="font-medium text-[20px] leading-6">{{ profile.name }}</div>
+                            <!-- <div class="font-normal leading-5 italic">{{ profile.reviewData.reviews.length }} Reviews</div> -->
+                            <div class="font-normal leading-5 italic">- Reviews</div>
+                        </div>
                     </div>
-                </div>
                 </RouterLink>
             </div>
 

@@ -47,7 +47,7 @@
 </script>
 
 <template>
-  <div class="flex min-h-screen bg-white dark:bg-[#111111] transition-colors duration-200 font-['Inter']">
+  <div class="flex min-h-screen bg-white dark:bg-[#121422] transition-colors duration-200 font-['Inter']">
 
     <!-- Left Side -->
     <div class="hidden lg:flex lg:w-1/2 bg-gradient p-12 flex-col justify-center text-white relative overflow-hidden">
@@ -64,7 +64,7 @@
     </div>
 
     <!-- Right Side: Form -->
-    <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white dark:bg-[#111111] transition-colors duration-200">
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white dark:bg-[#121422] transition-colors duration-200">
       <div class="max-w-md w-full">
 
         <!-- Header -->
@@ -116,15 +116,7 @@
                   required
                   v-model="form.password"
               />
-              <button
-                  @click="togglePassword"
-                  class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 focus:outline-none"
-                  type="button"
-              >
-                <span class="material-symbols-outlined text-xl select-none">
-                  {{ showPassword ? 'visibility' : 'visibility_off' }}
-                </span>
-              </button>
+              <PasswordToggleButton v-model="showPassword" />
             </div>
             <!-- <p class="mt-1.5 text-xs text-slate-400 dark:text-slate-500 transition-colors">Minimum 8 characters with at least one number.</p> -->
           </div>

@@ -11,6 +11,8 @@ import UploadBox from "@/components/write-review-content/UploadBox.vue";
 import Divider from "@/components/divider/Divider.vue";
 import ListingService from "../services/ListingService.js";
 import ReviewService from "../services/ReviewService.js";
+import ReviewTag from "@/components/write-review-content/ReviewTag.vue";
+import ThumbsButton from "@/components/thumbs-buttons/ThumbsButton.vue";
 
 const props = defineProps({
 	id: { type: String, default: '' }
@@ -167,7 +169,7 @@ onBeforeUnmount(() => {
 					px-3 py-1.5 bg-white dark:bg-[#121422] shadow-sm"
 					@click="goBack"
 				>
-					<span class="material-symbols-outlined text-[16px] mr-1">arrow_back</span>
+					<span class="material-symbols-outlined text-[16px]! mr-1">arrow_back</span>
 					Back to listing page
 				</button>
 
@@ -199,8 +201,7 @@ onBeforeUnmount(() => {
 					<Divider />
 					<div class="flex items-center transition-colors">
 						<div class="w-8 h-8 bg-slate-200 dark:bg-slate-700 rounded-full mr-3 flex items-center justify-center overflow-hidden">
-							<ProfileIcon v-if="!form.isAnonymous" :src="user.picture" alt="user img" size-class="w-full h-full"></ProfileIcon>
-							<span v-else class="material-symbols-outlined text-slate-400 text-sm">person_off</span>
+							<ProfileIcon :isAnonymous="form.isAnonymous" :src="user.picture" alt="user img" sizeClass="w-full h-full"></ProfileIcon>
 						</div>
 						<span class="text-sm text-slate-500 dark:text-slate-400">
 							Post as <span class="font-medium text-slate-900 dark:text-white">{{ form.isAnonymous ? 'Anonymous' : user.name.firstName + ' ' + user.name.lastName }}</span>
@@ -245,7 +246,7 @@ onBeforeUnmount(() => {
 						<div class="flex gap-2 mb-3">
 							<div class="relative flex-1">
 								<span class="absolute inset-y-0 left-0 flex items-center pl-3">
-									<span class="material-symbols-outlined text-slate-400 text-[18px]">search</span>
+									<span class="material-symbols-outlined text-slate-400 text-[18px]!">search</span>
 								</span>
 								<input
 									v-model="currentTag"
@@ -266,13 +267,12 @@ onBeforeUnmount(() => {
   						<span v-for="tag in form.tags" :key="tag" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#355AFF]/10 text-[#355AFF] border border-[#355AFF]/20">
 							<span class="leading-none">{{ tag }}</span>
 							<button type="button" @click="removeTag(tag)" class="ml-1.5 flex items-center justify-center w-6 h-6 rounded-full hover:bg-[#355AFF]/20 hover:text-[#2b4bcc] transition-colors focus:outline-none">
-								<span class="material-symbols-outlined text-[14px] leading-none">close</span>
+								<span class="material-symbols-outlined text-[14px]! leading-none">close</span>
 							</button>
   						</span>
 						</div>
 						<p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Note: press enter or click Add to separate tags</p>
 					</div>
-
 
 					<!-- Certification -->
 					<div class="flex items-start">
@@ -327,8 +327,7 @@ onBeforeUnmount(() => {
 						<div class="flex justify-between items-start mb-4">
 							<div class="flex items-center gap-3">
 								<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
-									<ProfileIcon v-if="!form.isAnonymous" :src="user.picture" alt="user img" size-class="w-full h-full"></ProfileIcon>
-									<span v-else class="material-symbols-outlined text-slate-400 text-2xl">person_off</span>
+									<ProfileIcon :isAnonymous="form.isAnonymous" :src="user.picture" alt="user img" sizeClass="w-full h-full" iconSize="text-[24px]!"></ProfileIcon>
 								</div>
 								<div>
 									<h3 class="font-bold text-slate-900 dark:text-white">{{ form.isAnonymous ? 'Anonymous' : user.name.firstName + ' ' + user.name.lastName }}</h3>
@@ -349,11 +348,7 @@ onBeforeUnmount(() => {
 						></div>
 
 						<!-- Tags Preview -->
-						<div v-if="form.tags.length > 0" class="flex flex-wrap gap-2 mb-6">
-							<span v-for="tag in form.tags" :key="tag" class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-md text-xs font-medium">
-								{{ tag }}
-							</span>
-						</div>
+						<ReviewTag :tags="form.tags"/>
 
 						<!-- Static Image Carousel-->
 						<div v-if="form.media.length > 0" class="my-6 h-[47%] flex w-full justify-center items-center">
@@ -375,13 +370,9 @@ onBeforeUnmount(() => {
 						</div>
 
 						<div class="flex items-center gap-4 text-slate-500 dark:text-slate-400">
-							<div class="flex items-center gap-1 cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors">
-								<span class="material-symbols-outlined text-[20px]!">thumb_up_off_alt</span>
-								<span class="text-sm font-medium">67</span>
-							</div>
-							<div class="flex items-center gap-1 cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors">
-								<span class="material-symbols-outlined text-[20px]!">thumb_down_off_alt</span>
-							</div>
+							<ThumbsButton direction="up" />
+							<span class="text-sm font-medium">67</span>
+							<ThumbsButton direction="down" />
 						</div>
 					</div>
 				</div>

@@ -95,7 +95,7 @@
     </div>
 
     <!-- Right Side: Form -->
-    <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-transparent transition-colors duration-200">
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white dark:bg-[#121422] transition-colors duration-200">
       <div class="max-w-md w-full">
         <!-- Header -->
         <div class="mb-5 text-center lg:text-left">
@@ -137,15 +137,7 @@
                 maxlength="32"
                 v-model="inputs.fields.password"
               />
-              <button
-                  @click="togglePassword"
-                  class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 focus:outline-none"
-                  type="button"
-              >
-                <span class="material-symbols-outlined text-xl select-none">
-                  {{ showPassword ? 'visibility' : 'visibility_off' }}
-                </span>
-              </button>
+							<PasswordToggleButton v-model="showPassword" />
             </div>
             <p class="mt-1.5 text-sm text-slate-900 dark:text-white transition-colors">Minimum of 8 characters, with at least one number and one symbol.</p>
           </div>
