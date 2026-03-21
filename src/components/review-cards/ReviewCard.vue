@@ -13,16 +13,16 @@ const props = defineProps({
     }
 })
 
-console.log('PROPS.ID:');
-console.log(props.id);
+// console.log('PROPS.ID:');
+// console.log(props.id);
 
 const review = props.review;
 const profile = ref(null);
 ProfileService.get(review.username)
     .then(res => {
         profile.value = res.data;
-        console.log('Profile:');
-        console.log(profile.value);
+        // console.log('Profile:');
+        // console.log(profile.value);
     })
     .catch(error => {
         console.log(`Error occurred retrieving profile data of user ${review.username} for review: ${error.message}`);

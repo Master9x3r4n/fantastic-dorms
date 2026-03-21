@@ -86,12 +86,11 @@ const removeTag = (tagToRemove) => {
 	tags.value = tags.value.filter(tag => tag !== tagToRemove);
 };
 
+const submitting = ref(false);
+const errorMessage = ref('');
 const submitReview = () => {
-	if (!form.value.certified) {
-		alert("Please certify that your review is genuine.");
-		return;
-	}
-
+	errorMessage.value = '';
+	
 	const newReview = {
 		listingId: props.id,
 		username: form.value.isAnonymous ? '< Anonymous >' : user.username,
@@ -116,6 +115,7 @@ const submitReview = () => {
 	console.log('NEW REVIEW:');
 	console.log(newReview);
 
+	submitting.value = true;
 	ReviewService.create(newReview)
 		.then(res => {
 			console.log('Review successfully created.');
@@ -123,6 +123,8 @@ const submitReview = () => {
 		})
 		.catch(error => {
 			console.log(`Error creating review: ${error.message}.`);
+			submitting.value = false;
+			errorMessage.value = `Failed to create review. Please try again later.`;
 		});
 };
 
@@ -205,17 +207,17 @@ onBeforeUnmount(() => {
 						</span>
 					</div>
 				</div>
-
+				
 				<!-- Main Form -->
 				<form @submit.prevent="submitReview" class="space-y-6">
 					<!-- Title -->
 					<div>
 						<label class="block text-sm font-medium text-slate-900 dark:text-white mb-1" for="title">Review Title <span class="text-red-500">*</span></label>
 						<input
-						v-model="form.title"
-						type="text"
-						id="title"
-						placeholder="Enter title here"
+							v-model="form.title"
+							type="text"
+							id="title"
+							placeholder="Enter title here"
 							class="w-full rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] px-3 py-2 text-sm text-slate-900 dark:text-white focus:border-[#355AFF] focus:outline-none focus:ring-1 focus:ring-[#355AFF] placeholder:text-slate-400 dark:placeholder:text-slate-500 shadow-sm transition-colors"
 							required
 						/>
@@ -229,9 +231,13 @@ onBeforeUnmount(() => {
 						:max-length="1000"
 					/>
 
+					<!-- Photo Upload -->
+					<!-- NOT FUNCTIONAL YET -->
+					<UploadBox v-model="form.media"/>
+					
 					<!-- Ratings Box -->
 					<RatingBox v-model="form.rating" :overallRating="overallRating" />
-
+					
 					<!-- Tags -->
 					<div>
 						<label class="block text-sm font-medium text-slate-900 dark:text-white mb-1" for="tags">Tags</label>
@@ -268,10 +274,6 @@ onBeforeUnmount(() => {
 					</div>
 
 
-					<!-- Photo Upload -->
-					<!-- NOT FUNCTIONAL YET -->
-					<!-- <UploadBox v-model="uploadedPhotos"/> -->
-
 					<!-- Certification -->
 					<div class="flex items-start">
 						<div class="flex items-center h-5">
@@ -295,9 +297,10 @@ onBeforeUnmount(() => {
 							class="bg-[#355AFF] hover:bg-[#2b4bcc] text-white shadow-sm
 								disabled:bg-gray-300 disabled:hover:bg-gray-200 disabled:dark:bg-gray-800 disabled:dark:hover:bg-gray-700 disabled:shadow-transparent
 								px-6 py-2 rounded-md text-sm font-medium transition-colors"
-							:disabled="!isFormValid"
+							:disabled="!isFormValid || submitting"
 						>
-							Submit
+							<div v-if="!submitting">Submit</div>
+							<div v-else>Submitting...</div>
 						</button>
 						<button 
 							type="button" 
@@ -306,6 +309,9 @@ onBeforeUnmount(() => {
 						>
 							Reset
 						</button>
+						<div class="text-red-500 text-sm">
+							{{ errorMessage }}
+						</div>
 						<!-- <button type="button" class="border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-slate-900 dark:text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm">Save to Drafts</button> -->
 					</div>
 				</form>
