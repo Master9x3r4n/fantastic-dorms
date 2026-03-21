@@ -3,6 +3,7 @@
   import { useRouter } from 'vue-router';
   import Divider from "@/components/divider/Divider.vue";
   import ProfileService from "../services/ProfileService";
+	import PasswordToggleButton from "@/components/page-buttons/PasswordToggleButton.vue";
   const router = useRouter();
 
   /*
