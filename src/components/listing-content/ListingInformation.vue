@@ -62,14 +62,14 @@ const props = defineProps({
     </div>
 
     <!-- Location -->
-    <Divider/>
+    <!-- <Divider/>
     <div class="w-full">
         <div class="sub-heading">Location</div>
         <MediaContainer size="wide" src="https://cdn.britannica.com/06/276306-049-A8451874/world-map.jpg"/>
-    </div>
+    </div> -->
 
     <!-- Contact -->
-    <Divider/>
+    <!-- <Divider/>
     <div class="w-full">
         <div class="sub-heading">Contact</div>
         <div>
@@ -79,7 +79,7 @@ const props = defineProps({
                 </li>
             </ul>
         </div>
-    </div>
+    </div> -->
 </div>
 </template>
 
