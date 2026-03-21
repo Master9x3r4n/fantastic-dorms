@@ -28,11 +28,13 @@ const updateToggle = (id) => {
 </script>
 
 <template>
-    <ThumbsButton direction="up" 
+    <ThumbsButton 
+    direction="up" 
     :toggled="selectedDir == 'up'"
     @handleClick="updateToggle"/>
         <div class="text-sm font-medium">{{ props.score + vote }}</div>
-    <ThumbsButton direction="down" 
+    <ThumbsButton 
+    direction="down" 
     :toggled="selectedDir == 'down'"
     @handleClick="updateToggle"/>
 </template>
