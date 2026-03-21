@@ -30,14 +30,16 @@ const getOverallAttribute = () => {
     for (let j =0; j < props.ratings.length; j ++) {
         sum += props.ratings[j].rating;
     }
-    return (sum / props.ratings.length).toFixed(1)
+    const total = props.ratings.length>1? (sum / props.ratings.length): 0
+    return  total.toFixed(1)
 }
 
 </script>
 
 <template>
+    <!-- h-79.25 -->
     <div class="flex flex-col justify-center items-center 
-    p-10 gap-3.75 w-105.25 h-79.25 border-3 rounded-3xl
+    p-10 gap-3.75 w-105.25 h-fit border-3 rounded-3xl
     border-[#BFBFBF] bg-white dark:bg-[#111111] dark:border-[#111111] dark:text-white">
         <!-- Header Container -->
         <div class="h-12 w-full font-bold text-3xl leading-10 
@@ -68,7 +70,8 @@ const getOverallAttribute = () => {
                 <!-- Rating -->
                 <div class="flex justify-between items-center w-[20%]">
                     <img src="@\assets\rating-assets\star-full.svg" width="24px">
-                    <div>{{ props.ratings[i-1].rating.toFixed(1) }}</div>
+                    <div v-if="props.ratings.length > 1">{{ props.ratings[i-1].rating.toFixed(1) }}</div>
+                    <div v-else>0.0</div>
                 </div>
             </div>
         </template>
