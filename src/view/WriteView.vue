@@ -12,7 +12,7 @@ import Divider from "@/components/divider/Divider.vue";
 import ListingService from "../services/ListingService.js";
 import ReviewService from "../services/ReviewService.js";
 import ReviewTag from "@/components/write-review-content/ReviewTag.vue";
-import ThumbsButton from "@/components/thumbs-buttons/ThumbsButton.vue";
+import ThumbsContainer from "@/components/thumbs-buttons/ThumbsContainer.vue";
 
 const props = defineProps({
 	id: { type: String, default: '' }
@@ -40,12 +40,12 @@ const form = ref({
 	title: '',
 	body: '',
 	rating: {
-		cleanliness: 0,
-		comfort: 0,
-		communication: 0,
-		location: 0,
+		cleanliness: 1,
+		comfort: 1,
+		communication: 1,
+		location: 1,
 	},
-	score: 0,
+	score: 1,
 	media: [],
 	tags: [],
 	certified: false
@@ -370,9 +370,7 @@ onBeforeUnmount(() => {
 						</div>
 
 						<div class="flex items-center gap-4 text-slate-500 dark:text-slate-400">
-							<ThumbsButton direction="up" />
-							<span class="text-sm font-medium">67</span>
-							<ThumbsButton direction="down" />
+							<ThumbsContainer :score="67"/>
 						</div>
 					</div>
 				</div>
