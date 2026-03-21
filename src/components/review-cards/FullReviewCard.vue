@@ -40,7 +40,7 @@ const getOverallRating = (ratings) => {
 						<ProfileIcon :src="profile?.profileImgSrc" sizeClass="w-full h-full" iconSize="text-[24px]!"></ProfileIcon>
 					</div>
 					<div>
-						<h3 class="font-bold text-slate-900 dark:text-white">{{ profile.name.firstName + ' ' + profile.name.lastName || review.username }}</h3>
+						<h3 class="font-bold text-slate-900 dark:text-white">{{ profile?.name.firstName + ' ' + profile?.name.lastName || review.username }}</h3>
 						<!-- <p class="text-sm text-slate-500 dark:text-slate-400 italic">{{ profile?.reviewData?.reviews?.length || 0 }} Reviews</p> -->
 						<p class="text-sm text-slate-500 dark:text-slate-400 italic">- Reviews</p>
 					</div>

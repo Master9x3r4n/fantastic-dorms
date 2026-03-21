@@ -51,7 +51,7 @@ const getOverallRating = (ratings) => {
 
                         <!-- Name -->
                         <div>
-                            <div class="font-medium text-[20px] leading-6">{{ profile.name }}</div>
+                            <div class="font-medium text-[20px] leading-6">{{ profile?.name.firstName + ' ' + profile?.name.lastName }}</div>
                             <!-- <div class="font-normal leading-5 italic">{{ profile.reviewData.reviews.length }} Reviews</div> -->
                             <div class="font-normal leading-5 italic">- Reviews</div>
                         </div>
