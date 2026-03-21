@@ -6,6 +6,7 @@ import ThumbsButton from '../thumbs-buttons/ThumbsButton.vue';
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
 import ProfileService from '../../services/ProfileService.js';
 import ReviewTag from "@/components/write-review-content/ReviewTag.vue";
+import ThumbsContainer from '../thumbs-buttons/ThumbsContainer.vue';
 
 const props = defineProps({ review: {} });
 
@@ -87,9 +88,11 @@ const getOverallRating = (ratings) => {
 		</div>
 
 		<div class="flex items-center gap-4 text-slate-500 dark:text-slate-400">
-			<ThumbsButton direction="up"/>
+			<!-- <ThumbsButton direction="up"/>
 			<span class="text-sm font-medium"><slot name="score">{{ review.score }}</slot></span>
-			<ThumbsButton direction="down"/>
+			<ThumbsButton direction="down"/> -->
+			<ThumbsContainer :score="review.score"/>
+
 		</div>
 
 	</div>

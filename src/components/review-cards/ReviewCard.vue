@@ -4,6 +4,7 @@ import MediaContainer from '../carousel/MediaContainer.vue';
 import ThumbsButton from '../thumbs-buttons/ThumbsButton.vue';
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
 import ProfileService from "../../services/ProfileService.js";
+import ThumbsContainer from '../thumbs-buttons/ThumbsContainer.vue';
 
 const props = defineProps({
     review: {},
@@ -36,6 +37,15 @@ const getOverallRating = (ratings) => {
     }
     return (overall/4).toFixed(1);
 }
+
+
+//TODO: REVMOVE THIS, THIS ONLY EXISTS FOR THE VIDEO BUT THE FOLLOWING CODE WILL BE TRASH
+const vote = ref(0);
+
+const updateVotes = (n) => {
+    vote.value = n;
+}
+
 </script>
 
 <template>
@@ -118,9 +128,10 @@ const getOverallRating = (ratings) => {
 
             <!-- Upvote -->
             <div class="italic font-normal text-[16px] leading-6 flex items-center justify-around gap-2">
-                <ThumbsButton direction="up"/>
-                <div>{{ review.score }}</div>
-                <ThumbsButton direction="down"/>
+                <!-- <ThumbsButton direction="up" @updateValue="updateVotes"/>
+                <div>{{ review.score + vote }}</div>
+                <ThumbsButton direction="down" @updateValue="updateVotes"/> -->
+                <ThumbsContainer :score="review.score"/>
             </div>
         </div>
 
