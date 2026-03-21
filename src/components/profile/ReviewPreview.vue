@@ -1,25 +1,10 @@
 <script setup>
 defineProps({
-  img: {
-    type: String,
-    default: '',
-  },
-  title: {
-    type: String,
-    default: 'Really Cool Apartment'
-  },
-  review: {
-    type: String,
-    default: '“This Is the Title of the Review”'
-  },
-  rating: {
-    type: Number,
-    default: 4
-  },
-  listingId: {
-    type: Number,
-    default: 1
-  }
+  img: { type: String },
+  title: { type: String },
+  review: { type: String },
+  rating: { type: Number },
+  listingId: { type: String }
 })
 </script>
 
@@ -54,7 +39,7 @@ defineProps({
       </div>
 
       <span class="font-bold text-[24px] leading-7.25 text-black dark:text-white">
-        {{ rating.toFixed(1) }}
+        {{ rating }}
       </span>
 
     </div>

@@ -1,31 +1,29 @@
-// const mongoose = require('mongoose');
 import mongoose from 'mongoose';
 
 const ListingSchema = new mongoose.Schema({
-    _id: { type: Number, required: true },
-    owner: { type: String, required: true },
+    listingId: { type: String, required: true },
+    ownerUsername: { type: String, required: true },
     
-    name: { type: String },
-    address: { type: String },
-    description: { type: String },
+    name: { type: String, default: '' },
+    address: { type: String, default: '' },
+    description: { type: String, default: '' },
     amenities: [String],
     contacts: [
         {
-            name: { type: String },
-            link: { type: String }
+            name: { type: String, default: '' },
+            link: { type: String, default: '' }
         }
     ],
     media: [String],
-    location: { type: String },
+    location: { type: String, default: '' },
     rating: [
         {
-            name: { type: String },
-            value: { type: Number }
+            name: { type: String, default: '' },
+            value: { type: Number, default: 0 }
         }
     ],
     createdAt: { type: Date, default: Date.now }
 });
 
-// module.exports = mongoose.model('Listing', ListingSchema);
-const model = mongoose.model('Listing', ProfileSchema);
+const model = mongoose.model('Listing', ListingSchema, 'listings');
 export default model;

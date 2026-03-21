@@ -1,66 +1,87 @@
 <script setup>
+import { ref } from 'vue';
 import ProfileSummary from "@/components/profile/ProfileSummary.vue";
 import ReviewPreview from "@/components/profile/ReviewPreview.vue";
 import PageButtons from "@/components/page-buttons/PageButtons.vue";
 import Divider from "@/components/divider/Divider.vue";
 import BlueButton from "@/components/page-buttons/BlueButton.vue";
-import { profileData } from "@/assets/temp-data/profile-temp.js";
-import { computed } from 'vue';
+import ProfileService from "../services/ProfileService.js";
+import ReviewService from "../services/ReviewService.js";
+import ListingService from "../services/ListingService.js";
 
 const props = defineProps({
-	id: {
-		type: String,
-		default: "1"
-	},
-	// Grouped Profile Details
-	profile: {
-		type: Object,
-		default: () => ({
-			name: "User",
-			username: "username",
-			joinDate: "March 1st, 2020",
-			bio: "Hi, I am a student!",
-			school: "De La Salle University",
-			schoolSince: "Since 2024",
-			profileImg: "",
-			dorm: "Some Other Fantastic Dorm",
-			dormSince: "Since 2024",
-			reviewCount: "67,676,767",
-			reviewSince: "Since June 7th, 2026"
-		})
-	},
-	// Reviews Array
-	reviews: {
-		type: Array,
-		default: () => [
-			{
-				id: 1,
-				title: 'Apartment 1',
-				rating: '5.0',
-				review: 'fantastic',
-				img: '',
-				listingRoute: "/listing"
-			},
-		]
-	}
+	id: { type: String }
 });
 
-defineEmits(['edit']);
+const user = ref(null);
+ProfileService.get(props.id)
+.then(res => {
+	user.value = res.data;
+})
+.catch(error => {
+	console.error(`Error retrieving profile: ${error.message}.`);
+});
 
-const user = computed(() => profileData[props.id]);
+const reviewsRaw = ref(null);
+const reviews = ref([]);
+ReviewService.getAllByUser(props.id)
+// ReviewService.getAllFromListing('the-daily-bugle')
+.then(res => {
+	reviewsRaw.value = res.data;
+	console.log('RAW DATA:');
+	console.log(reviewsRaw.value);
+	console.log(reviewsRaw.value[0]);
+	console.log(reviewsRaw.value.length);
 
+	// For each review, pull the listing
+	for (let i = 0; i < reviewsRaw.value.length; i++) {
+		const review = reviewsRaw.value[i];
+		
+		console.log('REVIEW:');
+		console.log(review);
+		console.log(review.listingId);
+		ListingService.get(review.listingId)
+		.then(res => {
+			if (res.data) {
+				reviews.value.push({
+					data: review,
+					listing: res.data
+				})
+			} else {
+				console.error(`Listing ${review.listingId} could not be found for review.`);
+			}
+		})
+		.catch(error => {
+			console.error(`Error retrieving listing for review: ${error.message}.`);
+		});
+	}
+})
+.catch(error => {
+	console.error(`Error retrieving profile: ${error.message}.`);
+});
+
+const getOverallRating = (ratings) => {
+    let overall = 0;
+    for (let p in ratings) {
+        overall += ratings[p];
+        console.log(ratings[p]);
+    }
+    return (overall/4).toFixed(1);
+}
 </script>
 
 <template>
-	<div class="flex flex-col items-start p-10 gap-10 w-full max-w-7xl min-h-214 mx-auto z-1 font-['Inter']">
-
+	<div 
+		class="flex flex-col items-start p-10 gap-10 w-full max-w-7xl min-h-214 mx-auto z-1 font-['Inter']"
+		v-if="user"
+	>
 		<div class="w-full p-4 rounded-lg border border-solid border-slate-200 shadow-sm transition-colors duration-200 dark:border-slate-700">
 			<ProfileSummary
-					:name="user.name"
-					:username="user.username"
-					:joinDate="user.joinDate"
-					:university="user.schoolData.name"
-					:profileImg="user.profileImgSrc"
+				:name="user.name.firstName + ' ' + user.name.lastName"
+				:username="user.username"
+				:joinDate="new Date(user.joinDate).toUTCString()"
+				:university="user.school.name"
+				:profileImg="user.picture"
 			/>
 		</div>
 
@@ -78,7 +99,8 @@ const user = computed(() => profileData[props.id]);
 
 					<!-- Edit button-->
 					<RouterLink to="/settings">
-					<BlueButton @click="$emit('edit')">
+					<!-- <BlueButton @click="$emit('edit')"> -->
+					<BlueButton>
 						<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
 							<path d="M0 11.25V14H2.75L10.8625 5.8875L8.1125 3.1375L0 11.25ZM13.0375 3.7125C13.325 3.425 13.325 2.9625 13.0375 2.675L11.325 0.9625C11.0375 0.675 10.575 0.675 10.2875 0.9625L8.9 2.35L11.65 5.1L13.0375 3.7125Z" fill="white"/>
 						</svg>
@@ -107,12 +129,12 @@ const user = computed(() => profileData[props.id]);
 							</svg>
 						</div>
 						<div class="flex flex-col justify-center items-start gap-1.25 h-9.75 flex-none order-2">
-        <span class="font-semibold text-[16px] leading-4.75 text-black dark:text-white">
-          {{ user.schoolData.name }}
-        </span>
+							<span class="font-semibold text-[16px] leading-4.75 text-black dark:text-white">
+								{{ user.school.name }}
+							</span>
 							<span class="italic font-normal text-[12px] leading-3.75 text-[#676767]">
-          Since {{ user.schoolData.since }}
-        </span>
+								Since {{ user.school.since }}
+							</span>
 						</div>
 					</div>
 
@@ -128,11 +150,11 @@ const user = computed(() => profileData[props.id]);
 						</div>
 						<div class="flex flex-col justify-center items-start gap-1.25 h-9.75 flex-none order-2">
 							<a class="font-semibold text-[16px] leading-4.75 text-black underline dark:text-white cursor-pointer hover:text-[#355AFF] transition-colors">
-								{{ user.dormData.name }}
+								{{ user.dorm.name }}
 							</a>
 							<span class="italic font-normal text-[12px] leading-3.75 text-[#676767]">
-          Since {{ user.dormData.since }}
-        </span>
+								Since {{ user.dorm.since }}
+							</span>
 						</div>
 					</div>
 
@@ -148,11 +170,11 @@ const user = computed(() => profileData[props.id]);
 						</div>
 						<div class="flex flex-col justify-center items-start gap-1.25 h-9.75 flex-none order-2">
 							<span class="font-semibold text-[16px] leading-4.75 text-black dark:text-white">
-          {{ user.reviewData.reviews.length }}
-        </span>
+								{{ reviews.length }}
+							</span>
 							<span class="italic font-normal text-[12px] leading-3.75 text-[#676767]">
-          Since {{ user.reviewData.since }}
-        </span>
+								Since {{ new Date(user.joinDate).toUTCString() }}
+							</span>
 						</div>
 					</div>
 				</div>
@@ -165,15 +187,18 @@ const user = computed(() => profileData[props.id]);
 				</div>
 
 				<!-- Reviews List (Dynamic) -->
-				<div class="flex flex-col w-full gap-5">
+				<div 
+					class="flex flex-col w-full gap-5"
+					v-if="reviews"
+				>
 					<ReviewPreview
-							v-for="review in user.reviewData.reviews"
-							:key="review.listing.id"
-							:title="review.content.title"
-							:rating="review.rating"
-							:review="review.content.description"
-							:img="review.listing.thumbnailSrc"
-							:listingId="review.listing.id"
+						v-for="review in reviews"
+						:key="review.data.listingId"
+						:title="review.data.content.title"
+						:rating="getOverallRating(review.data.rating)"
+						:review="review.data.content.body"
+						:img="review.listing.media[0]"
+						:listingId="review.data.listingId"
 					/>
 				</div>
 
@@ -181,7 +206,6 @@ const user = computed(() => profileData[props.id]);
 					<PageButtons />
 				</div>
 			</div>
-
 		</div>
 	</div>
 </template>

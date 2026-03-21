@@ -1,6 +1,6 @@
 [
     {
-        "_id": 0,
+        "listingId": "the-daily-bugle",
         "owner": "The Daily Bugle",
         "name": "Grand Apartment",
         "address": "Blk 12 Lt 32 Somebody St., Las Pinas City",
@@ -11,16 +11,16 @@
             "https://youre.outof.games/media/uploads/cb/da/cbda1bb4-ee0d-4c65-989f-05a24edd22cf/daily-bugle-featured-location.jpg"
         ],
         "location": {"type": "https://cdn.britannica.com/06/276306-049-A8451874/world-map.jpg"},
-        "rating": [
-            { "name": "Cleanliness", "rating": 4 },
-            { "name": "Comfort", "rating": 4 },
-            { "name": "Spaciousness", "rating": 3 },
-            { "name": "Price", "rating": 2 }
-        ],
+        "rating": {
+            "cleanliness": 4,
+            "comfort": 4,
+            "communication": 3,
+            "location": 2
+        },
         "createdAt": "2026-01-01T00:00:00Z"
     },
     {
-        "_id": 1,
+        "listingId": "the-future-foundation",
         "owner": "The Future Foundation",
         "name": "The Baxter Suite",
         "description": "A very grand, beautiful, and luxurious Inspired by the heroes of the Fantastic Four, this beautiful deluxe suite features 4 bedrooms and a visit from Galactus. It's Fantastic. that features multiple rooms and doors. A must stay for the holidays.",
@@ -31,16 +31,16 @@
             "https://static0.cbrimages.com/wordpress/wp-content/uploads/2020/09/rsz-baxter-buildingv1.jpg"
         ],
         "location": {"type": "https://cdn.britannica.com/06/276306-049-A8451874/world-map.jpg"},
-        "rating": [
-            { "name": "Cleanliness", "rating": 4 },
-            { "name": "Comfort", "rating": 4 },
-            { "name": "Spaciousness", "rating": 4 },
-            { "name": "Price", "rating": 4 }
-        ],
+        "rating": {
+            "cleanliness": 4,
+            "comfort": 4,
+            "communication": 4,
+            "location": 4
+        },
         "createdAt": "2026-01-01T00:00:00Z"
     },
     {
-        "_id": 2,
+        "listingId": "miros-house",
         "owner": "Jann Miro Quilantang",
         "name": "Miro's House",
         "description": "Freshly doxxed, Miro's house is a beautiful home that features Miro.",
@@ -51,12 +51,12 @@
             "https://static.wikitide.net/peppafanonwiki/thumb/e/ee/Peppa%27s_house_updated.webp/800px-Peppa%27s_house_updated.webp.png"
         ],
         "location": {"type": "https://cdn.britannica.com/06/276306-049-A8451874/world-map.jpg"},
-        "rating": [
-            { "name": "Cleanliness", "rating": 2 },
-            { "name": "Comfort", "rating": 5 },
-            { "name": "Spaciousness", "rating": 1 },
-            { "name": "Price", "rating": 1 }
-        ],
+        "rating": {
+            "cleanliness": 2,
+            "comfort": 5,
+            "communication": 1,
+            "location": 1
+        },
         "createdAt": "2026-01-01T00:00:00Z"
     }
 ]

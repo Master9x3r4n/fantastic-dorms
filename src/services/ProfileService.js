@@ -9,15 +9,19 @@ import http from "../http.js";
 
 class ProfileService {
     getAll() {
-        return http.get(`/profiles`);
+        return http.get('/p');
     }
 
     get(username) {
-        return http.get(`/profiles/${username}`);
+        return http.get(`/p/${username}`);
     }
 
     create(data) {
-        return http.post("/profiles", data);
+        return http.post('/p', data);
+    }
+
+    login(username) {
+        return http.post('/auth/login', username);
     }
 }
 

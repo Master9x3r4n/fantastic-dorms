@@ -1,49 +1,52 @@
 <script setup>
+import { ref } from 'vue';
 import Carousel from '../carousel/Carousel.vue';
 import MediaContainer from '../carousel/MediaContainer.vue';
 import ThumbsButton from '../thumbs-buttons/ThumbsButton.vue';
-
-import {computed} from 'vue';
-import {profileData} from '@/assets/temp-data/profile-temp.js';
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
+import ProfileService from '../../services/ProfileService.js';
 
-const props = defineProps({
-    reviewData: {
-        type: Object,
-        default: 
-        {
-            username: "casey_c",
-            content: {
-                "title": "Title of Review",
-                "description": "",
-                "reply": ""
-            },
-            rating: 4,
-            score: 0,
-            mediaSrcs: []
-        },
+const props = defineProps({ review: {} });
+
+const profile = ref(null);
+ProfileService.get(props.review.username)
+    .then(res => {
+        console.log('Profile:');
+        console.log(res.data);
+        profile.value = res.data;
+    })
+    .catch(error => {
+        console.log(`Error retrieving profile \'${props.review.username}\': ${error.message}`)
+    });
+
+const getOverallRating = (ratings) => {
+    let overall = 0;
+    for (let p in ratings) {
+        overall += ratings[p];
+        console.log(ratings[p]);
     }
-})
-
-const profile = computed(() => profileData[props.reviewData.username]);
-
+    return (overall/4).toFixed(1);
+}
 </script>
 
 <template>
     <!-- 1120 x 769 h-228 -->
-    <div class="w-max-295 h-fit p-5 flex flex-col items-center justify-center gap-6.5
+    <div class="w-max-295 h-fit p-10 flex flex-col items-center justify-center gap-6.5
     bg-white dark:bg-[#121422] dark:text-white w-full rounded-lg border border-solid border-slate-200 shadow-sm transition-colors duration-200 dark:border-slate-700">
         <!-- Header Container -->
         <div class="w-full flex justify-between items-center ">
-            <RouterLink :to="{name: 'profile', params: {id: reviewData.username}}">
-            <div class="flex gap-3 items-center">
-                <!-- Profile -->
-								<ProfileIcon :src="profile.profileImgSrc" sizeClass="w-13 h-13"></ProfileIcon>
+            <RouterLink :to="{name: 'profile', params: {id: review.username}}">
+            <div v-if="profile">
+                <div class="flex gap-3 items-center">
+                    <!-- Profile -->
+                    <ProfileIcon :src="profile.picture" size-class="w-13 h-13"></ProfileIcon>
 
-                <!-- Name -->
-                <div>
-                    <div class="font-medium text-[20px] leading-6">{{ profile.name }}</div>
-                    <div class="font-normal leading-5 italic">{{ profile.reviewData.reviews.length }} Reviews</div>
+                    <!-- Name -->
+                    <div>
+                        <div class="font-medium text-[20px] leading-6">{{ profile.name.firstName }} {{ profile.name.lastName }}</div>
+                        <!-- <div class="font-normal leading-5 italic">{{ profile.reviewData.reviews.length }} Reviews</div> -->
+                        <div class="font-normal leading-5 italic">(-) Reviews</div>
+                    </div>
                 </div>
             </div>
             </RouterLink>
@@ -51,7 +54,9 @@ const profile = computed(() => profileData[props.reviewData.username]);
             <!-- Rating -->
             <div class="flex justify-between items-center w-[8%] text-center">
                 <img src="@\assets\rating-assets\star-full.svg" width="36px">
-                <div class="font-bold text-3xl leading-10">{{ reviewData.rating.toFixed(1) }}</div>
+                <!-- <div class="font-bold text-3xl leading-10">{{ (review.score/4).toFixed(1) }}</div> -->
+                <!-- <div class="font-bold text-3xl leading-10">{{ review.score.toFixed(1) }}</div> -->
+                <div class="font-bold text-3xl leading-10">{{ getOverallRating(review.rating) }}</div>
             </div>
         </div>
 
@@ -72,7 +77,7 @@ const profile = computed(() => profileData[props.reviewData.username]);
             </div>
 
             <!-- Carousel Container -->
-            <div class="mt-3 h-[47%] flex w-full justify-center items-center">
+            <!-- <div class="mt-3 h-[47%] flex w-full justify-center items-center">
                 <Carousel :count="4" buttonStyling="large" :buttonSpacing="4">
                 <template #content>
                     <template v-for="i in 10">
@@ -82,7 +87,7 @@ const profile = computed(() => profileData[props.reviewData.username]);
                     </template>
                 </template>
                 </Carousel>
-            </div>
+            </div> -->
 
             <!-- Reply Container -->
             <div v-if="$slots.ownerReply && $slots.ownerReply !== ''" class="w-full h-[23%] mt-3 pl-2 pr-2">

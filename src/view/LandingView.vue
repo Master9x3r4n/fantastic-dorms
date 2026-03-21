@@ -1,6 +1,8 @@
 <script setup>
+import { ref } from 'vue';
 import SearchBar from '@/components/header/SearchBar.vue';
 import LandingCategory from '@/components/landing/LandingCategory.vue';
+import ListingService from '../services/ListingService.js';
 
 // const props = defineProps({
 //     searchResults: {
@@ -39,6 +41,15 @@ import LandingCategory from '@/components/landing/LandingCategory.vue';
 //         ]
 //     }
 // })
+
+const listings = ref(null);
+ListingService.getAll()
+	.then(res => {
+		listings.value = res.data;
+	})
+	.catch(error => {
+		console.log(`Error retrieving listings: ${error.message}.`);
+	});
 
 const universityFilters = [
 	"De La Salle University", "University of Santo Thomas",
@@ -79,10 +90,10 @@ const homeTypes = [
 	<!-- Main Section -->
 	<div class="w-full h-fit flex flex-col gap-10 justify-start px-12 pb-4">
 		<!-- First Category -->
-		<LandingCategory :filterItems="universityFilters" :cardResults="props.searchResults"/>
+		<LandingCategory :filterItems="universityFilters" :listings="listings"/>
  
 		<!-- Second Category -->
-		<LandingCategory :filterItems="homeTypes" :cardResults="props.searchResults">
+		<LandingCategory :filterItems="homeTypes" :listings="listings">
 			<template #text>
 				Find homes of a certain type
 			</template>

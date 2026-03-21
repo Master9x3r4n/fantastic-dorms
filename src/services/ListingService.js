@@ -5,31 +5,31 @@ import http from "../http.js";
 
 class ListingService {
     getAll() {
-        return http.get("/listings");
+        return http.get("/l");
     }
 
     get(id) {
-        return http.get(`/listings/${id}`);
+        return http.get(`/l/${id}`);
     }
 
     create(data) {
-        return http.post("/listings", data);
+        return http.post("/l", data);
     }
 
     update(id, data) {
-        return http.put(`/listings/${id}`, data);
+        return http.put(`/l/${id}`, data);
     }
 
     delete(id) {
-        return http.delete(`/listings/${id}`);
+        return http.delete(`/l/${id}`);
     }
 
     deleteAll() {
-        return http.delete(`/listings`);
+        return http.delete(`/l`);
     }
 
     findByTitle(title) {
-        return http.get(`/listings?title=${title}`);
+        return http.get(`/l?title=${title}`);
     }
 }
 

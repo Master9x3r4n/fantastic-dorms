@@ -3,7 +3,6 @@
   import { useRouter } from 'vue-router';
   import Divider from "@/components/divider/Divider.vue";
   import ProfileService from "../services/ProfileService";
-  import PasswordsUtils from "../../backend/passwords.js";
   const router = useRouter();
 
   // Form-related stuff
@@ -24,23 +23,14 @@
   const login = () => {
     processing.value = true;
 
-    ProfileService.get(form.value.username)
+    ProfileService.login({ 
+      username: form.value.username, password: form.value.password 
+    })
       .then(res => {
-        const salt = res.data.salt
-        const hash = res.data.saltedPassword
-        const newHash = PasswordsUtils.generateDigest(form.value.password + salt);
-        // console.log(`salt: ${salt}`);
-        // console.log(`hash: ${hash}`);
-        // console.log(`newHash: ${newHash}`);
-        
-        if (newHash === hash) {
-          console.log("Yippeeee");
-          router.push('/');
-        } else {
-          console.log("Oooooops");
-          processing.value = false;
-          invalid.value = true
-        }
+        console.log('Yippeeeeeeee');
+        // i don't give a damn
+        localStorage.setItem('USER', JSON.stringify(res.data));
+        router.push('/');
       })
       .catch(error => {
         console.log(error);
@@ -87,7 +77,7 @@
         <form ref="loginForm" action="#" class="space-y-6" method="POST" @submit.prevent="login" @input="checkFormValidity">
           <!-- Errors -->
           <div 
-            class="bg-red-200 border-l-5 border-red-500 p-3 rounded-r-lg"
+            class="bg-red-200 dark:bg-red-300 border-l-5 border-red-500 dark:border-red-900 p-3 rounded-r-lg"
             v-if="invalid"
           >
             <div class="flex flex-row gap-2">
@@ -149,7 +139,7 @@
             </button>
           </RouterLink> -->
           <button
-              :disabled="!isFormValid"
+              :disabled="!isFormValid || processing"
               class="
                 w-full bg-[#355AFF] hover:bg-[#2b4bcc] text-white 
                 disabled:bg-gray-300 disabled:hover:bg-gray-200 disabled:dark:bg-gray-800 disabled:dark:hover:bg-gray-700 disabled:shadow-transparent
@@ -185,7 +175,6 @@
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0');
-
 
 .bg-gradient {
   background: linear-gradient(-90deg, rgba(0, 0, 0, 0) 0%, #355AFF 27.7%);

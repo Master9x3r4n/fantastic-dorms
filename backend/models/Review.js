@@ -1,27 +1,25 @@
-// const mongoose = require('mongoose');
 import mongoose from 'mongoose';
 
 const ReviewSchema = new mongoose.Schema({
-    _id: { type: Number, required: true },
-    listingId: { type: Number, required: true },
+    listingId: { type: String, required: true },
     username: { type: String, required: true },
-    
+    isAnonymous: { type: Boolean, default: false },
     content: {
-        title: { type: String },
-        description: { type: String },
-        reply: { type: String }
+        title: { type: String, default: '' },
+        body: { type: String, default: '' },
+        reply: { type: String, default: '' }
     },
-    rating: [
-        {
-            name: { type: String },
-            value: { type: Number }
-        }
-    ],
-    score: { type: Number },
-    media: [String],     
+    rating: {
+        cleanliness: { type: Number, default: 0 },
+        comfort: { type: Number, default: 0 },
+        communication: { type: Number, default: 0 },
+        location: { type: Number, default: 0 }
+    },
+    score: { type: Number, default: 0 },
+    media: [String],
+    tags: [String],
     createdAt: { type: Date, default: Date.now }
 });
 
-// module.exports = mongoose.model("Review", ReviewSchema);
-const model = mongoose.model('Review', ProfileSchema);
+const model = mongoose.model('Review', ReviewSchema, 'reviews');
 export default model;

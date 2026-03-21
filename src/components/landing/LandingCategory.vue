@@ -1,32 +1,17 @@
 <script setup>
+import { ref } from 'vue'
 import ApartmentCardSmall from '../apartment-cards/ApartmentCardSmall.vue';
 import Carousel from '../carousel/Carousel.vue';
 import FilterButton from '../page-buttons/FilterButton.vue';
-
-import {ref} from 'vue'
 
 const props = defineProps({
     filterItems: {
         type: Array,
         default: ['De La Salle University', 'University of Coolness']
     },
-    searchResults: {
+    listings: {
         type: Array,
         default: []
-    },
-    cardResults: {
-        type: Array,
-        default: [{
-            name: "Apartment Name",
-            description: "This apartment is very nice. It has very nice rooms and is placed very nicely.",
-            imageSrc: "",
-            routerLink: "/listing",
-            ratingData: {
-                rating: 4,
-                reviewCount: 32
-            },
-            imageSrc: "",
-        }]
     }
 })
 
@@ -52,9 +37,9 @@ const selectedItems = ref([])
     <div class="h-fit w-full flex justify-start">
         <Carousel :count="5" buttonStyling="small circular" :buttonSpacing="1">
             <template #content>
-            <template v-for="i in props.cardResults">
+            <template v-for="listing in props.listings">
                 <div class="px-3 flex shrink-0 snap-start">
-                <ApartmentCardSmall :cardData="i"/>
+                <ApartmentCardSmall :listing="listing"/>
                 </div>
             </template>
             </template>
