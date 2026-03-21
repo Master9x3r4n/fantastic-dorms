@@ -3,9 +3,14 @@ import SearchBar from "@/components/header/SearchBar.vue";
 import Logo from "@/components/header/Logo.vue";
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
 import HeaderDropdown from "@/components/dropdown/HeaderDropdown.vue";
+import DarkModeSlider from "@/components/darkmode/DarkModeSlider.vue";
 
 const props = defineProps({
 	search: {
+		type: Boolean,
+		default: true,
+	},
+	loggedIn:{
 		type: Boolean,
 		default: true,
 	},
@@ -34,12 +39,15 @@ const props = defineProps({
 		</div>
 
 		<!-- Profile Dropdown -->
-		<div class="flex items-center gap-4">
+		<div v-if="loggedIn" class="flex items-center gap-4">
 			<HeaderDropdown :profileImg="profileImg" :profileAlt="profileAlt" :username="username">
 				<button class="rounded-full transition-all duration-200 hover:scale-105 hover:bg-slate-100 dark:hover:bg-slate-800">
 					<ProfileIcon :src="profileImg" :alt="profileAlt" />
 				</button>
 			</HeaderDropdown>
+		</div>
+		<div v-else>
+			<DarkModeSlider />
 		</div>
 	</header>
 </template>
