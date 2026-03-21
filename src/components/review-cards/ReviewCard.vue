@@ -74,11 +74,11 @@ const getOverallRating = (ratings) => {
         </div>
 
         <!-- Comment Container -->
-        <div class="h-[56%] flex flex-col">
+        <div class="h-[56%] flex flex-col w-full">
             <!-- Review Container -->
             <div class="w-full text-[16px] leading-6 grow flex">
                 <!-- Review proper -->
-                <div>
+                <div class="w-full">
                     <slot name="review">
                         I have stayed at this apartment for a while, and let me say, it is as the name says. 
                         It's a really cool apartment and it has a lot of the amenities 
@@ -87,13 +87,12 @@ const getOverallRating = (ratings) => {
                 </div>
 
                 <!-- Media -->
-                <div class="shrink-0 ml-2 relative">
+                <div class="shrink-0 ml-2 relative" v-if="review.media">
                     <div class="absolute bg-white dark:bg-[#111111] p-auto pl-1 rounded-full size-6 top-16 right-2 text-[14px] dark:text-white">+3</div>
                     <MediaContainer size="small"/>
                 </div>
             </div>
 
-            <!-- CHANGE THIS TO CONDITIONAL SLOTTING -->
             <template v-if="$slots.ownerReply"> 
             <!-- Reply Container -->
             <div class="w-full h-[50%] mt-3">

@@ -16,9 +16,13 @@ const iconName = computed(() => `thumb_${props.direction.toLowerCase()}_off_alt`
 
 <template>
 	<div
-			class="flex items-center gap-1 cursor-pointer transition-colors text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+			class="flex items-center gap-1 cursor-pointer transition-colors 
+			text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+			:class="{ 'text-slate-900 dark:text-white': toggled }"
 			@click="toggled = !toggled"
 	>
+	<template v-if="toggled" class="text-slate-900 dark:text-white">
+	</template>
     <span
 				class="material-symbols-outlined text-[20px]!"
 				:class="{ 'filled': toggled }"
