@@ -18,7 +18,7 @@ const score = ref(0);
 
 const toggleButton = () => {
 	emit('handleClick', props.direction);
-	const add = props.toggled? ((props.direction) == "up"? 1: -1) : 0;
+	const add = props.toggled? ((props.direction) === "up"? 1: -1) : 0;
 	score.value = add;
 	emit('updateValue', score.value);
 }
