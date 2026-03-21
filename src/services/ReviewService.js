@@ -4,6 +4,10 @@ class ReviewService {
     getAll() {
         return http.get(`/r`);
     }
+
+    getAllByUser(username) {
+        return http.get(`/r?username=${username}`)
+    }
     
     getAllFromListing(listingId) {
         return http.get(`/r?listingId=${listingId}`);

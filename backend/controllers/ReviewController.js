@@ -7,11 +7,17 @@ const maxMedia = 4;
 
 class ReviewController {
     async findAll(req, res) {
+        // console.log('QUERY:');
+        // console.log(req.query);
+        
         let condition = {}
+        if (req.query.username) condition['username'] = req.query.username;
         if (req.query.listingId) condition['listingId'] = req.query.listingId;
         if (req.query.title) condition['title'] =  { $regex: `/${title}/`, $options: 'i' };
-        
-        Review.find({})
+
+        // console.log('CONDITION:');
+        // console.log(condition);
+        Review.find(condition)
             .then(data => {
                 if (data)
                     res.status(200).send(data);
@@ -43,20 +49,6 @@ class ReviewController {
     }
     
     async create(req, res) {
-        // if (!req.body.content.title) {
-        //     res.status(400).send({message: "Title cannot be empty."});
-        //     return;
-        // } else if (!req.body.content.body) {
-        //     res.status(400).send({message: "Content cannot be empty."});
-        //     return;
-        // } else if (!req.body.listingId) {
-        //     res.status(400).send({message: "Given listing is invalid."});
-        //     return;
-        // } else if (!req.body.username) {
-        //     res.status(400).send({message: "User/author is invalid."});
-        //     return;
-        // }
-        
         // let cldnryJson;
         // const pictures = req.body.media;
         // const mediaCount = pictures.length;
@@ -88,34 +80,6 @@ class ReviewController {
         //     });
         // }
 
-        // console.log(req.body);
-        // console.log(req.body.username);
-        // console.log(req.body._value.username);
-        // console.log(req.body._value.content);
-        // console.log(req.body._value.content.title);
-        // const newReview = new Review({
-        //     listingId: req.body.listingId,
-        //     username: req.body.username,
-        //     content: {
-        //         title: req.body._value.content.title,
-        //         description: req.body._value.content.description,
-        //         reply: ""
-        //     },
-        //     rating: {
-        //         cleanliness:    req.body._value.rating.cleanliness,
-        //         comfort:        req.body._value.rating.comfort,
-        //         communication:  req.body._value.rating.communication,
-        //         location:       req.body._value.rating.location       
-        //     },
-        //     score: req.body.score,
-        //     media: req.body.media,     
-        //     createdAt: req.body.createdAt
-        // });
-        
-        // console.log('i <3 milk');
-        // console.log('i <3 cookies');
-        // console.log(newReview);
-        // const newReview = new Review(req.body);
         const newReview = new Review(req.body);
         newReview.save()
             .then(data => {
@@ -127,40 +91,6 @@ class ReviewController {
                 });
             });
     };
-
-    async findAll(req, res) {
-        let condition = {}
-        if (req.query.listingId) condition['listingId'] = { $regex: new RegExp(req.query.listingId), $options: "i" };
-        if (req.query.title) condition['title'] = { $regex: new RegExp(req.query.title), $options: "i" };
-
-        Review.find(condition)
-            .then(data => {
-                if (data)
-                    res.send(data);
-                else
-                    res.status(404).send({ message: 'Reviews could not be found.' });
-            })
-            .catch(err => {
-                res.status(500).send({
-                    message: err.message || "An error occurred while retrieving reviews."
-                })
-            });
-    }
-
-    async find(req, res) {
-        const id = req.params.id;
-
-        Review.findById(id)
-            .then(data => {
-                if (!data)
-                    res.status(404).send({message: `Review with id ${id} not found.`});
-                else
-                    res.send(data);
-            })
-            .catch(err => {
-                res.status(500).send({ message: `Error retrieving review with id ${id}.`});
-            });
-    }
 
     async update(req, res) {
         if (!req.body.title) {
