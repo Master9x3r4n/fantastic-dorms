@@ -1,8 +1,8 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { marked } from 'marked';
 import Carousel from '../carousel/Carousel.vue';
 import MediaContainer from '../carousel/MediaContainer.vue';
-import ThumbsButton from '../thumbs-buttons/ThumbsButton.vue';
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
 import ProfileService from '../../services/ProfileService.js';
 import ReviewTag from "@/components/write-review-content/ReviewTag.vue";
@@ -12,23 +12,29 @@ const props = defineProps({ review: {} });
 
 const profile = ref(null);
 ProfileService.get(props.review.username)
-    .then(res => {
-        console.log('Profile:');
-        console.log(res.data);
-        profile.value = res.data;
-    })
-    .catch(error => {
-        console.log(`Error retrieving profile \'${props.review.username}\': ${error.message}`)
-    });
+		.then(res => {
+			console.log('Profile:');
+			console.log(res.data);
+			profile.value = res.data;
+		})
+		.catch(error => {
+			console.log(`Error retrieving profile \'${props.review.username}\': ${error.message}`)
+		});
 
 const getOverallRating = (ratings) => {
-    let overall = 0;
-    for (let p in ratings) {
-        overall += ratings[p];
-        console.log(ratings[p]);
-    }
-    return (overall/4).toFixed(1);
+	let overall = 0;
+	for (let p in ratings) {
+		overall += ratings[p];
+		console.log(ratings[p]);
+	}
+	return (overall/4).toFixed(1);
 }
+
+// 2. Create the computed property to parse the Markdown string into HTML
+const parsedBody = computed(() => {
+	const rawText = props.review?.content?.body || "I have stayed at this apartment for a while, and let me say, it is as the name says...";
+	return marked.parse(rawText);
+});
 </script>
 
 <template>
@@ -42,7 +48,6 @@ const getOverallRating = (ratings) => {
 					</div>
 					<div>
 						<h3 class="font-bold text-slate-900 dark:text-white">{{ profile?.name.firstName + ' ' + profile?.name.lastName || review.username }}</h3>
-						<!-- <p class="text-sm text-slate-500 dark:text-slate-400 italic">{{ profile?.reviewData?.reviews?.length || 0 }} Reviews</p> -->
 						<p class="text-sm text-slate-500 dark:text-slate-400 italic">- Reviews</p>
 					</div>
 				</div>
@@ -60,7 +65,7 @@ const getOverallRating = (ratings) => {
 
 		<div class="text-slate-800 dark:text-slate-300 mb-6 wrap-break-word min-h-16 editor-output">
 			<slot name="review-content">
-				{{ review.content.body || "I have stayed at this apartment for a while, and let me say, it is as the name says..." }}
+				<div v-html="parsedBody"></div>
 			</slot>
 		</div>
 
@@ -88,12 +93,72 @@ const getOverallRating = (ratings) => {
 		</div>
 
 		<div class="flex items-center gap-4 text-slate-500 dark:text-slate-400">
-			<!-- <ThumbsButton direction="up"/>
-			<span class="text-sm font-medium"><slot name="score">{{ review.score }}</slot></span>
-			<ThumbsButton direction="down"/> -->
 			<ThumbsContainer :score="review.score"/>
 
 		</div>
 
 	</div>
 </template>
+
+<style scoped>
+/* Base formatting */
+.editor-output :deep(p) {
+	margin-bottom: 0.5rem;
+}
+.editor-output :deep(b), .editor-output :deep(strong) {
+	font-weight: 700;
+}
+.editor-output :deep(i), .editor-output :deep(em) {
+	font-style: italic;
+}
+.editor-output :deep(u) {
+	text-decoration: underline;
+}
+.editor-output :deep(strike), .editor-output :deep(del) {
+	text-decoration: line-through;
+}
+
+/* Lists */
+.editor-output :deep(ul) {
+	list-style-type: disc;
+	padding-left: 1.5rem;
+	margin-top: 0.25rem;
+	margin-bottom: 0.25rem;
+}
+.editor-output :deep(ol) {
+	list-style-type: decimal;
+	padding-left: 1.5rem;
+	margin-top: 0.25rem;
+	margin-bottom: 0.25rem;
+}
+
+/* Headings */
+.editor-output :deep(h2) {
+	font-size: 1.5em;
+	font-weight: 700;
+	margin-top: 1rem;
+	margin-bottom: 0.5rem;
+	line-height: 1.2;
+}
+.editor-output :deep(h3) {
+	font-size: 1.25em;
+	font-weight: 600;
+	margin-top: 1rem;
+	margin-bottom: 0.5rem;
+	line-height: 1.2;
+}
+
+/* Blockquote */
+.editor-output :deep(blockquote) {
+	border-left: 3px solid #cbd5e1; /* Tailwind slate-300 */
+	padding-left: 1rem;
+	margin-top: 0.5rem;
+	margin-bottom: 0.5rem;
+	font-style: italic;
+	color: #64748b; /* Tailwind slate-500 */
+}
+.dark .editor-output :deep(blockquote) {
+	border-left-color: #475569; /* Tailwind slate-600 */
+	color: #94a3b8; /* Tailwind slate-400 */
+}
+</style>
