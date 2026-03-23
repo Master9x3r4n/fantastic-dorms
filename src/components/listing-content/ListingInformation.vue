@@ -1,93 +1,112 @@
 <script setup>
-import MediaContainer from '../carousel/MediaContainer.vue';
 import Divider from '../divider/Divider.vue';
 import Icon from '../icon/Icon.vue';
 
 const props = defineProps({
-    listingData: {
-        type: Object,
-        default: {
-            amenities: ['2 Bedrooms', '2 Bathrooms', '3 Dining Rooms', '10 Living Rooms'],
-            contacts: ['Facebook', 'Instagram']
-        }
-    }
+	listing: {
+		type: Object,
+		required: true,
+		// Provide a fallback structure for safety
+		default: () => ({
+			name: '',
+			address: '',
+			description: '',
+			amenities: [],
+			contacts: [],
+			owner: ''
+		})
+	}
 })
-
 </script>
 
 <template>
-<div class="flex flex-col justify-around items-center gap-5 mb-2 dark:text-white">
-    <!-- Apartment Header -->
-    <div class="w-full flex flex-col gap-6">
-        <!-- Profile -->
-        <div class="flex flex-col">
-            <div class="font-bold text-3xl leading-10 flex items-center">
-                <slot name="listing-name">Apartment Name</slot>
-            </div>
-            <div class="italic flex items-center">
-                <slot name="listing-address">Studio apartment - Awesome St., Barangay Big Love, Pasay City</slot>
-            </div>
-        </div>
+	<div class="bg-white dark:bg-[#121422] border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm p-6 md:p-8 transition-colors duration-200 flex flex-col gap-8">
 
-        <!-- Profile -->
-        <div class="flex gap-3">
-            <div class="w-13 h-13 rounded-[50%] bg-amber-100 bg-gradient"></div>
-            <div class="flex flex-col gap-0.5">
-                <div class="font-medium text-[20px] leading-6">
-                    <slot name="listing-owner">Really Cool Apartments</slot>
-                </div>
-                <div class="font-normal leading-5 italic text-[#355AFF] flex justify-start items-center gap-1">
-                    <Icon name="verified"/> 
-                    Verified
-                </div>
-            </div>
-        </div>
-    </div>
+		<!-- Header Section: Title & Address -->
+		<div class="flex flex-col gap-2">
+			<h1 class="font-bold text-3xl md:text-4xl text-slate-900 dark:text-white tracking-tight">
+				{{ listing.name }}
+			</h1>
+			<div class="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+				<span class="material-symbols-outlined text-[20px]">location_on</span>
+				<p class="italic text-base md:text-lg">
+					{{ listing.address }}
+				</p>
+			</div>
+		</div>
 
-    <!-- Listing Description -->
-    <template v-if="$slots.description">
-        <Divider/>
-        <div class="leading-5 flex center italic w-full">
-            <slot name="description"></slot>
-        </div>
-    </template>
+		<!-- Owner Profile Section -->
+		<div class="flex items-center gap-4 bg-slate-50 dark:bg-slate-800/30 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50 w-fit pr-8">
+			<div class="w-14 h-14 rounded-full bg-gradient-to-br from-amber-100 to-amber-200 border-2 border-white dark:border-slate-700 shadow-sm flex items-center justify-center">
+				<span class="material-symbols-outlined text-amber-600 text-3xl">domain</span>
+			</div>
+			<div class="flex flex-col">
+				<h3 class="font-bold text-lg text-slate-900 dark:text-white leading-tight">
+					{{ listing.owner }}
+				</h3>
+				<div class="flex items-center gap-1.5 text-[#355AFF] font-semibold text-sm mt-1">
+					<Icon name="verified" class="w-4 h-4" />
+					<span>Verified Host</span>
+				</div>
+			</div>
+		</div>
 
-    <!-- Amenities -->
-    <Divider/>
-    <div class="flex flex-col h-fit max-h-54 w-full">
-        <div class="sub-heading">Amenities</div>
-        <ul class="flex flex-col flex-wrap gap-4 h-[70%]">
-             <li v-for="i in props.listingData.amenities">ℹ️ {{ i }}</li>
-        </ul>
-    </div>
+		<!-- Description Section -->
+		<div v-if="listing.description" class="flex flex-col gap-3">
+			<h2 class="text-xl font-bold text-slate-900 dark:text-white">
+				About this place
+			</h2>
+			<div class="text-slate-700 dark:text-slate-300 leading-relaxed text-lg italic border-l-4 border-slate-200 dark:border-slate-700 pl-4 py-1 whitespace-pre-line">
+				{{ listing.description }}
+			</div>
+		</div>
 
-    <!-- Location -->
-    <!-- <Divider/>
-    <div class="w-full">
-        <div class="sub-heading">Location</div>
-        <MediaContainer size="wide" src="https://cdn.britannica.com/06/276306-049-A8451874/world-map.jpg"/>
-    </div> -->
+		<Divider />
 
-    <!-- Contact -->
-    <!-- <Divider/>
-    <div class="w-full">
-        <div class="sub-heading">Contact</div>
-        <div>
-            <ul class="flex flex-col gap-4">
-                <li v-for="i in props.listingData.contacts">
-                    ℹ️ {{ i }}
-                </li>
-            </ul>
-        </div>
-    </div> -->
-</div>
+		<!-- Amenities Section -->
+		<div v-if="listing.amenities?.length" class="flex flex-col gap-4">
+			<h2 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+				<span class="material-symbols-outlined text-[#355AFF]">check_circle</span>
+				Amenities
+			</h2>
+			<div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-8">
+				<div
+						v-for="(amenity, index) in listing.amenities"
+						:key="index"
+						class="flex items-center gap-3 text-slate-700 dark:text-slate-300 group"
+				>
+					<div class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center group-hover:bg-[#355AFF]/10 transition-colors">
+						<span class="material-symbols-outlined text-[18px] text-slate-500 dark:text-slate-400 group-hover:text-[#355AFF]">info</span>
+					</div>
+					<span class="font-medium">{{ amenity }}</span>
+				</div>
+			</div>
+		</div>
+
+		<!-- Contact Section -->
+		<template v-if="listing.contacts?.length">
+			<Divider />
+			<div class="flex flex-col gap-4">
+				<h2 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+					<span class="material-symbols-outlined text-[#355AFF]">chat</span>
+					Contact & Socials
+				</h2>
+				<div class="flex flex-wrap gap-3">
+					<a
+							v-for="contact in listing.contacts"
+							:key="contact._id"
+							:href="contact.link"
+							target="_blank"
+							class="flex items-center gap-2 px-5 py-2.5 bg-slate-100 dark:bg-slate-800 border border-transparent hover:border-[#355AFF] rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-[#355AFF] dark:hover:text-white transition-all duration-200 shadow-sm"
+					>
+						<span class="material-symbols-outlined text-[18px]">link</span>
+						{{ contact.name }}
+					</a>
+				</div>
+			</div>
+		</template>
+	</div>
 </template>
 
 <style scoped>
-@reference "tailwindcss";
-
-.sub-heading {
-    @apply font-semibold text-[24px] leading-8 mb-5
-}
-
 </style>
