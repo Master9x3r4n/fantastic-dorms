@@ -44,7 +44,7 @@ const parsedBody = computed(() => {
 			<RouterLink :to="{name: 'profile', params: {id: review.username}}" class="hover:opacity-80 transition-opacity">
 				<div class="flex items-center gap-3">
 					<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
-						<ProfileIcon :src="profile?.profileImgSrc" sizeClass="w-full h-full" iconSize="text-[24px]!"></ProfileIcon>
+						<ProfileIcon :src="profile?.picture" sizeClass="w-full h-full" iconSize="text-[24px]!"></ProfileIcon>
 					</div>
 					<div>
 						<h3 class="font-bold text-slate-900 dark:text-white">{{ profile?.name.firstName + ' ' + profile?.name.lastName || review.username }}</h3>
