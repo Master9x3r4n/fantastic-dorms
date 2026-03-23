@@ -1,80 +1,99 @@
 <script setup>
+import { computed } from 'vue';
 
 const props = defineProps({
-    ratings: {
-        type: Array,
-        default: [
-            {
-                name: "Cleanliness",
-                rating: 4
-            },
-            {
-                name: "Comfort",
-                rating: 4
-            },
-            {
-                name: "Spaciousness",
-                rating: 3
-            },
-            {
-                name: "Price",
-                rating: 2 
-            }
-        ]
-    }
-})
+	// holy JS is so bad sometimes something is an array, THE OTHER TIMES IT'S AN OBJECT>????
+	rating: {
+		type: [Object, Array],
+		default: () => ({
+			cleanliness: 0,
+			comfort: 0,
+			communication: 0,
+			location: 0
+		})
+	}
+});
 
+// 1. Safely extract the rating object whether it was passed as an Array or Object
+const ratingData = computed(() => {
+	if (Array.isArray(props.rating) && props.rating.length > 0) {
+		return props.rating[0];
+	}
+	return props.rating || {};
+});
 
-const getOverallAttribute = () => {
-    let sum = 0;
-    for (let j =0; j < props.ratings.length; j ++) {
-        sum += props.ratings[j].rating;
-    }
-    const total = props.ratings.length>1? (sum / props.ratings.length): 0
-    return  total.toFixed(1)
-}
+// 2. Define exactly which categories we care about (ignoring _id, name, value, etc.)
+const validCategories = ['cleanliness', 'comfort', 'communication', 'location'];
 
+// 3. Calculate the overall rating average strictly from the 4 specific categories
+const overallRating = computed(() => {
+	let sum = 0;
+	let count = 0;
+
+	for (const category of validCategories) {
+		// Check if the category exists in the data to avoid NaN errors
+		if (ratingData.value[category] !== undefined && ratingData.value[category] !== null) {
+			sum += Number(ratingData.value[category]);
+			count++;
+		}
+	}
+
+	if (count === 0) return "0.0";
+	return (sum / count).toFixed(1);
+});
+
+// 4. Format ONLY the allowed categories into an iterable array for the template
+const formattedRatings = computed(() => {
+	return validCategories.map(category => {
+		// Fallback to 0 if the data is missing a specific category
+		const score = ratingData.value[category] !== undefined ? Number(ratingData.value[category]) : 0;
+
+		return {
+			// Capitalize the first letter (e.g., "cleanliness" -> "Cleanliness")
+			name: category.charAt(0).toUpperCase() + category.slice(1),
+			score: score.toFixed(1)
+		};
+	});
+});
 </script>
 
 <template>
-    <!-- h-79.25 -->
-    <div class="flex flex-col justify-center items-center 
-    p-10 gap-3.75 w-105.25 h-fit border-3 rounded-3xl
-    border-[#BFBFBF] bg-white dark:bg-[#111111] dark:border-[#111111] dark:text-white">
-        <!-- Header Container -->
-        <div class="h-12 w-full font-bold text-3xl leading-10 
-        flex items-center justify-between">
-            <!-- Overall -->
-            <div>Overall</div>
+	<div class="bg-white dark:bg-[#121422] border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm p-6
+  w-full max-w-[420px] flex flex-col gap-5 transition-colors duration-200">
 
-            <!-- Rating -->
-            <div class="flex justify-between items-center w-3/12">
-                <img src="@\assets\rating-assets\star-full.svg" width="32px">
-                <div>{{ getOverallAttribute() }}</div>
-            </div>
-        </div>
+		<!-- Header Container -->
+		<div class="flex items-center justify-between">
+			<h3 class="font-bold text-2xl text-slate-900 dark:text-white">Overall</h3>
 
-        <!-- Divider -->
-        <div class="border-b-2 w-full border-[#BFBFBF]">
-        </div>
+			<div class="flex items-center gap-2 text-[#355AFF] font-bold text-3xl">
+				<span class="material-symbols-outlined text-[32px]! filled">star</span>
+				<span>{{ overallRating }}</span>
+			</div>
+		</div>
 
-        <!-- Attributes -->
-        <template v-for="i in props.ratings.length">
-            <div class="w-full text-2xl leading-7 flex items-center justify-between">
-                <!-- Attribute Name -->
-                <div class="flex gap-3">
-                    <img src="@\assets\rating-assets\star-empty.svg" width="24px">
-                    <div>{{ props.ratings[i-1].name }}</div>
-                </div>
+		<!-- Divider -->
+		<hr class="border-slate-200 dark:border-slate-700/60 my-1" />
 
-                <!-- Rating -->
-                <div class="flex justify-between items-center w-[20%]">
-                    <img src="@\assets\rating-assets\star-full.svg" width="24px">
-                    <div v-if="props.ratings.length > 1">{{ props.ratings[i-1].rating.toFixed(1) }}</div>
-                    <div v-else>0.0</div>
-                </div>
-            </div>
-        </template>
+		<!-- Attributes -->
+		<div class="flex flex-col gap-4">
+			<div
+					v-for="item in formattedRatings"
+					:key="item.name"
+					class="flex items-center justify-between text-slate-700 dark:text-slate-300"
+			>
+				<!-- Attribute Name -->
+				<div class="flex items-center gap-3">
+					<span class="material-symbols-outlined text-[24px]! text-slate-400 dark:text-slate-500">star</span>
+					<span class="text-xl font-medium">{{ item.name }}</span>
+				</div>
 
-    </div>
+				<!-- Rating -->
+				<div class="flex items-center gap-2 font-semibold text-xl">
+					<span class="material-symbols-outlined text-[24px]! text-[#355AFF] filled">star</span>
+					<span class="w-10 text-right">{{ item.score }}</span>
+				</div>
+			</div>
+		</div>
+
+	</div>
 </template>
