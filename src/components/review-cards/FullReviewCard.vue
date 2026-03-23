@@ -73,12 +73,12 @@ const parsedBody = computed(() => {
 			<ReviewTag :tags="review.tags"></ReviewTag>
 		</slot>
 
-		<div class="my-6 h-[47%] flex w-full justify-center items-center">
+		<div v-if="review.media.length > 0" class="my-6 h-[47%] flex w-full justify-center items-center">
 			<Carousel :count="4" buttonStyling="small circular" :buttonSpacing="4">
 				<template #content>
-					<template v-for="i in 10">
+					<template v-for="(url, index) in review.media" :key="index">
 						<div class="flex shrink-0 snap-start pl-2 pr-2">
-							<MediaContainer size="medium" class="border-2 border-dashed border-slate-400 dark:border-slate-200"/>
+							<MediaContainer size="medium" :src="url" :alt="'Upload preview ' + index" class="border-2 border-dashed border-slate-400 dark:border-slate-200"/>
 						</div>
 					</template>
 				</template>
