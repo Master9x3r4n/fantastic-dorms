@@ -5,14 +5,11 @@ import ToggleButton from "@/components/page-buttons/ToggleButton.vue"
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
 import RatingBox from "@/components/write-review-content/RatingBox.vue";
 import TextEditor from "@/components/write-review-content/TextEditor.vue";
-import Carousel from "@/components/carousel/Carousel.vue";
-import MediaContainer from "@/components/carousel/MediaContainer.vue";
 import UploadBox from "@/components/write-review-content/UploadBox.vue";
 import Divider from "@/components/divider/Divider.vue";
 import ListingService from "../services/ListingService.js";
 import ReviewService from "../services/ReviewService.js";
-import ReviewTag from "@/components/write-review-content/ReviewTag.vue";
-import ThumbsContainer from "@/components/thumbs-buttons/ThumbsContainer.vue";
+import LivePreview from "@/components/write-review-content/LivePreview.vue";
 
 const props = defineProps({
 	id: { type: String, default: '' }
@@ -289,7 +286,6 @@ onBeforeUnmount(() => {
 						</label>
 					</div>
 
-					<!-- TODO: to the backend devs, make sure to edit this to save the inputs in the form, make sure to also store the date of the review -->
 					<!-- Buttons -->
 					<div class="flex flex-wrap items-center gap-3 pt-4">
 						<button 
@@ -318,63 +314,15 @@ onBeforeUnmount(() => {
 			</div>
 
 			<!-- Right Column: Live Preview (Hidden on small screens) -->
-			<div class="hidden lg:block w-125 xl:w-152.5 shrink-0">
-				<div class="sticky top-24">
-					<h2 class="text-2xl font-bold mb-2 text-slate-900 dark:text-white">Live Preview</h2>
-					<p class="text-sm text-slate-500 dark:text-slate-400 mb-6">This is the point of view for all users within the property's page.</p>
-
-					<div class="bg-white dark:bg-[#121422] border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm p-6 transition-colors duration-200">
-						<div class="flex justify-between items-start mb-4">
-							<div class="flex items-center gap-3">
-								<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
-									<ProfileIcon :isAnonymous="form.isAnonymous" :src="user.picture" alt="user img" sizeClass="w-full h-full" iconSize="text-[24px]!"></ProfileIcon>
-								</div>
-								<div>
-									<h3 class="font-bold text-slate-900 dark:text-white">{{ form.isAnonymous ? 'Anonymous' : user.name.firstName + ' ' + user.name.lastName }}</h3>
-									<p class="text-sm text-slate-500 dark:text-slate-400 italic">3 Reviews</p>
-								</div>
-							</div>
-							<div class="flex items-center text-[#355AFF] text-2xl font-bold">
-								<span class="material-symbols-outlined text-[28px]! mr-1 filled">star</span> {{ overallRating }}
-							</div>
-						</div>
-
-						<h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-3 wrap-break-word">
-							{{ form.title || 'Review Title Here' }}
-						</h2>
-						<div
-							class="text-slate-800 dark:text-slate-300 mb-6 wrap-break-word min-h-16 editor-output"
-							v-html="form.body || 'Your detailed review experience will appear here as you type...'"
-						></div>
-
-						<!-- Tags Preview -->
-						<ReviewTag :tags="form.tags"/>
-
-						<!-- Static Image Carousel-->
-						<div v-if="form.media.length > 0" class="my-6 h-[47%] flex w-full justify-center items-center">
-							<Carousel :count="4" buttonStyling="small circular" :buttonSpacing="4">
-								<template #content>
-									<template v-for="(url, index) in previewUrls">
-										<div class="flex shrink-0 snap-start pl-2 pr-2">
-											<MediaContainer size="medium" :src="url" :alt="form.media[index].name" class="border-2 border-dashed border-slate-400 dark:border-slate-200"/>
-										</div>
-									</template>
-								</template>
-							</Carousel>
-						</div>
-
-						<!-- Static Owner Reply -->
-						<div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 rounded-xl p-4 mb-6">
-							<p class="text-sm italic text-slate-500 dark:text-slate-400 mb-2">Reply from the owner</p>
-							<p class="text-slate-800 dark:text-slate-300">Glad to hear that you were satisfied with our space! ^_^</p>
-						</div>
-
-						<div class="flex items-center gap-4 text-slate-500 dark:text-slate-400">
-							<ThumbsContainer :score="67"/>
-						</div>
-					</div>
-				</div>
-			</div>
+			<LivePreview
+					:is-anonymous="form.isAnonymous"
+					:user="user"
+					:overall-rating="overallRating"
+					:title="form.title"
+					:body="form.body"
+					:tags="form.tags"
+					:media-urls="previewUrls"
+			/>
 		</div>
 	</div>
 </template>
