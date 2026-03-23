@@ -5,7 +5,7 @@
         "isAnonymous": false,
         "content": {
             "title": "Le Grand Apartment",
-            "body": "One of my favorite places ever. I am glad that i decided to visit this place.",
+            "body": "## An Absolute Gem\nOne of my **favorite** places ever. I am glad that I decided to visit this place.\n\n> \"A true home away from home.\"\n\nHere is why I loved it:\n* Great ambiance\n* <u>Superb</u> cleanliness\n* Friendly staff",
             "reply": "Glad to hear that you were satisfied with our space! ^_^"
         },
         "rating": {
@@ -15,7 +15,11 @@
             "location": 3
         },
         "score": 67,
-        "media": [],
+        "media": [
+            "https://i.pinimg.com/1200x/d5/05/c6/d505c6a645efe6a0dd42898d18d083b1.jpg",
+            "https://i.pinimg.com/736x/e7/bd/62/e7bd624679d8a12e8b46c387fc078011.jpg"
+        ],
+        "tags": ["Great Ambiance", "Clean", "Friendly Staff"],
         "createdAt": "2026-01-01T00:00:00Z"
     },
     {
@@ -24,7 +28,7 @@
         "isAnonymous": false,
         "content": {
             "title": "My review",
-            "body": "Absolutely Grand! That is all I have to say for this wonderful place.",
+            "body": "### Highly Recommended!\n**Absolutely Grand!** That is *all* I have to say for this wonderful place.\n\n1. Check-in was a breeze\n2. Amenities were ~~okay~~ fantastic!\n3. The view is <u>unbeatable</u>",
             "reply": ""
         },
         "rating": {
@@ -34,7 +38,10 @@
             "location": 4
         },
         "score": 52,
-        "media": [],
+        "media": [
+            "https://i.pinimg.com/736x/1a/ff/7c/1aff7cd2aacfd19af23577e70cc992c4.jpg"
+        ],
+        "tags": ["Great View", "Good Amenities"],
         "createdAt": "2026-01-01T00:00:00Z"
     },
     {
@@ -43,7 +50,7 @@
         "isAnonymous": false,
         "content": {
             "title": "Fantastic For Us",
-            "body": "I have stayed at this apartment for a while, and let me say, it is as the name says. It's a really cool apartment and it has a lot of the amenities that a student would want from...",
+            "body": "## Student Paradise\nI have stayed at this apartment for a while, and let me say, it is **as the name says**.\n\nIt's a *really cool* apartment and it has a lot of the amenities that a student would want:\n* Fast Wi-Fi\n* Study desks\n* <u>Quiet environment</u>\n\n> Perfect for cramming before finals!",
             "reply": "Glad to hear that you were satisfied with our space! ^_^"
         },
         "rating": {
@@ -53,7 +60,11 @@
             "location": 4
         },
         "score": 44,
-        "media": [],
+        "media": [
+            "https://i.pinimg.com/736x/66/36/1a/66361a1adddb3da9da42b2e2dfe3b26a.jpg",
+            "https://i.pinimg.com/1200x/d5/05/c6/d505c6a645efe6a0dd42898d18d083b1.jpg"
+        ],
+        "tags": ["Student Friendly", "Fast Wi-Fi", "Quiet"],
         "createdAt": "2026-01-01T00:00:00Z"
     },
     {
@@ -62,7 +73,7 @@
         "isAnonymous": false,
         "content": {
             "title": "I Love it!",
-            "body": "Easy 4 stars 4 me. I even got to meet the Human Torch! Fantastic!",
+            "body": "### Starstruck!\nEasy **4 stars** 4 me. I even got to meet the *Human Torch*!\n\n~~Boring~~ **Fantastic!**\n\nThings that stood out:\n1. The location\n2. The <u>heroic</u> encounters",
             "reply": "Happy to hear that!"
         },
         "rating": {
@@ -73,6 +84,7 @@
         },
         "score": 44,
         "media": [],
+        "tags": ["Great Location"],
         "createdAt": "2026-01-01T00:00:00Z"
     },
     {
@@ -81,7 +93,7 @@
         "isAnonymous": false,
         "content": {
             "title": "Cool ig",
-            "body": "Honestly, not too bad, but just very mid. I didn't even get to see Miro. Fuck.",
+            "body": "## Underwhelming Experience\nHonestly, not *too* bad, but just very **mid**.\n\n> I didn't even get to see Miro. Fuck.\n\nThings to improve:\n* Communication\n* Better directions\n\nOverall: ~~Great~~ <u>Disappointing</u>.",
             "reply": ""
         },
         "rating": {
@@ -91,7 +103,10 @@
             "location": 2
         },
         "score": 7,
-        "media": [],
+        "media": [
+            "https://i.pinimg.com/736x/e7/bd/62/e7bd624679d8a12e8b46c387fc078011.jpg"
+        ],
+        "tags": ["Mid", "Poor Communication"],
         "createdAt": "2026-01-01T00:00:00Z"
     },
     {
@@ -100,7 +115,7 @@
         "isAnonymous": false,
         "content": {
             "title": "Very very meh",
-            "body": "Miro wasn't even there and the apartment doesn't match what was advertised. It is driving me insane.",
+            "body": "### False Advertising\nMiro wasn't even there and the apartment **does not match** what was advertised.\n\nIt is driving me *insane*.\n\nIssues encountered:\n1. Missing amenities\n2. <u>Unresponsive</u> host\n3. ~~Clean~~ Dirty floors",
             "reply": ""
         },
         "rating": {
@@ -110,8 +125,11 @@
             "location": 1
         },
         "score": 5,
-        "media": [],
-        "tags": [],
+        "media": [
+            "https://i.pinimg.com/736x/1a/ff/7c/1aff7cd2aacfd19af23577e70cc992c4.jpg",
+            "https://i.pinimg.com/736x/66/36/1a/66361a1adddb3da9da42b2e2dfe3b26a.jpg"
+        ],
+        "tags": ["False Advertising", "Unresponsive Host", "Dirty"],
         "createdAt": "2026-01-01T00:00:00Z"
     }
 ]
