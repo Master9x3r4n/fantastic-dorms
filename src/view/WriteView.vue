@@ -128,7 +128,10 @@ const submitReview = () => {
 };
 
 // Watch for any changes to the imageFiles array
-watch(form.value.media, (newFiles) => {
+watch(() => form.value.media, (newFiles) => {
+	// Safety check in case the array is cleared to null/undefined
+	if (!newFiles) return;
+
 	// 1. CLEANUP: Revoke all existing URLs before creating new ones
 	previewUrls.value.forEach(url => {
 		// Only revoke if it's a blob URL (in case you mix local files with server URLs)
@@ -139,7 +142,8 @@ watch(form.value.media, (newFiles) => {
 
 	// 2. GENERATE: Create new URLs for the current state of the array
 	previewUrls.value = newFiles.map(file => {
-		if (file instanceof File) {
+		// Make sure the items in the array are actual File objects
+		if (file instanceof File || file instanceof Blob) {
 			return URL.createObjectURL(file)
 		}
 		return file // Fallback for existing server image URLs
