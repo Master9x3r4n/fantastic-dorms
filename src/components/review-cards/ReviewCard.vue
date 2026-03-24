@@ -70,7 +70,7 @@ const parsedBody = computed(() => {
 		</div>
 
 		<!-- Title Container -->
-		<h2 class="text-xl font-bold text-slate-900 dark:text-white truncate">
+		<h2 class="text-2xl font-bold text-slate-900 dark:text-white truncate mt-1">
 			{{ review.content.title }}
 		</h2>
 
