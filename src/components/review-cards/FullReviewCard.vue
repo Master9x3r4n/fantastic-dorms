@@ -7,30 +7,33 @@ import ProfileIcon from "@/components/profile/ProfileIcon.vue";
 import ProfileService from '../../services/ProfileService.js';
 import ReviewTag from "@/components/write-review-content/ReviewTag.vue";
 import ThumbsContainer from '../thumbs-buttons/ThumbsContainer.vue';
+import OwnerReply from "@/components/side-cards/OwnerReply.vue";
 
-const props = defineProps({ review: {} });
+const props = defineProps({
+	review: {
+		type: Object,
+		required: true
+	}
+});
 
 const profile = ref(null);
+
 ProfileService.get(props.review.username)
 		.then(res => {
-			console.log('Profile:');
-			console.log(res.data);
 			profile.value = res.data;
 		})
 		.catch(error => {
-			console.log(`Error retrieving profile \'${props.review.username}\': ${error.message}`)
+			console.log(`Error retrieving profile '${props.review.username}': ${error.message}`);
 		});
 
 const getOverallRating = (ratings) => {
 	let overall = 0;
 	for (let p in ratings) {
 		overall += ratings[p];
-		console.log(ratings[p]);
 	}
-	return (overall/4).toFixed(1);
+	return (overall / 4).toFixed(1);
 }
 
-// 2. Create the computed property to parse the Markdown string into HTML
 const parsedBody = computed(() => {
 	const rawText = props.review?.content?.body || "I have stayed at this apartment for a while, and let me say, it is as the name says...";
 	return marked.parse(rawText);
@@ -38,17 +41,20 @@ const parsedBody = computed(() => {
 </script>
 
 <template>
-	<div class="bg-white dark:bg-[#121422] border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm p-6 transition-colors duration-200">
+	<div class="bg-white dark:bg-[#121422] border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm p-6 transition-colors duration-200 flex flex-col gap-5">
 
-		<div class="flex justify-between items-start mb-4">
+		<!-- Header Container (Profile & Rating) -->
+		<div class="flex justify-between items-start">
 			<RouterLink :to="{name: 'profile', params: {id: review.username}}" class="hover:opacity-80 transition-opacity">
 				<div class="flex items-center gap-3">
 					<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
 						<ProfileIcon :src="profile?.picture" sizeClass="w-full h-full" iconSize="text-[24px]!"></ProfileIcon>
 					</div>
 					<div>
-						<h3 class="font-bold text-slate-900 dark:text-white">{{ profile?.name.firstName + ' ' + profile?.name.lastName || review.username }}</h3>
-						<p class="text-sm text-slate-500 dark:text-slate-400 italic">- Reviews</p>
+						<div class="font-bold text-slate-900 dark:text-white">
+							{{ profile?.name?.firstName ? (profile.name.firstName + ' ' + profile.name.lastName) : review.username }}
+						</div>
+						<div class="text-sm text-slate-500 dark:text-slate-400 italic">- Reviews</div>
 					</div>
 				</div>
 			</RouterLink>
@@ -59,21 +65,26 @@ const parsedBody = computed(() => {
 			</div>
 		</div>
 
-		<h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-3 wrap-break-word">
-			<slot name="review-title">{{ review.content.title }}</slot>
-		</h2>
+		<!-- Content Container -->
+		<div class="flex flex-col gap-3">
+			<!-- Main Title -->
+			<div class="text-2xl font-bold text-slate-900 dark:text-white wrap-break-word">
+				{{ review.content.title }}
+			</div>
 
-		<div class="text-slate-800 dark:text-slate-300 mb-6 wrap-break-word min-h-16 editor-output">
-			<slot name="review-content">
+			<!-- Review Body -->
+			<div class="text-slate-800 dark:text-slate-300 wrap-break-word min-h-16 editor-output">
 				<div v-html="parsedBody"></div>
-			</slot>
+			</div>
 		</div>
 
-		<slot name="review-tags">
+		<!-- Tags -->
+		<div v-if="review.tags && review.tags.length > 0">
 			<ReviewTag :tags="review.tags"></ReviewTag>
-		</slot>
+		</div>
 
-		<div v-if="review.media.length > 0" class="my-6 h-[47%] flex w-full justify-center items-center">
+		<!-- Media Carousel -->
+		<div v-if="review.media && review.media.length > 0" class="h-[47%] flex w-full justify-center items-center">
 			<Carousel :count="4" buttonStyling="small circular" :buttonSpacing="4">
 				<template #content>
 					<template v-for="(url, index) in review.media" :key="index">
@@ -85,16 +96,16 @@ const parsedBody = computed(() => {
 			</Carousel>
 		</div>
 
-		<div v-if="$slots.ownerReply" class="bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 rounded-xl p-4 mb-6">
-			<p class="text-sm italic text-slate-500 dark:text-slate-400 mb-2">Reply from the owner</p>
-			<div class="text-slate-800 dark:text-slate-300">
-				<slot name="ownerReply"></slot>
-			</div>
-		</div>
+		<!-- Owner Reply Component -->
+		<OwnerReply
+				v-if="review.content.reply"
+				:replyText="review.content.reply"
+				:truncate="false"
+		/>
 
-		<div class="flex items-center gap-4 text-slate-500 dark:text-slate-400">
+		<!-- Thumbs :D -->
+		<div class="flex items-center gap-4 text-slate-500 dark:text-slate-400 pt-1">
 			<ThumbsContainer :score="review.score"/>
-
 		</div>
 
 	</div>
@@ -134,14 +145,14 @@ const parsedBody = computed(() => {
 
 /* Headings */
 .editor-output :deep(h2) {
-	font-size: 1.5em;
+	font-size: 1.25em;
 	font-weight: 700;
 	margin-top: 1rem;
 	margin-bottom: 0.5rem;
 	line-height: 1.2;
 }
 .editor-output :deep(h3) {
-	font-size: 1.25em;
+	font-size: 1.125em;
 	font-weight: 600;
 	margin-top: 1rem;
 	margin-bottom: 0.5rem;
