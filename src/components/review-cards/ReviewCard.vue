@@ -5,6 +5,7 @@ import MediaContainer from '../carousel/MediaContainer.vue';
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
 import ProfileService from "../../services/ProfileService.js";
 import ThumbsContainer from '../thumbs-buttons/ThumbsContainer.vue';
+import OwnerReply from "@/components/side-cards/OwnerReply.vue";
 
 const props = defineProps({
 	review: {},
@@ -93,12 +94,12 @@ const parsedBody = computed(() => {
 		</div>
 
 		<!-- Reply Container -->
-		<div v-if="review.content.reply" class="bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 rounded-xl p-4 mt-2">
-			<p class="text-sm italic text-slate-500 dark:text-slate-400 mb-1">Reply from the owner</p>
-			<div class="text-slate-800 dark:text-slate-300 text-sm line-clamp-2">
-				{{ review.content.reply }}
-			</div>
-		</div>
+		<OwnerReply
+				v-if="review.content.reply"
+				:replyText="review.content.reply"
+				:truncate="true"
+		/>
+
 
 		<!-- Footer Container -->
 		<div class="w-full flex justify-between items-center mt-3 pt-4 border-t border-slate-100 dark:border-slate-700/50">
@@ -150,14 +151,14 @@ const parsedBody = computed(() => {
 
 /* Headings */
 .editor-output :deep(h2) {
-	font-size: 1.5em;
+	font-size: 1.25em;
 	font-weight: 700;
 	margin-top: 1rem;
 	margin-bottom: 0.5rem;
 	line-height: 1.2;
 }
 .editor-output :deep(h3) {
-	font-size: 1.25em;
+	font-size: 1.125em;
 	font-weight: 600;
 	margin-top: 1rem;
 	margin-bottom: 0.5rem;
