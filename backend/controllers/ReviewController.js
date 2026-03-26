@@ -3,217 +3,135 @@
 
 import Review from '../models/Review.js'; 
 import { v2 as cloudinary } from 'cloudinary';
-const maxMedia = 4;
+const MAX_MEDIA_COUNT = 4;
 
 class ReviewController {
-    async findAll(req, res) {
-        // console.log('QUERY:');
-        // console.log(req.query);
-        
-        let condition = {}
-        if (req.query.username) condition['username'] = req.query.username;
-        if (req.query.listingId) condition['listingId'] = req.query.listingId;
-        if (req.query.title) condition['title'] =  { $regex: `/${title}/`, $options: 'i' };
+	// Finds all Review documents with query
+	// Returns: Array of Review documents
+	async findAll(req, res) {
+		let condition = {}
+		if (req.query.username) condition['username'] = req.query.username;
+		if (req.query.listingId) condition['listingId'] = req.query.listingId;
+		if (req.query.title) condition['title'] =  { $regex: `/${title}/`, $options: 'i' };
 
-        // console.log('CONDITION:');
-        // console.log(condition);
-        Review.find(condition)
-            .then(data => {
-                if (data)
-                    res.status(200).send(data);
-                else
-                    res.status(404).send({ message: 'Reviews could not be found.' });
-            })
-            .catch(err => {
-                res.status(500).send({
-                    message: err.message || "An error occurred while retrieving reviews."
-                })
-            });
-    }
-        
-    async find(req, res) {
-        const id = req.params.id;
-        
-        Review.findById(id)
-            .then(data => {
-                if (data)
-                    res.status(200).send(data);
-                else
-                    res.status(404).send({ message: `Review with ID ${id} could not be found.` });
-            })
-            .catch(err => {
-                res.status(500).send({
-                    message: err.message || `An error occurred.`
-                });
-            });
-    }
-    
-    async create(req, res) {
-        // let cldnryJson;
-        // const pictures = req.body.media;
-        // const mediaCount = pictures.length;
-        // let urls = [];
-        
-        // Check if image can be uploaded
-        // try {
-        //     for (let i = 0; i < maxMedia; i++){
-        //         if (i < mediaCount)
-        //         {
-        //             cldnryJson = await cloudinary.uploader.
-        //             upload(pictures[i], {
-        //                 resource_type: "image",
-        //                 public_id: `${req.body._id}-${i}`,
-        //                 folder: 'reviewPictures',
-        //             })
-        //             urls[i] = cldnryJson.secure_url;
-        //         }
-        //         else
-        //         {
-        //             urls[i] = '';
-        //         }
-        //     }
+		try {
+			const reviews = await Review.find(condition);
+			if (reviews) {
+				res.status(200).send({ data: reviews, message: 'Reviews found successfully.' })
+			} else {
+				res.status(404).send({
+					message: `Reviews could not be found. Condition/s: ${condition}`
+				})
+			}
+		} catch (err) {
+			res.status(500).send({ message: err.message || 'A non-descript error occurred.' });
+		}
+	}
 
-        // } catch (error) {
-        //     console.log(error);
-        //     return  res.status(500).send({
-        //         message: 'An error occured while uploading picture'
-        //     });
-        // }
+	// Finds Review document with ID
+	// Returns: One Review document
+	async find(req, res) {
+		const id = req.params.id;
 
-        const newReview = new Review(req.body);
-        newReview.save()
-            .then(data => {
-                res.send(data);
-            })
-            .catch(err => {
-                res.status(500).send({
-                    message: err.message || "An error occurred while creating the review."
-                });
-            });
-    };
+		try {
+			const review = await Review.findById(id);
+			if (review) {
+				res.status(200).send({ 
+					data: review,
+					message: 'Review found successfully.'
+				});
+			} else {
+				res.status(404).send({
+					message: `Review with ID ${id} could not be found.`
+				});
+			}
+		} catch (err) {
+			res.status(500).send({
+				message: err.message || 'A non-descript error occurred.'
+			});
+		}
+	}
 
-    async update(req, res) {
-        if (!req.body.title) {
-            res.status(400).send({ message: "Title cannot be empty." });
-            return;
-        } else if (!req.body.description) {
-            res.status(400).send({ message: "Content cannot be empty." });
-            return;
-        }
+	// Creates Review document
+	// Returns: Review document that was created
+	async create(req, res) {
+		const review = req.body;
+		const uploadedMedia = [];
+		
+		try {
+			let count = 0;
+			for (const media in req.body.media) {
+				if (count >= MAX_MEDIA_COUNT)
+					break;
 
-        const fieldName = req.params.fieldName;
-        const newVal = req.params.newVal;
-        const id = req.params.id;
+				const json = await cloudinary.uploader.upload(media, {
+					resource_type: 'image',
+					public_id: `${req.body._id}-${count}`,
+					folder: 'reviewMedia'
+				})
+				uploadedMedia.push(json.public_id);
+				count++;
+			}
 
-        let cldnryJson;
-        const pictures = req.body.media;
-        const mediaCount = pictures.length;
-        let urls = [];
-        
-        if (fieldName === 'media')
-        {
-            // Check if image can be uploaded
-            try {
-                for (let i = 0; i < maxMedia; i++){
+			review.media = uploadedMedia;
+			const newReview = await new Review(review).save();
+			res.status(201).send({ data: newReview, message: 'Review created successfully.' });
+		} catch (err) {
+			res.status(500).send({ message: err.message || 'A non-descript error occurred.' });
+		}
+	};
 
-                    if (i < mediaCount)
-                    {
-                        cldnryJson = await cloudinary.uploader.
-                        upload(pictures[i], {
-                            resource_type: "image",
-                            public_id: `${req.body._id}-${i}`,
-                            folder: 'reviewPictures',
-                            overwrite: true
-                        })
-                        urls[i] = cldnryJson.secure_url;
-                    }
-                    else
-                    {
-                        urls[i] = '';
-                    }
-                    
-                }
+	// Updates Review document with ID given properties
+	// Returns: Review document that was updated
+	async update(req, res) {
+		const updates = req.body;
+		const id = req.params.id;
 
-            } catch (error) {
-                console.log(error);
-                return  res.status(500).send({
-                    message: 'An error occured while uploading picture'
-                });
-            }
+		try {
+			const updatedReview = await Review.findByIdAndUpdate(id, updates, {
+				useFindAndModify: false
+			});
 
-            Review.findByIdAndUpdate(id, { media: urls}, { useFindAndModify: false })
-            .then(data => {
-                if (!data)
-                    res.status(404).send({ message: `Cannot update review with id ${id}.` });
-                else 
-                    res.send({ message: "Review successfully updated." });
-            })
-            .catch(err => {
-                res.status(500).send({ message: `Error updating review with id ${id}.`});
-            });
-        }
-        else
-        {
-            Review.findByIdAndUpdate(id, { [fieldName]: newVal}, { useFindAndModify: false })
-            .then(data => {
-                if (!data)
-                    res.status(404).send({ message: `Cannot update review with id ${id}.` });
-                else 
-                    res.send({ message: "Review successfully updated." });
-            })
-            .catch(err => {
-                res.status(500).send({ message: `Error updating review with id ${id}.`});
-            });
-        }
-    }
+			res.status(200).send({
+				data: updatedReview,
+				message: 'Review updated successfully.'
+			});
+		} catch (err) {
+			res.status(500).send({ message: err.message });
+		}
+	}
 
-    async delete(req, res) {
-        const id = req.params.id;
-        let review;
-        let mediaCount
-        try {
-            review = await Review.findById(id);
+	// Deletes Review document with ID
+	// Returns: Object { deletedCount: x }
+	async delete(req, res) {
+		const id = req.params.id;
 
-            if (!review) {
-                return res.status(404).send({ message: "Review not found" });
-            }
+		try {
+			const review = await Review.findById(id);
+			if (review) {
+				// Delete all images on Cloudinary server
+				for (publicId in review.media) {
+					const response = await cloudinary.uploader.destroy(publicId, {
+						resource_type: 'image'
+					});
 
-            mediaCount = review.media.length;
-        } catch (error){
-            res.status(500).send({ message: "Error deleting review", error });
-        }
+					if (response.result !== 'ok') {
+						console.log(`Warning: Attempted to delete file with ID ${publicId}, but received result of '${response.result}'.`);
+					}
+				}
 
-        Review.findByIdAndRemove(id)
-            .then(data => {
-                if (!data)
-                    res.status(404).send({ message: `Cannot delete review with id ${id}.` });
-                else
-                {
-                    // Delete image from cloudinary
-                    try {
-                        for (let i = 0; i < mediaCount; i++)
-                        {
-                            cloudinary.uploader
-                            .destroy(`${id}-${i}`, {
-                                resource_type: 'image'
-                            })
-                            .then(result => console.log(result))
-                        }
-                    } catch (error) {
-                        console.log(error);
-                    }
-
-                    res.send({ message: "Review was deleted successfully!" });
-                }
-            })
-            .catch(err => {
-                res.status(500).send({ message: `Could not delete Review with id ${id}.` });
-            });
-    }
-
-    async deleteByUser(req, res) {
-
-    }
+				const result = await Review.deleteOne(id);
+				res.status(204).send({
+					data: result, 
+					message: `Review with ID ${id} deleted successfully.`
+				});
+			} else {
+				res.status(404).send({ message: `Review with ID ${id} could not be found.` });
+			}
+		} catch (err) {
+			res.status(500).send({ message: err.message || 'A non-descript error occurred.'});
+		}
+	}
 }
 
 export default new ReviewController();
