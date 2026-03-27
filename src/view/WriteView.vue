@@ -18,7 +18,7 @@ const props = defineProps({
 	id: { type: String, default: '' }
 })
 const listing = ref(null);
-ListingService.get(props.id)
+ListingService.find(props.id)
 	.then(res => {
 		listing.value = res.data;
 	})

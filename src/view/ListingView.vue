@@ -29,26 +29,20 @@
     const listing = ref(null);
     const reviews = ref(null);
 
-    ListingService.get(listingId)
-        .then(res => {
-            listing.value = res.data;
-            // console.log(`Listing data:`);
-            // console.log(listing.value);
-        })
-        .catch(err => {
-            console.log(`Error retrieving listing: ${err.message}`);
-        });
-    ReviewService.getAllFromListing(listingId)
-        .then(res => {
-            reviews.value = res.data;
-            // console.log(`Reviews data:`);
-            // console.log(reviews.value);
-            // console.log(reviews.value[0].username);
-            // console.log(reviews.value[0]._id);
-        })
-        .catch(err => {
-            console.log(`Error retrieving reviews: ${err.message}`);
-        });
+    ListingService.find(listingId)
+    .then(res => {
+        listing.value = res.data;
+    })
+    .catch(err => {
+        console.log(`Error retrieving listing: ${err.message}`);
+    });
+    ReviewService.findAllFromListing(listingId)
+    .then(res => {
+        reviews.value = res.data;
+    })
+    .catch(err => {
+        console.log(`Error retrieving reviews: ${err.message}`);
+    });
 </script>
 
 <template>

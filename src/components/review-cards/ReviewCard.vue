@@ -19,7 +19,7 @@ const props = defineProps({
 
 const review = props.review;
 const profile = ref(null);
-ProfileService.get(review.username)
+ProfileService.find(review.username)
     .then(res => {
         profile.value = res.data;
         // console.log('Profile:');

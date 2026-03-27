@@ -11,7 +11,7 @@ import ThumbsContainer from '../thumbs-buttons/ThumbsContainer.vue';
 const props = defineProps({ review: {} });
 
 const profile = ref(null);
-ProfileService.get(props.review.username)
+ProfileService.find(props.review.username)
     .then(res => {
         console.log('Profile:');
         console.log(res.data);

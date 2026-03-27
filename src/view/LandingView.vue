@@ -43,7 +43,7 @@ import ListingService from '../services/ListingService.js';
 // })
 
 const listings = ref(null);
-ListingService.getAll()
+ListingService.findAll()
 	.then(res => {
 		listings.value = res.data;
 	})
