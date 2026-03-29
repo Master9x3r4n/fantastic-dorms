@@ -60,8 +60,9 @@ const parseRating = (ratingData) => {
 const selectListing = async (id) => {
     try {
         /****** GET LISTING ID ******/
-        const [listingRes] = await Promise.all([
-            ListingService.get(id)
+        const [listingRes, lol] = await Promise.all([
+            ListingService.get(id),
+            ListingService.update(id, {description: "lol"})
         ]);
         selectedListing.value = listingRes.data;
 
@@ -139,16 +140,16 @@ const selectProfile = async (id) => {
             <p>Address: {{ selectedListing.address }}</p>
             <p>Description: {{ selectedListing.description }}</p>
             <p>Amnemities: {{ selectedListing.amenities }}</p>
-        </div>
-
-        <!-- Buttons -->
-        <div class="flex w-full justify-end gap-4 px-1">
-            <button
-            class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm font-semibold transition"
-            > Update </button>
-            <button
-            class="bg-red-400 hover:bg-red-500 text-white px-3 py-1 rounded text-sm font-semibold transition"
-            > Delete </button>
+            
+            <!-- Buttons -->
+            <div class="flex w-full justify-end gap-4 px-1">
+                <button
+                class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm font-semibold transition"
+                > Update </button>
+                <button
+                class="bg-red-400 hover:bg-red-500 text-white px-3 py-1 rounded text-sm font-semibold transition"
+                > Delete </button>
+            </div>
         </div>
     </div>
 
