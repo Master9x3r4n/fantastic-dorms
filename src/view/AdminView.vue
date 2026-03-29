@@ -60,9 +60,8 @@ const parseRating = (ratingData) => {
 const selectListing = async (id) => {
     try {
         /****** GET LISTING ID ******/
-        const [listingRes, lol] = await Promise.all([
-            ListingService.get(id),
-            ListingService.update(id, {description: "lol"})
+        const [listingRes] = await Promise.all([
+            ListingService.get(id)
         ]);
         selectedListing.value = listingRes.data;
 
