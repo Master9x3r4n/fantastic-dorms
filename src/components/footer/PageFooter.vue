@@ -2,7 +2,7 @@
 </script>
 
 <template>
-	<footer class="h-55 w-full flex flex-col justify-center items-center gap-10 bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-['Inter'] transition-colors duration-200">
+	<footer class="h-40 w-full mt-4 flex flex-col justify-center items-center gap-10 bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-['Inter'] transition-colors duration-200">
 		<!-- Pages -->
 		<!-- <div class="w-[90%] flex">
 			<div class="flex flex-col w-[51%] gap-0.5">
