@@ -100,22 +100,13 @@ const selectProfile = async (id) => {
             Total Listings: {{ listings.length }}
             </span>
         </div>
-
-        <!-- EDIT PANEL -->
-        <div v-if="selectedListing" class="my-4">
-            <p>Listing: {{ selectedListing.name }}</p>
-            <p>Owner: {{ selectedListing.owner }}</p>
-            <p>Address: {{ selectedListing.address }}</p>
-            <p>Description: {{ selectedListing.description }}</p>
-            <p>Amnemities: {{ selectedListing.amenities }}</p>
-        </div>
         
         <!-- LISTINGS TABLE -->
         <div class="bg-white rounded-lg shadow-md overflow-hidden overflow-y-scroll max-h-86">
         <table class="min-w-full divide-y divide-gray-200">
             <!-- HEAD -->
             <thead class="bg-gray-100 ">
-                <tr><th v-for="i in ['listing_Id', 'name', 'rating', 'owner']"
+                <tr><th v-for="i in ['listing_Id', 'name', 'owner']"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {{ i }}
                 </th>
@@ -127,9 +118,6 @@ const selectProfile = async (id) => {
                 <tr v-for="l in listings" :key="l._id" class="hover:bg-gray-50 transition">
                     <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{{ l.listingId }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-gray-600">{{ l.name }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        {{ parseRating(l.rating) }}/5
-                    </td>
                     <td class="px-6 py-4 text-gray-500 truncate max-w-xs">{{ l.owner }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right">
                         <button 
@@ -143,6 +131,25 @@ const selectProfile = async (id) => {
             </tbody>
         </table>
         </div>
+
+        <!-- EDIT PANEL -->
+        <div v-if="selectedListing" class="my-4">
+            <p>Listing: {{ selectedListing.name }}</p>
+            <p>Owner: {{ selectedListing.owner }}</p>
+            <p>Address: {{ selectedListing.address }}</p>
+            <p>Description: {{ selectedListing.description }}</p>
+            <p>Amnemities: {{ selectedListing.amenities }}</p>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex w-full justify-end gap-4 px-1">
+            <button
+            class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm font-semibold transition"
+            > Update </button>
+            <button
+            class="bg-red-400 hover:bg-red-500 text-white px-3 py-1 rounded text-sm font-semibold transition"
+            > Delete </button>
+        </div>
     </div>
 
     <!-- ---------------------------------------------------------------------------------------------- -->
@@ -151,21 +158,12 @@ const selectProfile = async (id) => {
     <!-- PROFILES -->
     <div class="mt-6">
         <!-- SUMMARY -->
-        <div class="flex justify-between items-center mb-8">
+        <div class="flex justify-between items-center mb-4">
             <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Profiles</h1>
             <span class="bg-blue-100 text-blue-800 
             px-3 py-1 rounded-full text-sm font-medium">
             Total Profiles: {{ profiles.length }}
             </span>
-        </div>
-
-        <!-- EDIT PANEL -->
-        <div v-if="selectedProfile" class="my-4">
-            <p>Username: {{ selectedProfile.username }}</p>
-            <p>Name: {{ selectedProfile.name }}</p>
-            <p>Bio: {{ selectedProfile.bio }}</p>
-            <p>School: {{ selectedProfile.school }}</p>
-            <p>Dorm: {{ selectedProfile.dorm }}</p>
         </div>
         
         <!-- LISTINGS TABLE -->
@@ -198,6 +196,28 @@ const selectProfile = async (id) => {
                 </tr>
             </tbody>
         </table>
+        </div>
+
+        <!-- EDIT PANEL -->
+        <div v-if="selectedProfile" class="my-4">
+        <!-- Content -->
+        <div>
+            <p>Username: {{ selectedProfile.username }}</p>
+            <p>Name: {{ selectedProfile.name }}</p>
+            <p>Bio: {{ selectedProfile.bio }}</p>
+            <p>School: {{ selectedProfile.school }}</p>
+            <p>Dorm: {{ selectedProfile.dorm }}</p>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex w-full justify-end gap-4 px-1">
+            <button
+            class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm font-semibold transition"
+            > Update </button>
+            <button
+            class="bg-red-400 hover:bg-red-500 text-white px-3 py-1 rounded text-sm font-semibold transition"
+            > Delete </button>
+        </div>
         </div>
     </div>
 </div>
