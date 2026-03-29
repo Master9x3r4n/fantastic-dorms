@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import AdminView from '../view/AdminView.vue'
 import LandingView from '../view/LandingView.vue'
 import PlaygroundView from '../view/PlaygroundView.vue'
 import ListingView from '../view/ListingView.vue'
@@ -18,6 +19,11 @@ const router = createRouter({
       name: "home",
       component: LandingView,
       meta: { search: false, loggedIn: true },
+    },
+    {
+      path: "/admin",
+      name: "admin",
+      component: AdminView,
     },
     {
       path: "/login",
