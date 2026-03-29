@@ -24,6 +24,14 @@ const router = createRouter({
       path: "/admin",
       name: "admin",
       component: AdminView,
+      meta: {search: false},
+      beforeEnter: (to, from, next) => {
+        const user = JSON.parse(localStorage.getItem('USER'));
+        if (user.isAdmin)
+          return next();
+        else
+          return next('/login');
+      }
     },
     {
       path: "/login",

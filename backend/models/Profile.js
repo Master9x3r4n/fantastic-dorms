@@ -18,7 +18,8 @@ const ProfileSchema = new mongoose.Schema({
     dorm: {
         name: { type: String, default: '' },
         since: { type: String, default: '' }
-    }
+    },
+    isAdmin: {type: Boolean, default: false}
 });
 
 const model = mongoose.model('Profile', ProfileSchema, 'profiles');
