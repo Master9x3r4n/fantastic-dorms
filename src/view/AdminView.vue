@@ -3,7 +3,7 @@ import ProfileService from "../services/ProfileService.js";
 import ReviewService from "../services/ReviewService.js";
 import ListingService from "../services/ListingService.js";
 
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, reactive } from 'vue';
 import Divider from "@/components/divider/Divider.vue";
 import EditButtons from "@/components/admin/EditButtons.vue";
 import SummaryHeader from "@/components/admin/SummaryHeader.vue";
@@ -40,6 +40,25 @@ onMounted(async () => {
 
 });
 
+//INITIALIZE FORM DATA
+const profileForm = reactive({
+    username: '',
+    name: {
+        firstName: '',
+        lastName: ''
+    },
+    bio: '',
+    school: {
+        name: '',
+        since: '' //all are just the year
+    },
+    dorm:  {
+        name: '',
+        since: ''
+    }
+});
+const profileFormRef = ref(null);
+
 //HELPER FUNCTIONS
 const selectListing = async (id) => {
     try {
@@ -56,6 +75,7 @@ const selectListing = async (id) => {
 }
 
 const selectProfile = async (id) => {
+    resetProfileForm();
     try {
         /****** GET PROFILE ID ******/
         const [profileRes] = await Promise.all([
@@ -74,6 +94,35 @@ const unselectListing = () => {
 
 const unselectProfile = () => {
     selectedProfile.value = ""
+    resetProfileForm();
+}
+
+const submitProfileForm = () => {
+    console.log('Submitted Form: ' + profileForm)
+    resetProfileForm();
+}
+
+const triggerSubmitProfileForm = () => {
+    profileFormRef.value.requestSubmit()
+}
+
+const resetProfileForm = () => {
+    Object.assign(profileForm, {
+        username: '',
+        name: {
+            firstName: '',
+            lastName: ''
+        },
+        bio: '',
+        school: {
+            name: '',
+            since: ''
+        },
+        dorm: {
+            name: '',
+            since: ''
+        }
+    });
 }
 
 </script>
@@ -158,6 +207,7 @@ const unselectProfile = () => {
     <div class="mt-6">
         <!-- SUMMARY -->
         <SummaryHeader name="Profiles" :count="profiles.length"/>
+        {{ profileForm }}
         
         <!-- LISTINGS TABLE -->
         <div class="bg-white rounded-lg shadow-md overflow-hidden overflow-y-scroll max-h-86">
@@ -207,13 +257,19 @@ const unselectProfile = () => {
             </div>
 
             <!-- Input forms for add/edit -->
-            <div class="border-t pt-2 mt-2">
-                <form>
+            <div class="border-t pt-2 mt-2 mb-1">
+            <form 
+            ref = "profileFormRef"
+            class="flex w-full" 
+            @submit.prevent="submitProfileForm">
+                <!-- Left pane -->
+                <div class="w-full">
                     <!-- Username -->
                     <div class="flex gap-2 my-3" v-if="!selectedProfile">
                         <label class="block font-semibold text-[19px]">Username: </label>
                         <input 
-                        class="w-1/4 px-2 py-1 border rounded-md"
+                        v-model="profileForm.username"
+                        class="w-5/12 px-2 py-1 border rounded-md"
                         type="text"/>
                     </div>
 
@@ -223,7 +279,8 @@ const unselectProfile = () => {
                         <div class="flex gap-2 my-3">
                             <label class="block font-semibold text-[19px]">First name: </label>
                             <input 
-                            class="w-1/4 px-2 py-1 border rounded-md"
+                            v-model="profileForm.name.firstName"
+                            class="w-5/12 px-2 py-1 border rounded-md"
                             type="text"/>
                         </div>
                         
@@ -231,7 +288,8 @@ const unselectProfile = () => {
                         <div class="flex gap-2 my-3">
                             <label class="block font-semibold text-[19px]">Last name: </label>
                             <input 
-                            class="w-1/4 px-2 py-1 border rounded-md"
+                            v-model="profileForm.name.lastName"
+                            class="w-5/12 px-2 py-1 border rounded-md"
                             type="text"/>
                         </div>
                     </div>
@@ -239,16 +297,22 @@ const unselectProfile = () => {
                     <!-- Bio -->
                     <div class="flex gap-2 my-3">
                         <label class="block font-semibold text-[19px]">Bio: </label>
-                        <textarea class="w-1/4 px-2 py-1 border rounded-md"></textarea>
+                        <textarea 
+                        v-model="profileForm.bio"
+                        class="w-7/12 px-2 py-1 border rounded-md"></textarea>
                     </div>
+                </div>
 
+                <!-- Right pane -->
+                <div class="w-full">
                     <!-- School Info -->
                     <div>
                         <!-- Name -->
                         <div class="flex gap-2 my-3">
                             <label class="block font-semibold text-[19px]">School Name: </label>
                             <input 
-                            class="w-1/4 px-2 py-1 border rounded-md"
+                            v-model="profileForm.school.name"
+                            class="w-5/12 px-2 py-1 border rounded-md"
                             type="text"/>
                         </div>
                         
@@ -256,7 +320,8 @@ const unselectProfile = () => {
                         <div class="flex gap-2 my-3">
                             <label class="block font-semibold text-[19px]">School Since: </label>
                             <input 
-                            class="w-1/4 px-2 py-1 border rounded-md"
+                            v-model="profileForm.school.since"
+                            class="w-5/12 px-2 py-1 border rounded-md"
                             type="date"/>
                         </div>
                     </div>
@@ -267,7 +332,8 @@ const unselectProfile = () => {
                         <div class="flex gap-2 my-3">
                             <label class="block font-semibold text-[19px]">Dorm Name: </label>
                             <input 
-                            class="w-1/4 px-2 py-1 border rounded-md"
+                            v-model="profileForm.dorm.name"
+                            class="w-5/12 px-2 py-1 border rounded-md"
                             type="text"/>
                         </div>
                         
@@ -275,17 +341,19 @@ const unselectProfile = () => {
                         <div class="flex gap-2 my-3">
                             <label class="block font-semibold text-[19px]">Dorm Since: </label>
                             <input 
-                            class="w-1/4 px-2 py-1 border rounded-md"
+                            v-model="profileForm.dorm.since"
+                            class="w-5/12 px-2 py-1 border rounded-md"
                             type="date"/>
                         </div>
                     </div>
-
-                </form>
+                </div>
+            </form>
             </div>
 
             <!-- Form Buttons -->
             <EditButtons
             :add-mode="!selectedProfile"
+            @add="triggerSubmitProfileForm"
             @unselect="unselectProfile()"
             />
         </div>
