@@ -123,7 +123,7 @@ const triggerSubmitListingForm = () => {
 }
 
 const resetListingForm = () => {
-    Object.assign(listingForm, defaultListing)
+    Object.assign(listingForm, JSON.parse(JSON.stringify(defaultListing)))
 }
 
 //PROFILE HELPER FUNCTIONS
@@ -160,8 +160,6 @@ const addProfile = () => {
             //Alert
             console.log("Added profile: " + profileForm.username);
             window.alert("Added profile: " + profileForm.username);
-
-            console.log(JSON.stringify(profileForm))
         }
         else
         {
@@ -181,11 +179,25 @@ const addProfile = () => {
 const updateProfile = () => {
     if (window.confirm(`WARNING: Are you sure you want to update profile ${selectedProfile.value.username}?`))
     {
+        const sp = selectedProfile.value;
+        
+        //Update non-empty fields
+        sp.name.firstName = profileForm.name.firstName? profileForm.name.firstName : sp.name.firstName;
+        sp.name.lastName = profileForm.name.lastName? profileForm.name.lastName : sp.name.lastName;
+        sp.bio = profileForm.bio? profileForm.bio : sp.bio;
+        sp.school.name = profileForm.school.name? profileForm.school.name : sp.school.name;
+        sp.school.since = profileForm.school.since? profileForm.school.since : sp.school.since;
+        sp.dorm.name = profileForm.dorm.name? profileForm.dorm.name : sp.dorm.name;
+        sp.dorm.since = profileForm.dorm.since? profileForm.dorm.since : sp.dorm.since;
+
+        //Alert
         console.log(`Updating profile: ${selectedProfile.value.username}`);
+        window.alert(`Updating profile: ${selectedProfile.value.username}`);
     }
     else
     {
         console.log("Updating cancelled");
+        window.alert("Updating cancelled");
     }
 
     //reset forms
@@ -385,6 +397,7 @@ const resetProfileForm = () => {
                         <div class="w-full">
                             <!-- Username -->
                             <FormInput formLabel="Username*"
+                            v-if="!selectedProfile"
                             v-model="profileForm.username"/>
 
                             <!-- Full Name -->
