@@ -1,15 +1,25 @@
 <script setup>
-const emit = defineEmits(['add', 'update', 'delete', 'unselect'])
+const emit = defineEmits(['add', 'update', 'delete', 'unselect', 'submit'])
 const props = defineProps({
     addMode: {type: Boolean, default: true}
 })
+
+const emitUpdate = () => {
+    emit('submit')
+    emit('update')
+}
+
+const emitAdd = () => {
+    emit('submit')
+    emit('add')
+}
 </script>
 
 <template>
     <!-- Buttons -->
     <div class="flex w-full justify-end gap-4 px-1" v-if="!props.addMode">
         <button
-        @click="emit('update')"
+        @click="emitUpdate()"
         class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-md font-semibold transition"
         > Update </button>
         <button
@@ -23,7 +33,7 @@ const props = defineProps({
     </div>
     <div class="flex w-full justify-end gap-4 px-1" v-else>
         <button
-        @click="emit('add')"
+        @click="emitAdd()"
         class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-md font-semibold transition"
         > Add </button>
     </div>
