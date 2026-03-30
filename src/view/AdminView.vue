@@ -67,8 +67,8 @@ const defaultListing = {
     amenities: [],
     contacts: []
 };
-const profileForm = reactive(defaultProfile);
-const listingForm = reactive(defaultListing);
+const profileForm = reactive(JSON.parse(JSON.stringify(defaultProfile)));
+const listingForm = reactive(JSON.parse(JSON.stringify(defaultListing)));
 const profileFormRef = ref(null);
 const listingFormRef = ref(null);
 
@@ -147,26 +147,62 @@ const unselectProfile = () => {
 }
 
 const addProfile = () => {
-    if (window.confirm(`QUERY: Are you sure you want to add profile ${profileForm.username}?`))
-        console.log("Added profile: " + profileForm.username)
+    //Validate if required field is present
+    if (profileForm.username)
+    {
+        //Confirm processing
+        if (window.confirm(`QUERY: Are you sure you want to add profile ${profileForm.username}?`))
+        {
+            //Create default values
+            profileForm.name.firstName = profileForm.name.firstName? profileForm.name.firstName: "Firstname";
+            profileForm.name.lastName = profileForm.name.lastName? profileForm.name.lastName: "McLastname";
+
+            //Alert
+            console.log("Added profile: " + profileForm.username);
+            window.alert("Added profile: " + profileForm.username);
+
+            console.log(JSON.stringify(profileForm))
+        }
+        else
+        {
+            console.log("Adding profile cancelled");
+            window.alert("Adding profile cancelled");
+        }
+
+        //reset forms
+        resetProfileForm();
+    }
     else
-        console.log("Adding profile cancelled")
-    resetProfileForm();
+    {
+        window.alert("Fill in required field: Username");
+    }
 }
 
 const updateProfile = () => {
     if (window.confirm(`WARNING: Are you sure you want to update profile ${selectedProfile.value.username}?`))
-        console.log(`Updating profile: ${selectedProfile.value.username}`)
+    {
+        console.log(`Updating profile: ${selectedProfile.value.username}`);
+    }
     else
-        console.log("Updating cancelled")
+    {
+        console.log("Updating cancelled");
+    }
+
+    //reset forms
     resetProfileForm();
 }
 
 const deleteProfile = () => {
     if (window.confirm(`WARNING: Are you sure you want to delete profile ${selectedProfile.value.username}?`))
-        console.log("Deleting profile: " + selectedProfile.value.username)
+    {
+        console.log("Deleting profile: " + selectedProfile.value.username);
+    }
     else
-        console.log("Deleting cancelled")
+    {
+        console.log("Deleting cancelled");
+    }
+
+    //reset forms
     resetProfileForm();
 }
 
@@ -179,7 +215,7 @@ const triggerSubmitProfileForm = () => {
 }
 
 const resetProfileForm = () => {
-    Object.assign(profileForm, defaultProfile);
+    Object.assign(profileForm, JSON.parse(JSON.stringify(defaultProfile)));
 }
 
 </script>
