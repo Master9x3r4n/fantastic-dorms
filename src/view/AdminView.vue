@@ -142,14 +142,27 @@ const unselectProfile = () => {
         </div>
 
         <!-- EDIT PANEL -->
-        <div v-if="selectedListing" class="my-4">
-            <p>Listing: {{ selectedListing.name }}</p>
-            <p>Owner: {{ selectedListing.owner }}</p>
-            <p>Address: {{ selectedListing.address }}</p>
-            <p>Description: {{ selectedListing.description }}</p>
-            <p>Amnemities: {{ selectedListing.amenities }}</p>
-            
+        <div class="my-4">
+            <div v-if="selectedListing">
+                <p class="font-bold border-b text-2xl pb-2 mb-1">Update Listing</p>
+                <p>Listing: {{ selectedListing.name }}</p>
+                <p>Owner: {{ selectedListing.owner }}</p>
+                <p>Address: {{ selectedListing.address }}</p>
+                <p>Description: {{ selectedListing.description }}</p>
+                <p>Amnemities: {{ selectedListing.amenities }}</p>
+            </div>
+            <div v-else>
+                <p class="font-bold text-2xl pb-2 mb-1">Add New Listing</p>
+            </div>
+
+            <!-- Input forms for add/edit -->
+            <div class="border-t pt-2 mt-2">
+                A bunch of forms go here
+            </div>
+
+            <!-- Form Buttons -->
             <EditButtons
+            :add-mode="!selectedListing"
             @unselect="unselectListing()"
             />
         </div>
@@ -202,19 +215,30 @@ const unselectProfile = () => {
         </div>
 
         <!-- EDIT PANEL -->
-        <div v-if="selectedProfile" class="my-4">
-        <!-- Content -->
-        <div>
-            <p>Username: {{ selectedProfile.username }}</p>
-            <p>Name: {{ selectedProfile.name }}</p>
-            <p>Bio: {{ selectedProfile.bio }}</p>
-            <p>School: {{ selectedProfile.school }}</p>
-            <p>Dorm: {{ selectedProfile.dorm }}</p>
-        </div>
+        <div class="my-4">
+            <!-- Content -->
+            <div v-if="selectedProfile">
+                <p class="font-bold border-b text-2xl pb-2 mb-1">Update Profile</p>
+                <p>Username: {{ selectedProfile.username }}</p>
+                <p>Name: {{ selectedProfile.name }}</p>
+                <p>Bio: {{ selectedProfile.bio }}</p>
+                <p>School: {{ selectedProfile.school }}</p>
+                <p>Dorm: {{ selectedProfile.dorm }}</p>
+            </div>
+            <div v-else>
+                <p class="font-bold text-2xl pb-2 mb-1">Add New Profile</p>
+            </div>
 
-        <EditButtons
-        @unselect="unselectProfile()"
-        />
+            <!-- Input forms for add/edit -->
+            <div class="border-t pt-2 mt-2">
+                A bunch of forms go here
+            </div>
+
+            <!-- Form Buttons -->
+            <EditButtons
+            :add-mode="!selectedProfile"
+            @unselect="unselectProfile()"
+            />
         </div>
     </div>
 </div>
