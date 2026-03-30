@@ -3,8 +3,10 @@ import ProfileService from "../services/ProfileService.js";
 import ReviewService from "../services/ReviewService.js";
 import ListingService from "../services/ListingService.js";
 
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, reactive } from 'vue';
 import Divider from "@/components/divider/Divider.vue";
+import EditButtons from "@/components/admin/EditButtons.vue";
+import SummaryHeader from "@/components/admin/SummaryHeader.vue";
 
 const listings = ref([]);
 const profiles = ref([]);
@@ -38,25 +40,37 @@ onMounted(async () => {
 
 });
 
-//HELPER FUNCTIONS
-const parseRating = (ratingData) => {
-    ratingData = ratingData[0]
-    const validCategories = ['cleanliness', 'comfort', 'communication', 'location'];
-    let sum = 0;
-    let count = 0;
-
-    for (const category of validCategories) {
-        // Check if the category exists in the data to avoid NaN errors
-        if (ratingData[category] !== undefined && ratingData[category] !== null) {
-            sum += Number(ratingData[category]);
-            count++;
-        }  
+//INITIALIZE FORM DATA
+const profileForm = reactive({
+    username: '',
+    name: {
+        firstName: '',
+        lastName: ''
+    },
+    bio: '',
+    school: {
+        name: '',
+        since: '' //all are just the year
+    },
+    dorm:  {
+        name: '',
+        since: ''
     }
+});
+const profileFormRef = ref(null);
 
-    if (count === 0) return "0.0";
-    return (sum / count).toFixed(1);
-}
+const listingForm = reactive({
+    listingId: '',
+    owner: '',
+    name: '',
+    description: '',
+    address: '',
+    amenities: [],
+    contacts: []
+});
+const listingFormRef = ref(null);
 
+//HELPER FUNCTIONS
 const selectListing = async (id) => {
     try {
         /****** GET LISTING ID ******/
@@ -71,7 +85,56 @@ const selectListing = async (id) => {
     
 }
 
+const unselectListing = () => {
+    selectedListing.value = ""
+}
+
+const addListing = () => {
+    if (window.confirm(`QUERY: Are you sure you want to add listing ${listingForm.listingId}?`))
+        console.log("Added listing: " + listingForm.listingId)
+    else
+        console.log("Adding listing cancelled")
+    resetListingForm();
+}
+
+const updateListing = () => {
+    if (window.confirm(`WARNING: Are you sure you want to update listing ${selectedListing.value.listingId}?`))
+        console.log(`Updating listing: ${selectedListing.value.listingId}`)
+    else
+        console.log("Updating cancelled")
+    resetListingForm();
+}
+
+const deleteListing = () => {
+    if (window.confirm(`WARNING: Are you sure you want to delete listing ${selectedListing.value.listingId}?`))
+        console.log("Deleting listing: " + selectedListing.value.listingId)
+    else
+        console.log("Deleting cancelled")
+    resetListingForm();
+}
+
+const submitListingForm = () => {
+    console.log('Submitted Listing Form: ' + listingForm)
+}
+
+const triggerSubmitListingForm = () => {
+    listingFormRef.value.requestSubmit()
+}
+
+const resetListingForm = () => {
+    Object.assign(listingForm, {
+        listingId: '',
+        owner: '',
+        name: '',
+        description: '',
+        address: '',
+        amenities: [],
+        contacts: []
+    })
+}
+
 const selectProfile = async (id) => {
+    resetProfileForm();
     try {
         /****** GET PROFILE ID ******/
         const [profileRes] = await Promise.all([
@@ -79,9 +142,65 @@ const selectProfile = async (id) => {
         ]);
         selectedProfile.value = profileRes.data;
 
-	} catch (err) {
-		console.error(`Error loading data: ${err.message}`);
-	}
+    } catch (err) {
+        console.error(`Error loading data: ${err.message}`);
+    }
+}
+
+const unselectProfile = () => {
+    selectedProfile.value = ""
+    resetProfileForm();
+}
+
+const addProfile = () => {
+    if (window.confirm(`QUERY: Are you sure you want to add profile ${profileForm.username}?`))
+        console.log("Added profile: " + profileForm.username)
+    else
+        console.log("Adding profile cancelled")
+    resetProfileForm();
+}
+
+const updateProfile = () => {
+    if (window.confirm(`WARNING: Are you sure you want to update profile ${selectedProfile.value.username}?`))
+        console.log(`Updating profile: ${selectedProfile.value.username}`)
+    else
+        console.log("Updating cancelled")
+    resetProfileForm();
+}
+
+const deleteProfile = () => {
+    if (window.confirm(`WARNING: Are you sure you want to delete profile ${selectedProfile.value.username}?`))
+        console.log("Deleting profile: " + selectedProfile.value.username)
+    else
+        console.log("Deleting cancelled")
+    resetProfileForm();
+}
+
+const submitProfileForm = () => {
+    console.log('Submitted Profile Form: ' + profileForm)
+}
+
+const triggerSubmitProfileForm = () => {
+    profileFormRef.value.requestSubmit()
+}
+
+const resetProfileForm = () => {
+    Object.assign(profileForm, {
+        username: '',
+        name: {
+            firstName: '',
+            lastName: ''
+        },
+        bio: '',
+        school: {
+            name: '',
+            since: ''
+        },
+        dorm: {
+            name: '',
+            since: ''
+        }
+    });
 }
 
 </script>
@@ -93,13 +212,7 @@ const selectProfile = async (id) => {
     <!-- LISTINGS -->
     <div class="mb-6">
         <!-- SUMMARY -->
-        <div class="flex justify-between items-center mb-4">
-            <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Listings</h1>
-            <span class="bg-blue-100 text-blue-800 
-            px-3 py-1 rounded-full text-sm font-medium">
-            Total Listings: {{ listings.length }}
-            </span>
-        </div>
+        <SummaryHeader name="Listings" :count="listings.length"/>
         
         <!-- LISTINGS TABLE -->
         <div class="bg-white rounded-lg shadow-md overflow-hidden overflow-y-scroll max-h-86">
@@ -133,22 +246,93 @@ const selectProfile = async (id) => {
         </div>
 
         <!-- EDIT PANEL -->
-        <div v-if="selectedListing" class="my-4">
-            <p>Listing: {{ selectedListing.name }}</p>
-            <p>Owner: {{ selectedListing.owner }}</p>
-            <p>Address: {{ selectedListing.address }}</p>
-            <p>Description: {{ selectedListing.description }}</p>
-            <p>Amnemities: {{ selectedListing.amenities }}</p>
-        </div>
+        <div class="my-4 dark:text-gray-200">
+            <div v-if="selectedListing">
+                <p class="font-bold border-b text-2xl pb-2 mb-1">Update Listing</p>
+                <p><span class="font-semibold">Listing Name: </span>{{ selectedListing.name }}</p>
+                <p><span class="font-semibold">Owner: </span>{{ selectedListing.owner }}</p>
+                <p><span class="font-semibold">Address: </span>{{ selectedListing.address }}</p>
+                <p><span class="font-semibold">Description: </span>{{ selectedListing.description }}</p>
+                <p><span class="font-semibold">Amenities: </span>{{ selectedListing.amenities }}</p>
+                <p><span class="font-semibold">Contacts: </span>{{ selectedListing.contacts }}</p>
+                <p><span class="font-semibold">_id: </span>{{ selectedListing._id }}</p>   
+            </div>
+            <div v-else>
+                <p class="font-bold text-2xl pb-2 mb-1">Add New Listing</p>
+            </div>
 
-        <!-- Buttons -->
-        <div class="flex w-full justify-end gap-4 px-1">
-            <button
-            class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm font-semibold transition"
-            > Update </button>
-            <button
-            class="bg-red-400 hover:bg-red-500 text-white px-3 py-1 rounded text-sm font-semibold transition"
-            > Delete </button>
+            <!-- Input forms for add/edit -->
+            <div class="border-t pt-2 mt-2">
+                <form
+                ref = "listingFormRef"
+                class="flex w-full" 
+                @submit.prevent="submitListingForm">
+                <!-- Left pane -->
+                <div class="w-full">
+                    <!-- Listing Id-->
+                    <div class="flex gap-2 my-3" v-if="!selectedListing">
+                        <label class="block font-semibold text-[19px]">Listing Id: </label>
+                        <input 
+                        v-model="listingForm.listingId"
+                        class="w-5/12 px-2 py-1 border rounded-md"
+                        type="text"/>
+                    </div>
+
+                    <!-- Owner -->
+                    <div class="flex gap-2 my-3">
+                        <label class="block font-semibold text-[19px]">Owner: </label>
+                        <input 
+                        v-model="listingForm.owner"
+                        class="w-5/12 px-2 py-1 border rounded-md"
+                        type="text"/>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="flex gap-2 my-3">
+                        <label class="block font-semibold text-[19px]">Address: </label>
+                        <textarea 
+                        v-model="listingForm.address"
+                        class="w-7/12 px-2 py-1 border rounded-md"></textarea>
+                    </div>
+                    
+                    <!-- Description -->
+                    <div class="flex gap-2 my-3">
+                        <label class="block font-semibold text-[19px]">Description: </label>
+                        <textarea 
+                        v-model="listingForm.description"
+                        class="w-7/12 px-2 py-1 border rounded-md"></textarea>
+                    </div>
+                </div>
+
+                <!-- Right pane -->
+                <div class="w-full">
+                    <!-- Amenities -->
+                    <div>
+                        <div class="flex gap-2 my-3">
+                            <label class="block font-semibold text-[19px]">Amenities: </label>
+                        </div>
+                    </div>
+
+                    <!-- Contacts -->
+                    <div>
+                        <div class="flex gap-2 my-3">
+                            <label class="block font-semibold text-[19px]">Contacts: </label>
+                        </div>
+                    </div>
+                </div>
+                    
+                </form>
+            </div>
+
+            <!-- Form Buttons -->
+            <EditButtons
+            :add-mode="!selectedListing"
+            @submit="triggerSubmitListingForm"
+            @add="addListing()"
+            @update="updateListing()"
+            @unselect="unselectListing()"
+            @delete="deleteListing()"
+            />
         </div>
     </div>
 
@@ -158,13 +342,7 @@ const selectProfile = async (id) => {
     <!-- PROFILES -->
     <div class="mt-6">
         <!-- SUMMARY -->
-        <div class="flex justify-between items-center mb-4">
-            <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Profiles</h1>
-            <span class="bg-blue-100 text-blue-800 
-            px-3 py-1 rounded-full text-sm font-medium">
-            Total Profiles: {{ profiles.length }}
-            </span>
-        </div>
+        <SummaryHeader name="Profiles" :count="profiles.length"/>
         
         <!-- LISTINGS TABLE -->
         <div class="bg-white rounded-lg shadow-md overflow-hidden overflow-y-scroll max-h-86">
@@ -199,25 +377,123 @@ const selectProfile = async (id) => {
         </div>
 
         <!-- EDIT PANEL -->
-        <div v-if="selectedProfile" class="my-4">
-        <!-- Content -->
-        <div>
-            <p>Username: {{ selectedProfile.username }}</p>
-            <p>Name: {{ selectedProfile.name }}</p>
-            <p>Bio: {{ selectedProfile.bio }}</p>
-            <p>School: {{ selectedProfile.school }}</p>
-            <p>Dorm: {{ selectedProfile.dorm }}</p>
-        </div>
+        <div class="my-4 dark:text-gray-200">
+            <!-- Content -->
+            <div v-if="selectedProfile">
+                <p class="font-bold border-b text-2xl pb-2 mb-1">Update Profile</p>
+                <p><span class="font-semibold">Username: </span>{{ selectedProfile.username }}</p>
+                <p><span class="font-semibold">Name: </span>{{ selectedProfile.name }}</p>
+                <p><span class="font-semibold">Bio: </span>{{ selectedProfile.bio }}</p>
+                <p><span class="font-semibold">School: </span>{{ selectedProfile.school }}</p>
+                <p><span class="font-semibold">Dorm: </span>{{ selectedProfile.dorm }}</p>
+            </div>
+            <div v-else>
+                <p class="font-bold text-2xl pb-2 mb-1">Add New Profile</p>
+            </div>
 
-        <!-- Buttons -->
-        <div class="flex w-full justify-end gap-4 px-1">
-            <button
-            class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm font-semibold transition"
-            > Update </button>
-            <button
-            class="bg-red-400 hover:bg-red-500 text-white px-3 py-1 rounded text-sm font-semibold transition"
-            > Delete </button>
-        </div>
+            <!-- Input forms for add/edit -->
+            <div class="border-t pt-2 mt-2 mb-1">
+            <form 
+            ref = "profileFormRef"
+            class="flex w-full" 
+            @submit.prevent="submitProfileForm">
+                <!-- Left pane -->
+                <div class="w-full">
+                    <!-- Username -->
+                    <div class="flex gap-2 my-3" v-if="!selectedProfile">
+                        <label class="block font-semibold text-[19px]">Username: </label>
+                        <input 
+                        v-model="profileForm.username"
+                        class="w-5/12 px-2 py-1 border rounded-md"
+                        type="text"/>
+                    </div>
+
+                    <!-- Full Name -->
+                    <div>
+                        <!-- First -->
+                        <div class="flex gap-2 my-3">
+                            <label class="block font-semibold text-[19px]">First name: </label>
+                            <input 
+                            v-model="profileForm.name.firstName"
+                            class="w-5/12 px-2 py-1 border rounded-md"
+                            type="text"/>
+                        </div>
+                        
+                        <!-- Last -->
+                        <div class="flex gap-2 my-3">
+                            <label class="block font-semibold text-[19px]">Last name: </label>
+                            <input 
+                            v-model="profileForm.name.lastName"
+                            class="w-5/12 px-2 py-1 border rounded-md"
+                            type="text"/>
+                        </div>
+                    </div>
+
+                    <!-- Bio -->
+                    <div class="flex gap-2 my-3">
+                        <label class="block font-semibold text-[19px]">Bio: </label>
+                        <textarea 
+                        v-model="profileForm.bio"
+                        class="w-7/12 px-2 py-1 border rounded-md"></textarea>
+                    </div>
+                </div>
+
+                <!-- Right pane -->
+                <div class="w-full">
+                    <!-- School Info -->
+                    <div>
+                        <!-- Name -->
+                        <div class="flex gap-2 my-3">
+                            <label class="block font-semibold text-[19px]">School Name: </label>
+                            <input 
+                            v-model="profileForm.school.name"
+                            class="w-5/12 px-2 py-1 border rounded-md"
+                            type="text"/>
+                        </div>
+                        
+                        <!-- Since -->
+                        <div class="flex gap-2 my-3">
+                            <label class="block font-semibold text-[19px]">School Since: </label>
+                            <input 
+                            v-model="profileForm.school.since"
+                            class="w-5/12 px-2 py-1 border rounded-md"
+                            type="date"/>
+                        </div>
+                    </div>
+
+                    <!-- Dorm Info -->
+                    <div>
+                        <!-- Name -->
+                        <div class="flex gap-2 my-3">
+                            <label class="block font-semibold text-[19px]">Dorm Name: </label>
+                            <input 
+                            v-model="profileForm.dorm.name"
+                            class="w-5/12 px-2 py-1 border rounded-md"
+                            type="text"/>
+                        </div>
+                        
+                        <!-- Since -->
+                        <div class="flex gap-2 my-3">
+                            <label class="block font-semibold text-[19px]">Dorm Since: </label>
+                            <input 
+                            v-model="profileForm.dorm.since"
+                            class="w-5/12 px-2 py-1 border rounded-md"
+                            type="date"/>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            </div>
+
+            <!-- Form Buttons -->
+            <EditButtons
+            :add-mode="!selectedProfile"
+            @submit="triggerSubmitProfileForm"
+            @add="addProfile()"
+            @update="updateProfile()"
+            @unselect="unselectProfile()"
+            @delete="deleteProfile()"
+            />
         </div>
     </div>
 </div>
