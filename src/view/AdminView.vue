@@ -74,6 +74,10 @@ const selectListing = async (id) => {
     
 }
 
+const unselectListing = () => {
+    selectedListing.value = ""
+}
+
 const selectProfile = async (id) => {
     resetProfileForm();
     try {
@@ -83,13 +87,9 @@ const selectProfile = async (id) => {
         ]);
         selectedProfile.value = profileRes.data;
 
-	} catch (err) {
-		console.error(`Error loading data: ${err.message}`);
-	}
-}
-
-const unselectListing = () => {
-    selectedListing.value = ""
+    } catch (err) {
+        console.error(`Error loading data: ${err.message}`);
+    }
 }
 
 const unselectProfile = () => {
@@ -97,9 +97,32 @@ const unselectProfile = () => {
     resetProfileForm();
 }
 
+const addProfile = () => {
+    if (window.confirm(`QUERY: Are you sure you want to add profile ${profileForm.username}?`))
+        console.log("Added profile: " + profileForm.username)
+    else
+        console.log("Adding profile cancelled")
+    resetProfileForm();
+}
+
+const updateProfile = () => {
+    if (window.confirm(`WARNING: Are you sure you want to update profile ${selectedProfile.value.username}?`))
+        console.log(`Updating profile: ${selectedProfile.value.username}`)
+    else
+        console.log("Updating cancelled")
+    resetProfileForm();
+}
+
+const deleteProfile = () => {
+    if (window.confirm(`WARNING: Are you sure you want to delete profile ${selectedProfile.value.username}?`))
+        console.log("Deleting profile: " + selectedProfile)
+    else
+        console.log("Deleting cancelled")
+    resetProfileForm();
+}
+
 const submitProfileForm = () => {
     console.log('Submitted Form: ' + profileForm)
-    resetProfileForm();
 }
 
 const triggerSubmitProfileForm = () => {
@@ -207,7 +230,6 @@ const resetProfileForm = () => {
     <div class="mt-6">
         <!-- SUMMARY -->
         <SummaryHeader name="Profiles" :count="profiles.length"/>
-        {{ profileForm }}
         
         <!-- LISTINGS TABLE -->
         <div class="bg-white rounded-lg shadow-md overflow-hidden overflow-y-scroll max-h-86">
@@ -353,8 +375,11 @@ const resetProfileForm = () => {
             <!-- Form Buttons -->
             <EditButtons
             :add-mode="!selectedProfile"
-            @add="triggerSubmitProfileForm"
+            @submit="triggerSubmitProfileForm"
+            @add="addProfile()"
+            @update="updateProfile()"
             @unselect="unselectProfile()"
+            @delete="deleteProfile()"
             />
         </div>
     </div>
