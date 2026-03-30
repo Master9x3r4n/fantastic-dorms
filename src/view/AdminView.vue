@@ -5,6 +5,7 @@ import ListingService from "../services/ListingService.js";
 
 import { ref, onMounted } from 'vue';
 import Divider from "@/components/divider/Divider.vue";
+import EditButtons from "@/components/admin/EditButtons.vue";
 
 const listings = ref([]);
 const profiles = ref([]);
@@ -84,6 +85,14 @@ const selectProfile = async (id) => {
 	}
 }
 
+const unselectListing = () => {
+    selectedListing.value = ""
+}
+
+const unselectProfile = () => {
+    selectedProfile.value = ""
+}
+
 </script>
 
 <template>
@@ -140,15 +149,9 @@ const selectProfile = async (id) => {
             <p>Description: {{ selectedListing.description }}</p>
             <p>Amnemities: {{ selectedListing.amenities }}</p>
             
-            <!-- Buttons -->
-            <div class="flex w-full justify-end gap-4 px-1">
-                <button
-                class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm font-semibold transition"
-                > Update </button>
-                <button
-                class="bg-red-400 hover:bg-red-500 text-white px-3 py-1 rounded text-sm font-semibold transition"
-                > Delete </button>
-            </div>
+            <EditButtons
+            @unselect="unselectListing()"
+            />
         </div>
     </div>
 
@@ -209,15 +212,9 @@ const selectProfile = async (id) => {
             <p>Dorm: {{ selectedProfile.dorm }}</p>
         </div>
 
-        <!-- Buttons -->
-        <div class="flex w-full justify-end gap-4 px-1">
-            <button
-            class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm font-semibold transition"
-            > Update </button>
-            <button
-            class="bg-red-400 hover:bg-red-500 text-white px-3 py-1 rounded text-sm font-semibold transition"
-            > Delete </button>
-        </div>
+        <EditButtons
+        @unselect="unselectProfile()"
+        />
         </div>
     </div>
 </div>
