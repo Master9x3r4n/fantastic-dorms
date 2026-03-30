@@ -38,7 +38,8 @@
     });
     ReviewService.findAllFromListing(listingId)
     .then(res => {
-        reviews.value = res.data;
+        reviews.value = res.data.data;
+        console.log(reviews.value);
     })
     .catch(err => {
         console.log(`Error retrieving reviews: ${err.message}`);

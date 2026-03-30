@@ -17,14 +17,16 @@ class ReviewController {
 		try {
 			const reviews = await Review.find(condition);
 			if (reviews) {
-				res.status(200).send({ data: reviews, message: 'Reviews found successfully.' })
+				res.status(200).send(reviews)
 			} else {
 				res.status(404).send({
 					message: `Reviews could not be found. Condition/s: ${condition}`
 				})
 			}
 		} catch (err) {
-			res.status(500).send({ message: err.message || 'A non-descript error occurred.' });
+			res.status(500).send({
+				message: err.message || `An error occurred while finding Reviews.`
+			});
 		}
 	}
 
@@ -36,10 +38,7 @@ class ReviewController {
 		try {
 			const review = await Review.findById(id);
 			if (review) {
-				res.status(200).send({ 
-					data: review,
-					message: 'Review found successfully.'
-				});
+				res.status(200).send(review);
 			} else {
 				res.status(404).send({
 					message: `Review with ID ${id} could not be found.`
@@ -47,7 +46,7 @@ class ReviewController {
 			}
 		} catch (err) {
 			res.status(500).send({
-				message: err.message || 'A non-descript error occurred.'
+				message: err.message || `An error occurred while finding Review ${id}.`
 			});
 		}
 	}
@@ -75,9 +74,11 @@ class ReviewController {
 
 			review.media = uploadedMedia;
 			const newReview = await new Review(review).save();
-			res.status(201).send({ data: newReview, message: 'Review created successfully.' });
+			res.status(201).send(newReview);
 		} catch (err) {
-			res.status(500).send({ message: err.message || 'A non-descript error occurred.' });
+			res.status(500).send({
+				message: err.message || `An error occurred while creating Review ${id}.`
+			});
 		}
 	};
 
@@ -92,12 +93,11 @@ class ReviewController {
 				useFindAndModify: false
 			});
 
-			res.status(200).send({
-				data: updatedReview,
-				message: 'Review updated successfully.'
-			});
+			res.status(200).send(updatedReview);
 		} catch (err) {
-			res.status(500).send({ message: err.message });
+			res.status(500).send({
+				message: err.message || `An error occurred while updating Review ${id}.`
+			});
 		}
 	}
 
@@ -121,15 +121,16 @@ class ReviewController {
 				}
 
 				const result = await Review.deleteOne(id);
-				res.status(204).send({
-					data: result, 
-					message: `Review with ID ${id} deleted successfully.`
-				});
+				res.status(204).send(result);
 			} else {
-				res.status(404).send({ message: `Review with ID ${id} could not be found.` });
+				res.status(404).send({
+					message: `Review with ID ${id} could not be found.`
+				});
 			}
 		} catch (err) {
-			res.status(500).send({ message: err.message || 'A non-descript error occurred.'});
+			res.status(500).send({
+				message: err.message || `An error occurred while deleting Review ${id}.`
+			});
 		}
 	}
 }

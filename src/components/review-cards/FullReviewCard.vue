@@ -13,8 +13,8 @@ const props = defineProps({ review: {} });
 const profile = ref(null);
 ProfileService.find(props.review.username)
     .then(res => {
-        console.log('Profile:');
-        console.log(res.data);
+        // console.log('Profile:');
+        // console.log(res.data);
         profile.value = res.data;
     })
     .catch(error => {
@@ -25,7 +25,7 @@ const getOverallRating = (ratings) => {
     let overall = 0;
     for (let p in ratings) {
         overall += ratings[p];
-        console.log(ratings[p]);
+        // console.log(ratings[p]);
     }
     return (overall/4).toFixed(1);
 }
