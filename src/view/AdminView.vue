@@ -59,6 +59,17 @@ const profileForm = reactive({
 });
 const profileFormRef = ref(null);
 
+const listingForm = reactive({
+    listingId: '',
+    owner: '',
+    name: '',
+    description: '',
+    address: '',
+    amenities: [],
+    contacts: []
+});
+const listingFormRef = ref(null);
+
 //HELPER FUNCTIONS
 const selectListing = async (id) => {
     try {
@@ -76,6 +87,50 @@ const selectListing = async (id) => {
 
 const unselectListing = () => {
     selectedListing.value = ""
+}
+
+const addListing = () => {
+    if (window.confirm(`QUERY: Are you sure you want to add listing ${listingForm.listingId}?`))
+        console.log("Added listing: " + listingForm.listingId)
+    else
+        console.log("Adding listing cancelled")
+    resetListingForm();
+}
+
+const updateListing = () => {
+    if (window.confirm(`WARNING: Are you sure you want to update listing ${selectedListing.value.listingId}?`))
+        console.log(`Updating listing: ${selectedListing.value.listingId}`)
+    else
+        console.log("Updating cancelled")
+    resetListingForm();
+}
+
+const deleteListing = () => {
+    if (window.confirm(`WARNING: Are you sure you want to delete listing ${selectedListing.value.listingId}?`))
+        console.log("Deleting listing: " + selectedListing)
+    else
+        console.log("Deleting cancelled")
+    resetListingForm();
+}
+
+const submitListingForm = () => {
+    console.log('Submitted Listing Form: ' + listingForm)
+}
+
+const triggerSubmitListingForm = () => {
+    listingFormRef.value.requestSubmit()
+}
+
+const resetListingForm = () => {
+    Object.assign(listingForm, {
+        listingId: '',
+        owner: '',
+        name: '',
+        description: '',
+        address: '',
+        amenities: [],
+        contacts: []
+    })
 }
 
 const selectProfile = async (id) => {
@@ -122,7 +177,7 @@ const deleteProfile = () => {
 }
 
 const submitProfileForm = () => {
-    console.log('Submitted Form: ' + profileForm)
+    console.log('Submitted Profile Form: ' + profileForm)
 }
 
 const triggerSubmitProfileForm = () => {
