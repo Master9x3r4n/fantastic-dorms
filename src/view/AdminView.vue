@@ -6,6 +6,7 @@ import ListingService from "../services/ListingService.js";
 import { ref, onMounted } from 'vue';
 import Divider from "@/components/divider/Divider.vue";
 import EditButtons from "@/components/admin/EditButtons.vue";
+import SummaryHeader from "@/components/admin/SummaryHeader.vue";
 
 const listings = ref([]);
 const profiles = ref([]);
@@ -40,24 +41,6 @@ onMounted(async () => {
 });
 
 //HELPER FUNCTIONS
-const parseRating = (ratingData) => {
-    ratingData = ratingData[0]
-    const validCategories = ['cleanliness', 'comfort', 'communication', 'location'];
-    let sum = 0;
-    let count = 0;
-
-    for (const category of validCategories) {
-        // Check if the category exists in the data to avoid NaN errors
-        if (ratingData[category] !== undefined && ratingData[category] !== null) {
-            sum += Number(ratingData[category]);
-            count++;
-        }  
-    }
-
-    if (count === 0) return "0.0";
-    return (sum / count).toFixed(1);
-}
-
 const selectListing = async (id) => {
     try {
         /****** GET LISTING ID ******/
@@ -102,13 +85,7 @@ const unselectProfile = () => {
     <!-- LISTINGS -->
     <div class="mb-6">
         <!-- SUMMARY -->
-        <div class="flex justify-between items-center mb-4">
-            <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Listings</h1>
-            <span class="bg-blue-100 text-blue-800 
-            px-3 py-1 rounded-full text-sm font-medium">
-            Total Listings: {{ listings.length }}
-            </span>
-        </div>
+        <SummaryHeader name="Listings" :count="listings.length"/>
         
         <!-- LISTINGS TABLE -->
         <div class="bg-white rounded-lg shadow-md overflow-hidden overflow-y-scroll max-h-86">
@@ -142,14 +119,16 @@ const unselectProfile = () => {
         </div>
 
         <!-- EDIT PANEL -->
-        <div class="my-4">
+        <div class="my-4 dark:text-gray-200">
             <div v-if="selectedListing">
                 <p class="font-bold border-b text-2xl pb-2 mb-1">Update Listing</p>
-                <p>Listing: {{ selectedListing.name }}</p>
-                <p>Owner: {{ selectedListing.owner }}</p>
-                <p>Address: {{ selectedListing.address }}</p>
-                <p>Description: {{ selectedListing.description }}</p>
-                <p>Amnemities: {{ selectedListing.amenities }}</p>
+                <p><span class="font-semibold">Listing Name: </span>{{ selectedListing.name }}</p>
+                <p><span class="font-semibold">Owner: </span>{{ selectedListing.owner }}</p>
+                <p><span class="font-semibold">Address: </span>{{ selectedListing.address }}</p>
+                <p><span class="font-semibold">Description: </span>{{ selectedListing.description }}</p>
+                <p><span class="font-semibold">Amenities: </span>{{ selectedListing.amenities }}</p>
+                <p><span class="font-semibold">Contacts: </span>{{ selectedListing.contacts }}</p>
+                <p><span class="font-semibold">_id: </span>{{ selectedListing._id }}</p>   
             </div>
             <div v-else>
                 <p class="font-bold text-2xl pb-2 mb-1">Add New Listing</p>
@@ -157,7 +136,11 @@ const unselectProfile = () => {
 
             <!-- Input forms for add/edit -->
             <div class="border-t pt-2 mt-2">
-                A bunch of forms go here
+                <form>
+                    <!-- Listing Name -->
+                    <!-- Owner -->
+                    
+                </form>
             </div>
 
             <!-- Form Buttons -->
@@ -174,13 +157,7 @@ const unselectProfile = () => {
     <!-- PROFILES -->
     <div class="mt-6">
         <!-- SUMMARY -->
-        <div class="flex justify-between items-center mb-4">
-            <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Profiles</h1>
-            <span class="bg-blue-100 text-blue-800 
-            px-3 py-1 rounded-full text-sm font-medium">
-            Total Profiles: {{ profiles.length }}
-            </span>
-        </div>
+        <SummaryHeader name="Profiles" :count="profiles.length"/>
         
         <!-- LISTINGS TABLE -->
         <div class="bg-white rounded-lg shadow-md overflow-hidden overflow-y-scroll max-h-86">
@@ -215,15 +192,15 @@ const unselectProfile = () => {
         </div>
 
         <!-- EDIT PANEL -->
-        <div class="my-4">
+        <div class="my-4 dark:text-gray-200">
             <!-- Content -->
             <div v-if="selectedProfile">
                 <p class="font-bold border-b text-2xl pb-2 mb-1">Update Profile</p>
-                <p>Username: {{ selectedProfile.username }}</p>
-                <p>Name: {{ selectedProfile.name }}</p>
-                <p>Bio: {{ selectedProfile.bio }}</p>
-                <p>School: {{ selectedProfile.school }}</p>
-                <p>Dorm: {{ selectedProfile.dorm }}</p>
+                <p><span class="font-semibold">Username: </span>{{ selectedProfile.username }}</p>
+                <p><span class="font-semibold">Name: </span>{{ selectedProfile.name }}</p>
+                <p><span class="font-semibold">Bio: </span>{{ selectedProfile.bio }}</p>
+                <p><span class="font-semibold">School: </span>{{ selectedProfile.school }}</p>
+                <p><span class="font-semibold">Dorm: </span>{{ selectedProfile.dorm }}</p>
             </div>
             <div v-else>
                 <p class="font-bold text-2xl pb-2 mb-1">Add New Profile</p>
@@ -231,7 +208,79 @@ const unselectProfile = () => {
 
             <!-- Input forms for add/edit -->
             <div class="border-t pt-2 mt-2">
-                A bunch of forms go here
+                <form>
+                    <!-- Username -->
+                    <div class="flex gap-2 my-3" v-if="!selectedProfile">
+                        <label class="block font-semibold text-[19px]">Username: </label>
+                        <input 
+                        class="w-1/4 px-2 py-1 border rounded-md"
+                        type="text"/>
+                    </div>
+
+                    <!-- Full Name -->
+                    <div>
+                        <!-- First -->
+                        <div class="flex gap-2 my-3">
+                            <label class="block font-semibold text-[19px]">First name: </label>
+                            <input 
+                            class="w-1/4 px-2 py-1 border rounded-md"
+                            type="text"/>
+                        </div>
+                        
+                        <!-- Last -->
+                        <div class="flex gap-2 my-3">
+                            <label class="block font-semibold text-[19px]">Last name: </label>
+                            <input 
+                            class="w-1/4 px-2 py-1 border rounded-md"
+                            type="text"/>
+                        </div>
+                    </div>
+
+                    <!-- Bio -->
+                    <div class="flex gap-2 my-3">
+                        <label class="block font-semibold text-[19px]">Bio: </label>
+                        <textarea class="w-1/4 px-2 py-1 border rounded-md"></textarea>
+                    </div>
+
+                    <!-- School Info -->
+                    <div>
+                        <!-- Name -->
+                        <div class="flex gap-2 my-3">
+                            <label class="block font-semibold text-[19px]">School Name: </label>
+                            <input 
+                            class="w-1/4 px-2 py-1 border rounded-md"
+                            type="text"/>
+                        </div>
+                        
+                        <!-- Since -->
+                        <div class="flex gap-2 my-3">
+                            <label class="block font-semibold text-[19px]">School Since: </label>
+                            <input 
+                            class="w-1/4 px-2 py-1 border rounded-md"
+                            type="date"/>
+                        </div>
+                    </div>
+
+                    <!-- Dorm Info -->
+                    <div>
+                        <!-- Name -->
+                        <div class="flex gap-2 my-3">
+                            <label class="block font-semibold text-[19px]">Dorm Name: </label>
+                            <input 
+                            class="w-1/4 px-2 py-1 border rounded-md"
+                            type="text"/>
+                        </div>
+                        
+                        <!-- Since -->
+                        <div class="flex gap-2 my-3">
+                            <label class="block font-semibold text-[19px]">Dorm Since: </label>
+                            <input 
+                            class="w-1/4 px-2 py-1 border rounded-md"
+                            type="date"/>
+                        </div>
+                    </div>
+
+                </form>
             </div>
 
             <!-- Form Buttons -->
