@@ -87,31 +87,75 @@ const selectListing = async (id) => {
 }
 
 const unselectListing = () => {
-    selectedListing.value = ""
+    selectedListing.value = "";
+    resetListingForm();
 }
 
 const addListing = () => {
-    if (window.confirm(`QUERY: Are you sure you want to add listing ${listingForm.listingId}?`))
-        console.log("Added listing: " + listingForm.listingId)
+    //Validate if required field is present
+    if (listingForm.listingId)
+    {
+        //confirm processing
+        if (window.confirm(`QUERY: Are you sure you want to add listing ${listingForm.listingId}?`))
+        {
+            //Create default values
+            listingForm.name = listingForm.name? listingForm.name : "Default Residence";
+
+            //Alert
+            console.log("Added listing: " + listingForm.name);
+            window.alert("Added listing: " + listingForm.name);
+        }
+        else
+        {
+            console.log("Adding listing cancelled");
+            window.alert("Adding listing cancelled");
+        }
+    
+        //reset forms
+        resetListingForm();
+    }
     else
-        console.log("Adding listing cancelled")
-    resetListingForm();
+    {
+        window.alert("Fill in required field: Listing Id");
+    }
 }
 
 const updateListing = () => {
     if (window.confirm(`WARNING: Are you sure you want to update listing ${selectedListing.value.listingId}?`))
-        console.log(`Updating listing: ${selectedListing.value.listingId}`)
+    {
+        const sl = selectedListing.value;
+
+        //Update non-empty fields
+        sl.owner = listingForm.owner? listingForm.owner : sl.owner;
+        sl.address = listingForm.address? listingForm.address : sl.address;
+        sl.description = listingForm.description? listingForm.description : sl.description;
+
+        //alert
+        console.log(`Updating listing: ${selectedListing.value.listingId}`);
+        window.alert(`Updating listing: ${selectedListing.value.listingId}`);
+    }
     else
-        console.log("Updating cancelled")
+    {
+        console.log("Updating cancelled");
+        window.alert("Updating cancelled");
+    }
+
+    //reset forms
     resetListingForm();
 }
 
 const deleteListing = () => {
     if (window.confirm(`WARNING: Are you sure you want to delete listing ${selectedListing.value.listingId}?`))
-        console.log("Deleting listing: " + selectedListing.value.listingId)
+    {
+        console.log("Deleting listing: " + selectedListing.value.listingId);
+        window.alert("Deleting listing: " + selectedListing.value.listingId);
+        unselectListing();
+    }
     else
-        console.log("Deleting cancelled")
-    resetListingForm();
+    {
+        console.log("Deleting cancelled");
+        window.alert("Deleting cancelled");
+    }
 }
 
 const submitListingForm = () => {
@@ -208,14 +252,14 @@ const deleteProfile = () => {
     if (window.confirm(`WARNING: Are you sure you want to delete profile ${selectedProfile.value.username}?`))
     {
         console.log("Deleting profile: " + selectedProfile.value.username);
+        window.alert("Deleting profile: " + selectedProfile.value.username);
+        unselectProfile();
     }
     else
     {
         console.log("Deleting cancelled");
+        window.alert("Deleting cancelled");
     }
-
-    //reset forms
-    resetProfileForm();
 }
 
 const submitProfileForm = () => {
@@ -276,6 +320,7 @@ const resetProfileForm = () => {
                 <div class="my-4 dark:text-gray-200">
                     <div v-if="selectedListing">
                         <p class="font-bold border-b text-2xl pb-2 mb-1">Update Listing</p>
+                        <p><span class="font-semibold">Listing Name: </span>{{ selectedListing.listingId }}</p>
                         <p><span class="font-semibold">Listing Name: </span>{{ selectedListing.name }}</p>
                         <p><span class="font-semibold">Owner: </span>{{ selectedListing.owner }}</p>
                         <p><span class="font-semibold">Address: </span>{{ selectedListing.address }}</p>
@@ -299,6 +344,10 @@ const resetProfileForm = () => {
                             <FormInput formLabel="Listing Id*"
                             v-if="!selectedListing"
                             v-model="listingForm.listingId"/>
+                            
+                            <!-- Listing name -->
+                            <FormInput formLabel="Listing Name"
+                            v-model="listingForm.name"/>
 
                             <!-- Owner -->
                             <FormInput formLabel="Owner"
