@@ -107,7 +107,7 @@ const updateListing = () => {
 
 const deleteListing = () => {
     if (window.confirm(`WARNING: Are you sure you want to delete listing ${selectedListing.value.listingId}?`))
-        console.log("Deleting listing: " + selectedListing)
+        console.log("Deleting listing: " + selectedListing.value.listingId)
     else
         console.log("Deleting cancelled")
     resetListingForm();
@@ -170,7 +170,7 @@ const updateProfile = () => {
 
 const deleteProfile = () => {
     if (window.confirm(`WARNING: Are you sure you want to delete profile ${selectedProfile.value.username}?`))
-        console.log("Deleting profile: " + selectedProfile)
+        console.log("Deleting profile: " + selectedProfile.value.username)
     else
         console.log("Deleting cancelled")
     resetProfileForm();
@@ -263,9 +263,63 @@ const resetProfileForm = () => {
 
             <!-- Input forms for add/edit -->
             <div class="border-t pt-2 mt-2">
-                <form>
-                    <!-- Listing Name -->
+                <form
+                ref = "listingFormRef"
+                class="flex w-full" 
+                @submit.prevent="submitListingForm">
+                <!-- Left pane -->
+                <div class="w-full">
+                    <!-- Listing Id-->
+                    <div class="flex gap-2 my-3" v-if="!selectedListing">
+                        <label class="block font-semibold text-[19px]">Listing Id: </label>
+                        <input 
+                        v-model="listingForm.listingId"
+                        class="w-5/12 px-2 py-1 border rounded-md"
+                        type="text"/>
+                    </div>
+
                     <!-- Owner -->
+                    <div class="flex gap-2 my-3">
+                        <label class="block font-semibold text-[19px]">Owner: </label>
+                        <input 
+                        v-model="listingForm.owner"
+                        class="w-5/12 px-2 py-1 border rounded-md"
+                        type="text"/>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="flex gap-2 my-3">
+                        <label class="block font-semibold text-[19px]">Address: </label>
+                        <textarea 
+                        v-model="listingForm.address"
+                        class="w-7/12 px-2 py-1 border rounded-md"></textarea>
+                    </div>
+                    
+                    <!-- Description -->
+                    <div class="flex gap-2 my-3">
+                        <label class="block font-semibold text-[19px]">Description: </label>
+                        <textarea 
+                        v-model="listingForm.description"
+                        class="w-7/12 px-2 py-1 border rounded-md"></textarea>
+                    </div>
+                </div>
+
+                <!-- Right pane -->
+                <div class="w-full">
+                    <!-- Amenities -->
+                    <div>
+                        <div class="flex gap-2 my-3">
+                            <label class="block font-semibold text-[19px]">Amenities: </label>
+                        </div>
+                    </div>
+
+                    <!-- Contacts -->
+                    <div>
+                        <div class="flex gap-2 my-3">
+                            <label class="block font-semibold text-[19px]">Contacts: </label>
+                        </div>
+                    </div>
+                </div>
                     
                 </form>
             </div>
@@ -273,7 +327,11 @@ const resetProfileForm = () => {
             <!-- Form Buttons -->
             <EditButtons
             :add-mode="!selectedListing"
+            @submit="triggerSubmitListingForm"
+            @add="addListing()"
+            @update="updateListing()"
             @unselect="unselectListing()"
+            @delete="deleteListing()"
             />
         </div>
     </div>
