@@ -7,6 +7,7 @@ import { ref, onMounted, reactive } from 'vue';
 import Divider from "@/components/divider/Divider.vue";
 import EditButtons from "@/components/admin/EditButtons.vue";
 import SummaryHeader from "@/components/admin/SummaryHeader.vue";
+import FormInput from "@/components/admin/FormInput.vue";
 
 const listings = ref([]);
 const profiles = ref([]);
@@ -241,65 +242,34 @@ const resetProfileForm = () => {
 
                     <!-- Input forms for add/edit -->
                     <div class="border-t pt-2 mt-2">
-                        <form
-                        ref = "listingFormRef"
-                        class="flex w-full" 
-                        @submit.prevent="submitListingForm">
+                    <form class="flex w-full"
+                    ref = "listingFormRef"
+                    @submit.prevent="submitListingForm">
                         <!-- Left pane -->
                         <div class="w-full">
-                            <!-- Listing Id-->
-                            <div class="flex gap-2 my-3" v-if="!selectedListing">
-                                <label class="block font-semibold text-[19px]">Listing Id: </label>
-                                <input 
-                                v-model="listingForm.listingId"
-                                class="w-5/12 px-2 py-1 border rounded-md"
-                                type="text"/>
-                            </div>
+                            <!-- Listing Id -->
+                            <FormInput formLabel="Listing Id*"
+                            v-if="!selectedListing"
+                            v-model="listingForm.listingId"/>
 
                             <!-- Owner -->
-                            <div class="flex gap-2 my-3">
-                                <label class="block font-semibold text-[19px]">Owner: </label>
-                                <input 
-                                v-model="listingForm.owner"
-                                class="w-5/12 px-2 py-1 border rounded-md"
-                                type="text"/>
-                            </div>
-
-                            <!-- Address -->
-                            <div class="flex gap-2 my-3">
-                                <label class="block font-semibold text-[19px]">Address: </label>
-                                <textarea 
-                                v-model="listingForm.address"
-                                class="w-7/12 px-2 py-1 border rounded-md"></textarea>
-                            </div>
-                            
-                            <!-- Description -->
-                            <div class="flex gap-2 my-3">
-                                <label class="block font-semibold text-[19px]">Description: </label>
-                                <textarea 
-                                v-model="listingForm.description"
-                                class="w-7/12 px-2 py-1 border rounded-md"></textarea>
-                            </div>
+                            <FormInput formLabel="Owner"
+                            v-model="listingForm.owner"/>
                         </div>
-
+                        
                         <!-- Right pane -->
                         <div class="w-full">
-                            <!-- Amenities -->
-                            <div>
-                                <div class="flex gap-2 my-3">
-                                    <label class="block font-semibold text-[19px]">Amenities: </label>
-                                </div>
-                            </div>
-
-                            <!-- Contacts -->
-                            <div>
-                                <div class="flex gap-2 my-3">
-                                    <label class="block font-semibold text-[19px]">Contacts: </label>
-                                </div>
-                            </div>
-                        </div>
+                            <!-- Address -->
+                            <FormInput formLabel="Address"
+                            v-model="listingForm.address"
+                            formType="textarea"/>
                             
-                        </form>
+                            <!-- Description -->
+                            <FormInput formLabel="Description"
+                            v-model="listingForm.description"
+                            formType="textarea"/>
+                        </div>
+                    </form>
                     </div>
 
                     <!-- Form Buttons -->
@@ -378,42 +348,24 @@ const resetProfileForm = () => {
                         <!-- Left pane -->
                         <div class="w-full">
                             <!-- Username -->
-                            <div class="flex gap-2 my-3" v-if="!selectedProfile">
-                                <label class="block font-semibold text-[19px]">Username: </label>
-                                <input 
-                                v-model="profileForm.username"
-                                class="w-5/12 px-2 py-1 border rounded-md"
-                                type="text"/>
-                            </div>
+                            <FormInput formLabel="Username*"
+                            v-model="profileForm.username"/>
 
                             <!-- Full Name -->
                             <div>
                                 <!-- First -->
-                                <div class="flex gap-2 my-3">
-                                    <label class="block font-semibold text-[19px]">First name: </label>
-                                    <input 
-                                    v-model="profileForm.name.firstName"
-                                    class="w-5/12 px-2 py-1 border rounded-md"
-                                    type="text"/>
-                                </div>
+                                <FormInput formLabel="First name"
+                                v-model="profileForm.name.firstName"/>
                                 
                                 <!-- Last -->
-                                <div class="flex gap-2 my-3">
-                                    <label class="block font-semibold text-[19px]">Last name: </label>
-                                    <input 
-                                    v-model="profileForm.name.lastName"
-                                    class="w-5/12 px-2 py-1 border rounded-md"
-                                    type="text"/>
-                                </div>
+                                <FormInput formLabel="Last name"
+                                v-model="profileForm.name.lastName"/>
                             </div>
 
                             <!-- Bio -->
-                            <div class="flex gap-2 my-3">
-                                <label class="block font-semibold text-[19px]">Bio: </label>
-                                <textarea 
-                                v-model="profileForm.bio"
-                                class="w-7/12 px-2 py-1 border rounded-md"></textarea>
-                            </div>
+                            <FormInput formLabel="Bio"
+                            v-model="profileForm.bio"
+                            formType="textarea"/>
                         </div>
 
                         <!-- Right pane -->
@@ -421,43 +373,25 @@ const resetProfileForm = () => {
                             <!-- School Info -->
                             <div>
                                 <!-- Name -->
-                                <div class="flex gap-2 my-3">
-                                    <label class="block font-semibold text-[19px]">School Name: </label>
-                                    <input 
-                                    v-model="profileForm.school.name"
-                                    class="w-5/12 px-2 py-1 border rounded-md"
-                                    type="text"/>
-                                </div>
+                                <FormInput formLabel="School Name"
+                                v-model="profileForm.school.name"/>
                                 
                                 <!-- Since -->
-                                <div class="flex gap-2 my-3">
-                                    <label class="block font-semibold text-[19px]">School Since: </label>
-                                    <input 
-                                    v-model="profileForm.school.since"
-                                    class="w-5/12 px-2 py-1 border rounded-md"
-                                    type="date"/>
-                                </div>
+                                <FormInput formLabel="School Since"
+                                v-model="profileForm.school.since"
+                                formType="date"/>
                             </div>
 
                             <!-- Dorm Info -->
                             <div>
                                 <!-- Name -->
-                                <div class="flex gap-2 my-3">
-                                    <label class="block font-semibold text-[19px]">Dorm Name: </label>
-                                    <input 
-                                    v-model="profileForm.dorm.name"
-                                    class="w-5/12 px-2 py-1 border rounded-md"
-                                    type="text"/>
-                                </div>
+                                <FormInput formLabel="Dorm Name"
+                                v-model="profileForm.dorm.name"/>
                                 
                                 <!-- Since -->
-                                <div class="flex gap-2 my-3">
-                                    <label class="block font-semibold text-[19px]">Dorm Since: </label>
-                                    <input 
-                                    v-model="profileForm.dorm.since"
-                                    class="w-5/12 px-2 py-1 border rounded-md"
-                                    type="date"/>
-                                </div>
+                                <FormInput formLabel="Dorm Since"
+                                v-model="profileForm.dorm.since"
+                                formType="date"/>
                             </div>
                         </div>
                     </form>
