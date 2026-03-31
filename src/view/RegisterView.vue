@@ -64,7 +64,7 @@
 
     ProfileService.create(data)
       .then(res => {
-        console.log("THANK FUCK. THANK FUCKING GOD. GODDDDDD FUCKKKKKK");
+        // console.log("THANK FUCK. THANK FUCKING GOD. GODDDDDD FUCKKKKKK");
         localStorage.setItem('USER', JSON.stringify(res.data));
         router.push('/')
       })
@@ -72,10 +72,6 @@
         console.log(error.message);
         processing.value = false;
       });
-  }
-
-  const test = () => {
-    console.log("Kill everyone on this planet");
   }
 </script>
 

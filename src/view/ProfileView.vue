@@ -28,18 +28,10 @@ ReviewService.findAllByUser(props.id)
 // ReviewService.findAllFromListing('the-daily-bugle')
 .then(res => {
 	reviewsRaw.value = res.data;
-	console.log('RAW DATA:');
-	console.log(reviewsRaw.value);
-	console.log(reviewsRaw.value[0]);
-	console.log(reviewsRaw.value.length);
 
 	// For each review, pull the listing
 	for (let i = 0; i < reviewsRaw.value.length; i++) {
 		const review = reviewsRaw.value[i];
-		
-		console.log('REVIEW:');
-		console.log(review);
-		console.log(review.listingId);
 		ListingService.find(review.listingId)
 		.then(res => {
 			if (res.data) {
@@ -64,7 +56,6 @@ const getOverallRating = (ratings) => {
     let overall = 0;
     for (let p in ratings) {
         overall += ratings[p];
-        console.log(ratings[p]);
     }
     return (overall/4).toFixed(1);
 }

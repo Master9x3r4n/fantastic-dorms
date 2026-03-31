@@ -28,8 +28,6 @@
       username: form.value.username, password: form.value.password 
     })
       .then(res => {
-        console.log('Yippeeeeeeee');
-        // i don't give a damn
         localStorage.setItem('USER', JSON.stringify(res.data));
         router.push('/');
       })

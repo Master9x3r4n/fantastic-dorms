@@ -24,7 +24,7 @@ ProfileService.find(review.username)
         // console.log(profile.value);
     })
     .catch(error => {
-        console.log(`Error occurred retrieving profile data of user ${review.username} for review: ${error.message}`);
+        console.log(`Error occurred retrieving profile data of user ${review.username} for review ${id}: ${error.message}`);
     });
 
 const getOverallRating = (ratings) => {

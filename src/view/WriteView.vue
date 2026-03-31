@@ -111,13 +111,9 @@ const submitReview = () => {
 		createdAt: Date.now()
 	};
 
-	console.log('NEW REVIEW:');
-	console.log(newReview);
-
 	submitting.value = true;
 	ReviewService.create(newReview)
 		.then(res => {
-			console.log('Review successfully created.');
 			router.push(`/reviews/${res.data._id}`)
 		})
 		.catch(error => {
