@@ -40,7 +40,11 @@ class ReviewService {
 	}
 
 	create(data) {
-		return http.post(`/r`, data);
+		// console.log(data[0] instanceof File);
+		// console.log('LOCKDOWN BABY');
+		return http.post(`/r`, data, {
+			headers: { 'Content-Type': 'multipart/form-data' }
+		});
 	}
 
 	update(id, data) {

@@ -1,8 +1,9 @@
 // reference:
 // https://www.bezkoder.com/node-express-mongodb-crud-rest-api/
 
-import Review from '../models/Review.js'; 
 import { v2 as cloudinary } from 'cloudinary';
+import fs from 'fs';
+import Review from '../models/Review.js'; 
 const MAX_MEDIA_COUNT = 4;
 
 class ReviewController {
@@ -54,30 +55,45 @@ class ReviewController {
 	// Creates Review document
 	// Returns: Review document that was created
 	async create(req, res) {
-		const review = req.body;
+		const review = new Review(JSON.parse(req.body.content));
+		const rawMedia = req.files;
 		const uploadedMedia = [];
 		
+		// I'm fucking tired, boss
 		try {
 			let count = 0;
-			for (const media in req.body.media) {
+			for (const media of rawMedia) {
+				console.log('--- #' + count);
+				console.log(media);
 				if (count >= MAX_MEDIA_COUNT)
 					break;
 
-				const json = await cloudinary.uploader.upload(media, {
+				// const json = await cloudinary.uploader.upload(media.buffer, {
+				const json = await cloudinary.uploader.upload(media.path, {
 					resource_type: 'image',
-					public_id: `${req.body._id}-${count}`,
+					public_id: `${review._id}-${count}`,
 					folder: 'reviewMedia'
 				})
+				// Rebuild with this URL:
+				// https://res.cloudinary.com/fantasticdorms/image/upload/reviewMedia/<public_id>.png
 				uploadedMedia.push(json.public_id);
+				if (fs.existsSync(media.path)) {
+					fs.unlinkSync(media.path);
+				}
+
 				count++;
 			}
 
+			console.log('Uploaded media:');
+			console.log(uploadedMedia);
+
 			review.media = uploadedMedia;
-			const newReview = await new Review(review).save();
-			res.status(201).send(newReview);
+			const response = await new Review(review).save();
+			res.status(201).send(response);
 		} catch (err) {
+			console.log('Error occurred while creating Review: ' + err.message);
 			res.status(500).send({
-				message: err.message || `An error occurred while creating Review ${id}.`
+				message: err.message || `An error occurred while creating Review.`
 			});
 		}
 	};
