@@ -68,12 +68,16 @@ class ProfileController {
 					saltedPassword: digest
 				});
 
-				const newProfile = await Profile.save(profile);
+				// console.log('Creating new profile:');
+				// console.log(profile);
+
+				const newProfile = await profile.save();
 				res.status(201).send(newProfile);
 			}
 		} catch (err) {
+			console.log('ERROR: ' + err.message);
 			res.status(500).send({
-				message: `An error occurred while creating Profile ${username}.`
+				message: err.message || `An error occurred while creating Profile ${username}.`
 			});
 		}
 	};

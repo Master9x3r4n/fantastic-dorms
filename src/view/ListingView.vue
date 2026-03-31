@@ -1,5 +1,5 @@
 <script setup>
-	import { ref } from 'vue';
+	import { ref, onMounted } from 'vue';
 	import { useRoute, useRouter } from 'vue-router';
 	import ListingService from '../services/ListingService.js';
 	import ReviewService from '../services/ReviewService.js';
@@ -22,27 +22,31 @@
 	})
 
 	const listingId = route.params.id; 
-	if (!listingId) {
-		throw new Error('Invalid ID');
-	}
-
 	const listing = ref(null);
 	const reviews = ref(null);
 
-	ListingService.find(listingId)
-	.then(res => {
-		listing.value = res.data;
-	})
-	.catch(err => {
-		console.log(`Error retrieving listing: ${err.message}`);
-	});
-	ReviewService.findAllFromListing(listingId)
-	.then(res => {
-		reviews.value = res.data;
-		console.log(reviews.value);
-	})
-	.catch(err => {
-		console.log(`Error retrieving reviews: ${err.message}`);
+	onMounted(async () => {
+		// Get listing
+		ListingService.find(listingId)
+		.then(res => {
+			listing.value = res.data;
+		})
+		.catch(err => {
+			if (err.status === 404) {
+				return router.push('/');
+			}
+			console.log(`Error retrieving listing: ${err.message}`);
+		});
+
+		// Get reviews
+		ReviewService.findAllFromListing(listingId)
+		.then(res => {
+			reviews.value = res.data;
+			console.log(reviews.value);
+		})
+		.catch(err => {
+			console.log(`Error retrieving reviews: ${err.message}`);
+		});
 	});
 </script>
 
@@ -61,7 +65,7 @@
 				</Carousel>
 
 				<!-- Listing Information -->
-				<ListingInformation :listingData="listing">
+				<ListingInformation :listing="listing">
 					<template #listing-name>
 						{{ listing.name }}
 					</template>
@@ -98,22 +102,29 @@
 
 				<!-- Reviews -->
 				<template v-if="reviews">
-					<template v-for="i in reviews">
-						<ReviewCard :review="i" :id="i._id"> 
-							<template #review-title>
-								{{ i.content.title }}
-							</template>
-							<template #review>
-								{{ i.content.body }}
-							</template>
-							<template #ownerReply v-if="i.content.reply">
-								{{ i.content.reply }}
-							</template> 
-						</ReviewCard>
-						<Divider/>
-					</template>
+					<div v-if="reviews.length > 0">
+						<template v-for="i in reviews">
+							<ReviewCard :review="i" :id="i._id"> 
+								<template #review-title>
+									{{ i.content.title }}
+								</template>
+								<template #review>
+									{{ i.content.body }}
+								</template>
+								<template #ownerReply v-if="i.content.reply">
+									{{ i.content.reply }}
+								</template> 
+							</ReviewCard>
+							<Divider/>
+						</template>
+					</div>
+					<div v-else>
+						This listing has no reviews! Will you be the first...?
+					</div>
 				</template>
-				<template v-else> bruh </template>
+				<template v-else>
+					Reviews could not be loaded. Please try refreshing.
+				</template>
 			</div>
 		</div>
 	</div>
