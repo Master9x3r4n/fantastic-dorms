@@ -14,7 +14,7 @@ const props = defineProps({
 });
 
 const user = ref(null);
-ProfileService.get(props.id)
+ProfileService.find(props.id)
 .then(res => {
 	user.value = res.data;
 })
