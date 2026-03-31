@@ -4,33 +4,29 @@
 import http from "../http.js";
 
 class ListingService {
-    getAll() {
-        return http.get("/l");
-    }
+	findAll() {
+		return http.get("/l");
+	}
 
-    get(id) {
-        return http.get(`/l/${id}`);
-    }
+	find(id) {
+		return http.get(`/l/${id}`);
+	}
 
-    create(data) {
-        return http.post("/l", data);
-    }
+	findByTitle(title) {
+		return http.get(`/l?title=${title}`);
+	}
 
-    update(id, data) {
-        return http.put(`/l/${id}`, data);
-    }
+	create(data) {
+		return http.post("/l", data);
+	}
 
-    delete(id) {
-        return http.delete(`/l/${id}`);
-    }
+	update(id, data) {
+		return http.put(`/l/${id}`, data);
+	}
 
-    deleteAll() {
-        return http.delete(`/l`);
-    }
-
-    findByTitle(title) {
-        return http.get(`/l?title=${title}`);
-    }
+	delete(id) {
+		return http.delete(`/l/${id}`);
+	}
 }
 
 export default new ListingService();

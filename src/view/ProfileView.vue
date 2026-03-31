@@ -14,7 +14,7 @@ const props = defineProps({
 });
 
 const user = ref(null);
-ProfileService.get(props.id)
+ProfileService.find(props.id)
 .then(res => {
 	user.value = res.data;
 })
@@ -24,8 +24,8 @@ ProfileService.get(props.id)
 
 const reviewsRaw = ref(null);
 const reviews = ref([]);
-ReviewService.getAllByUser(props.id)
-// ReviewService.getAllFromListing('the-daily-bugle')
+ReviewService.findAllByUser(props.id)
+// ReviewService.findAllFromListing('the-daily-bugle')
 .then(res => {
 	reviewsRaw.value = res.data;
 	console.log('RAW DATA:');
@@ -40,7 +40,7 @@ ReviewService.getAllByUser(props.id)
 		console.log('REVIEW:');
 		console.log(review);
 		console.log(review.listingId);
-		ListingService.get(review.listingId)
+		ListingService.find(review.listingId)
 		.then(res => {
 			if (res.data) {
 				reviews.value.push({

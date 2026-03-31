@@ -17,21 +17,23 @@ const props = defineProps({
 });
 
 const profile = ref(null);
-
-ProfileService.get(props.review.username)
-		.then(res => {
-			profile.value = res.data;
-		})
-		.catch(error => {
-			console.log(`Error retrieving profile '${props.review.username}': ${error.message}`);
-		});
+ProfileService.find(props.review.username)
+    .then(res => {
+        // console.log('Profile:');
+        // console.log(res.data);
+        profile.value = res.data;
+    })
+    .catch(error => {
+        console.log(`Error retrieving profile \'${props.review.username}\': ${error.message}`)
+    });
 
 const getOverallRating = (ratings) => {
-	let overall = 0;
-	for (let p in ratings) {
-		overall += ratings[p];
-	}
-	return (overall / 4).toFixed(1);
+    let overall = 0;
+    for (let p in ratings) {
+        overall += ratings[p];
+        // console.log(ratings[p]);
+    }
+    return (overall/4).toFixed(1);
 }
 
 const parsedBody = computed(() => {

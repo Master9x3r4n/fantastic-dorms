@@ -10,24 +10,20 @@ const props = defineProps({
 
 const reviews = ref([]);
 if (props.id) {
-    ReviewService.get(props.id)
+    ReviewService.find(props.id)
         .then(res => {
-            console.log(`Review with ID ${props.id}:`);
-            console.log(res.data);
             reviews.value.push(res.data);
         })
-        .catch(error => {
-            console.log(`Error retrieving review with ID ${props.id}: ${error.message}`);
+        .catch(err => {
+            console.log(`Error retrieving review with ID ${props.id}: ${err.message}`);
         });
 } else {
-    ReviewService.getAll()
+    ReviewService.findAll()
         .then(res => {
-            console.log(`Reviews:`);
-            console.log(res.data);
             reviews.value = res.data;
         })
-        .catch(error => {
-            console.log(`Error retrieving reviews: ${error.message}`);
+        .catch(err => {
+            console.log(`Error retrieving reviews: ${err.message}`);
         });
 }
 </script>

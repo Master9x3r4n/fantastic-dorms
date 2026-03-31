@@ -17,21 +17,31 @@ const props = defineProps({
 
 const review = props.review;
 const profile = ref(null);
-
-ProfileService.get(review.username)
-		.then(res => {
-			profile.value = res.data;
-		})
-		.catch(error => {
-			console.log(`Error occurred retrieving profile data of user ${review.username} for review: ${error.message}`);
-		});
+ProfileService.find(review.username)
+    .then(res => {
+        profile.value = res.data;
+        // console.log('Profile:');
+        // console.log(profile.value);
+    })
+    .catch(error => {
+        console.log(`Error occurred retrieving profile data of user ${review.username} for review: ${error.message}`);
+    });
 
 const getOverallRating = (ratings) => {
-	let overall = 0;
-	for (let p in ratings) {
-		overall += ratings[p];
-	}
-	return (overall/4).toFixed(1);
+    let overall = 0;
+    for (let p in ratings) {
+        overall += ratings[p];
+        // console.log(ratings[p]);
+    }
+    return (overall/4).toFixed(1);
+}
+
+
+//TODO: REVMOVE THIS, THIS ONLY EXISTS FOR THE VIDEO BUT THE FOLLOWING CODE WILL BE TRASH
+const vote = ref(0);
+
+const updateVotes = (n) => {
+    vote.value = n;
 }
 
 // Parse the Markdown body
