@@ -230,7 +230,6 @@ onBeforeUnmount(() => {
 					/>
 
 					<!-- Photo Upload -->
-					<!-- NOT FUNCTIONAL YET -->
 					<UploadBox v-model="form.media"/>
 					
 					<!-- Ratings Box -->
