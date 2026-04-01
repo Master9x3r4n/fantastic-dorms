@@ -1,9 +1,9 @@
 <script setup>
-import { ref, computed } from 'vue';
-import {useRouter} from "vue-router";
+import { ref } from 'vue';
+import { useRouter } from "vue-router";
 import Divider from "@/components/divider/Divider.vue";
 import PasswordToggleButton from "@/components/page-buttons/PasswordToggleButton.vue";
-import ProfileSettings from "@/components/settings/ProfileSettings.vue";
+import ProfileSettingsSection from "@/components/settings/ProfileSettings.vue"
 
 // Define Props with Default Values
 const props = defineProps({
@@ -27,11 +27,6 @@ const goBack = () => {
 	router.back();
 };
 
-// Local Form State
-const ogImageFile = ref(props.userInfo.profileImg);
-const formData = ref({ ...props.userInfo });
-const newImageFile = ref(null);
-
 // Security State
 const currentPassword = ref('');
 const newPassword = ref('');
@@ -41,68 +36,12 @@ const confirmPassword = ref('');
 const showCurrent = ref(false);
 const showNew = ref(false);
 const showConfirm = ref(false);
-// Refs
-const fileInputRef = ref(null);
-
-// Computed
-const bioCharacterCount = computed(() => formData.value.bio.length);
-const isBioInvalid = computed(() => bioCharacterCount.value > 200);
 
 // Handlers
-const triggerFileInput = () => {
-	if (fileInputRef.value) {
-		fileInputRef.value.click();
-	}
-};
-
-const handleFileUpload = (event) => {
-	const file = event.target.files[0];
-	if (!file) return;
-
-	// Validate file type
-	if (!['image/jpeg', 'image/png'].includes(file.type)) {
-		alert('Please upload a JPG or PNG image.');
-		return;
-	}
-
-	// Validate file size (Max 2MB)
-	const maxSize = 2 * 1024 * 1024; // 2MB in bytes
-	if (file.size > maxSize) {
-		alert('File size exceeds the 2MB limit. Please choose a smaller file.');
-		return;
-	}
-
-	// Store file for backend submission
-	newImageFile.value = file;
-
-	// Create a local preview
-	const reader = new FileReader();
-	reader.onload = (e) => {
-		formData.value.profileImg = e.target.result;
-	};
-	reader.readAsDataURL(file);
-};
-
-const removePhoto = () => {
-	formData.value.profileImg = ogImageFile.value;
-	newImageFile.value = null;
-	if (fileInputRef.value) {
-		fileInputRef.value.value = ''; // Reset the hidden input
-	}
-};
-
-// TODO: for backend ppl, add a username checker to check for similar usernames
-
-const handleProfileSave = () => {
-	// Validation check for bio length
-	if (isBioInvalid.value) {
-		alert(`Your bio is ${bioCharacterCount.value} characters long, which exceeds the 200 character limit. Please shorten it before saving.`);
-		return;
-	}
-
-	console.log('Saving profile data...', formData.value);
-	if (newImageFile.value) {
-		console.log('New image ready to be uploaded to server:', newImageFile.value.name);
+const handleProfileSave = ({ formData, newImageFile }) => {
+	console.log('Saving profile data...', formData);
+	if (newImageFile) {
+		console.log('New image ready to be uploaded to server:', newImageFile.name);
 	}
 	alert("Profile saved successfully!");
 
@@ -132,8 +71,9 @@ const handlePasswordUpdate = () => {
 					<span class="material-symbols-outlined text-[16px]! mr-1">arrow_back</span>
 					Back to previous page
 				</button>
-				<!-- Profile Settings Section -->
-				<ProfileSettings
+
+				<!--Profile Settings Section -->
+				<ProfileSettingsSection
 						:userInfo="props.userInfo"
 						@save="handleProfileSave"
 				/>
@@ -160,7 +100,7 @@ const handlePasswordUpdate = () => {
 												class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
 												required
 										/>
-										<PasswordToggleButton  v-model="showCurrent"/>
+										<PasswordToggleButton v-model="showCurrent"/>
 									</div>
 								</div>
 
@@ -171,13 +111,13 @@ const handlePasswordUpdate = () => {
 									<label class="text-sm font-semibold text-black dark:text-white">New Password</label>
 									<div class="relative">
 										<input
-											v-model="newPassword"
-											:type="showNew ? 'text' : 'password'"
-											placeholder="Enter new password"
-											class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
-											required
+												v-model="newPassword"
+												:type="showNew ? 'text' : 'password'"
+												placeholder="Enter new password"
+												class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
+												required
 										/>
-										<PasswordToggleButton  v-model="showNew"/>
+										<PasswordToggleButton v-model="showNew"/>
 									</div>
 								</div>
 

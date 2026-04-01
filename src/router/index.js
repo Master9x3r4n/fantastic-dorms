@@ -10,6 +10,7 @@ import RegisterView from "@/view/RegisterView.vue";
 import LoginView from "@/view/LoginView.vue";
 import WriteView from "@/view/WriteView.vue";
 import SettingsView from "@/view/SettingsView.vue";
+import AccountCreationView from "@/view/AccountCreationView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -129,6 +130,12 @@ const router = createRouter({
         else
           return next();
       }
+    },
+    {
+      path: "/create-account",
+      name: "create-account",
+      component: AccountCreationView,
+      meta: { search: false, loggedIn: false },
     },
   ],
 })
