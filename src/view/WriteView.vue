@@ -103,7 +103,7 @@ const submitReview = () => {
 	
 	const newReview = {
 		listingId: props.id,
-		username: form.value.isAnonymous ? 'Anonymous' : user.value.username,
+		username: user.value.username,
 		isAnonymous: form.value.isAnonymous,
 		content: {
 			title: form.value.title,
