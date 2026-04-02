@@ -1,29 +1,41 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/auth';
 import Dropdown from "@/components/dropdown/Dropdown.vue";
 import DarkModeSlider from "@/components/darkmode/DarkModeSlider.vue";
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
 import Divider from "@/components/divider/Divider.vue";
+
 const router = useRouter();
+const auth = useAuthStore();
 
 const info = ref({
 	username: '',
 	picture: ''
 });
-const data = JSON.parse(localStorage.getItem('USER'));
+
 const isLoggedIn = ref(false);
 
-if (data) {
-	isLoggedIn.value = true;
-	info.value.username = data.username;
-	info.value.picture = data.picture;
-} else {
-	isLoggedIn.value = false;
-}
+onMounted(async () => {
+	//const data = JSON.parse(localStorage.getItem('USER'));
+	if (!auth.user) {
+		await auth.fetchCurrentUser();
+	}
+	const data = auth.user;
 
-const logout = () => {
-	localStorage.removeItem('USER');
+	if (data) {
+		isLoggedIn.value = true;
+		info.value.username = data.username;
+		info.value.picture = data.picture;
+	} else {
+		isLoggedIn.value = false;
+	}
+});
+
+const logout = async () => {
+	//localStorage.removeItem('USER');
+	await auth.logout();
 	router.push('/login')
 }
 </script>

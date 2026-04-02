@@ -2,6 +2,7 @@
 import ProfileService from "../services/ProfileService.js";
 import ReviewService from "../services/ReviewService.js";
 import ListingService from "../services/ListingService.js";
+import { useAuthStore } from '@/auth';
 
 import { ref, onMounted, reactive } from 'vue';
 import Divider from "@/components/divider/Divider.vue";
@@ -16,22 +17,29 @@ const selectedProfile= ref("");
 
 //GET USER ADMIN STATUS
 const userInfo = ref('');
-const data = JSON.parse(localStorage.getItem('USER'));
-if (data)
-	userInfo.value = data;
+const auth = useAuthStore();
+onMounted(async () => {
+    if (!auth.user) {
+		await auth.fetchCurrentUser();
+	}
+	const data = auth.user;
+    if (data)
+        userInfo.value = data;
+    console.log(data)
+})
 
 // FETCH INITIAL DATA FROM DB
 onMounted(async () => {
     try {
         /****** GET LISTINGS ******/
         const [listingsRes] = await Promise.all([
-            ListingService.getAll()
+            ListingService.findAll()
         ]);
         listings.value = listingsRes.data;
         
         /***** GET PROFILES *****/
         const [profilesRes] = await Promise.all([
-            ProfileService.getAll()
+            ProfileService.findAll()
         ]);
         profiles.value = profilesRes.data;
 
@@ -277,7 +285,10 @@ const resetProfileForm = () => {
 </script>
 
 <template>
-<div v-if="userInfo.isAdmin">
+<div v-if="!userInfo.isAdmin" class="dark: text-white">
+    unauthorized access {{ userInfo }}
+</div>
+<div v-else>
     <div class="min-h-screen  p-8">
         <div class="max-w-6xl mx-auto">
             <!-- LISTINGS -->
@@ -508,9 +519,6 @@ const resetProfileForm = () => {
             </div>
         </div>
     </div>
-</div>
-<div v-else>
-    unauthorized access
 </div>
 
 </template>

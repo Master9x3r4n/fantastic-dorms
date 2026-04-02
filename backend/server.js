@@ -37,7 +37,7 @@ app.use(session({
   saveUninitialized: false,
   store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
   cookie: { 
-    maxAge: 1000 * 60,// * 60 * 24, // Cookie lasts for 1 day
+    maxAge: 1000 * 60 * 60, //* 24, // Cookie lasts for 1 day
     httpOnly: true, // Security: prevents frontend JS from stealing the cookie
     secure: false, // Must be false for localhost
     sameSite: 'lax'

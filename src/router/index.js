@@ -32,10 +32,10 @@ const router = createRouter({
         if (!auth.user)
           await auth.fetchCurrentUser();
 
-        if (auth.user.isAdmin)
+        // if (!auth.user)
+        //   return next('/login');
+        // else
           return next();
-        else
-          return next('/login');
       }
     },
     {

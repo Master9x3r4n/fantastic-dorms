@@ -1,22 +1,25 @@
 import { defineStore } from 'pinia';
-import axios from 'axios';
+import api from './http.js';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({ user: null }),
   actions: {
     async login(credentials) {
-      const { data } = await axios.post('/auth/login', credentials);
+      const { data } = await api.post('/auth/login', credentials);
       this.user = data;
     },
     async logout() {
-      await axios.post('/auth/logout');
+      await api.post('/auth/logout');
       this.user = null;
     },
     async fetchCurrentUser() {
       try {
-        const { data } = await axios.get('/auth/me');
+        const { data } = await api.get('/auth/me');
+        console.log('fetchCurrentUser response:', data);
         this.user = data.user;
-      } catch { this.user = null; }
+      } catch (err) { this.user = null; 
+        console.log('fetchCurrentUser error:', err.response);
+      }
     }
   },
   getters: { isLoggedIn: (state) => !!state.user }
