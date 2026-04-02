@@ -1,21 +1,29 @@
 <script setup>
 // Define Props with Default Values
 import ProfileSettings from "@/components/settings/ProfileSettings.vue";
+import { ref, onMounted } from 'vue';
+import { useAuthStore } from "@/auth";
 
-const props = defineProps({
-	userInfo: {
-		type: Object,
-		default: () => ({
-			profileImg: 'https://i.pinimg.com/736x/f3/b1/f8/f3b1f8c618080a7d0af8f0dc1b7c90ae.jpg',
-			firstName: 'Aya',
-			lastName: 'Oosawa',
-			username: 'ayasjpg',
-			school: 'De La Salle University Manila',
-			home: 'Metro Haven Suites',
-			bio: 'Comp sci student. Loves natural light and good coffee.'
-		})
+// Retrieve current user data
+const auth = useAuthStore();
+const userInfo = ref(null);
+onMounted(async () => {
+    if (!auth.user) {
+		await auth.fetchCurrentUser();
 	}
-});
+
+    if (auth.user){
+		userInfo.value = {
+			profileImg: auth.user.picture,
+			firstName: auth.user.name.firstName,
+			lastName: auth.user.name.lastName,
+			username: auth.user.username,
+			school: auth.user.school.name,
+			home: auth.user.dorm.name,
+			bio: auth.user.bio
+		}
+	}
+})
 
 // Handlers
 const handleProfileSave = ({ formData, newImageFile }) => {
