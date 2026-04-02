@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import ProfileSummary from "@/components/profile/ProfileSummary.vue";
 import ReviewPreview from "@/components/profile/ReviewPreview.vue";
 import PageButtons from "@/components/page-buttons/PageButtons.vue";
@@ -8,6 +8,7 @@ import BlueButton from "@/components/page-buttons/BlueButton.vue";
 import ProfileService from "../services/ProfileService.js";
 import ReviewService from "../services/ReviewService.js";
 import ListingService from "../services/ListingService.js";
+import { useAuthStore } from '@/auth';
 
 const props = defineProps({
 	id: { type: String }
@@ -77,6 +78,21 @@ const changePage = (page) => {
 	currentPage.value = page;
 	window.scrollTo({ top: 0, behavior: 'smooth' });
 };
+
+//get current username
+const username = ref(null);
+const auth = useAuthStore();
+onMounted(async () => {
+    if (!auth.user) {
+		await auth.fetchCurrentUser();
+	}
+
+    if (auth.user)
+        username.value = auth.user.username;
+
+})
+
+
 </script>
 
 <template>
@@ -105,7 +121,7 @@ const changePage = (page) => {
 						Biography
 					</h2>
 					<!-- Edit Button -->
-					<RouterLink to="/settings">
+					<RouterLink to="/settings" v-if="username === props.id">
 						<BlueButton class="px-3 py-1.5">
 							<span class="material-symbols-outlined text-[16px] text-white">edit_square</span>
 							<span class="text-sm font-medium text-white">Edit</span>
