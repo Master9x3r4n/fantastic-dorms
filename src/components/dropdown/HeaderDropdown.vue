@@ -39,6 +39,7 @@ const logout = async () => {
 	await auth.logout();
 	router.push('/login')
 }
+
 </script>
 
 <template>
@@ -72,7 +73,7 @@ const logout = async () => {
 
 				<!-- Profile Link -->
 				<RouterLink
-					to="/profile"
+					:to='!isLoggedIn? "/login" : `/profile/${info.username}`'
 					class="flex items-center gap-3 p-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#1E1E1E] hover:text-[#355AFF] dark:hover:text-[#355AFF] transition-all duration-200 group"
 				>
 					<span class="material-symbols-outlined text-xl shrink-0 opacity-80 group-hover:opacity-100">
@@ -108,7 +109,10 @@ const logout = async () => {
 					<span class="material-symbols-outlined text-xl shrink-0 opacity-80 group-hover:opacity-100">
 						logout
 					</span>
-					<span class="text-base font-medium">Sign out</span>
+					<span class="text-base font-medium">
+						<span v-if="isLoggedIn">Sign out</span>
+						<span v-else>Log in</span>
+					</span>
 				</a>
 			</div>
 		</template>
