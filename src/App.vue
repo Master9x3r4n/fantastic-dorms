@@ -1,4 +1,5 @@
 <script setup>
+import {onMounted} from 'vue';
 import { RouterView, useRoute } from "vue-router";
 import PageFooter from "./components/footer/PageFooter.vue";
 import PageHeader from "@/components/header/PageHeader.vue";

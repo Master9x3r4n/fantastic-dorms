@@ -1,10 +1,12 @@
 <script setup>
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
+  import { useAuthStore } from '@/auth';
   import Divider from "@/components/divider/Divider.vue";
   import ProfileService from "../services/ProfileService";
 	import PasswordToggleButton from "@/components/page-buttons/PasswordToggleButton.vue";
   const router = useRouter();
+  const auth = useAuthStore();
 
   // Form-related stuff
   // https://test-utils.vuejs.org/guide/essentials/forms
@@ -25,17 +27,18 @@
     processing.value = true;
 
     ProfileService.login({ 
-      username: form.value.username, password: form.value.password 
+      username: form.value.username, 
+      password: form.value.password 
     })
-      .then(res => {
-        localStorage.setItem('USER', JSON.stringify(res.data));
-        router.push('/');
-      })
-      .catch(error => {
-        console.log(error);
-        processing.value = false;
-        invalid.value = true
-      })
+    .then(res => {
+      auth.user = res.data;
+      router.push('/');
+    })
+    .catch(error => {
+      console.log(error);
+      processing.value = false;
+      invalid.value = true;
+    });
   }
 
   // State for password visibility toggle
