@@ -13,7 +13,10 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173', 
+  credentials: true
+}));
 app.use(express.json());
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -24,11 +27,29 @@ cloudinary.config({
   secure: true
 });
 
+// Setting up sessions
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
+
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
+  cookie: { 
+    maxAge: 1000 * 60 * 60 * 24, // Cookie lasts for 1 day
+    httpOnly: true, // Security: prevents frontend JS from stealing the cookie
+    secure: false, // Must be false for localhost
+    sameSite: 'lax'
+  }
+}));
+
 // Database routers
 import AuthRouter from './routers/AuthRouter.js';
 import ProfileRouter from './routers/ProfileRouter.js';
 import ReviewRouter from './routers/ReviewRouter.js';
 import ListingRouter from './routers/ListingRouter.js';
+
 app.use('/api/auth/', AuthRouter);
 app.use('/api/p/', ProfileRouter);
 app.use('/api/r/', ReviewRouter);
@@ -40,7 +61,7 @@ mongoose.connect(process.env.MONGO_URI)
   .catch(err => console.log("Connection error:", err));
 
 app.get('/', (req, res) => {
-  res.send('I need a Chicago deep dish in my system');
+  res.send('Japan is turning footsteps into electricty');
 });
 
 app.listen(PORT, () => console.log(`[Server started on port ${PORT}]`));
