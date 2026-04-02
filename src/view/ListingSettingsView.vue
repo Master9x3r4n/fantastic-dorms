@@ -167,7 +167,7 @@ const handleSave = () => {
                                         <label class="text-xs font-bold uppercase text-slate-400">Platform Name</label>
                                         <input v-model="social.name" type="text" placeholder="e.g. Facebook" class="input-field" />
                                     </div>
-                                    <div class="flex-[2] space-y-2">
+                                    <div class="flex-2 space-y-2">
                                         <label class="text-xs font-bold uppercase text-slate-400">Link / URL</label>
                                         <input v-model="social.link" type="text" placeholder="https://..." class="input-field" />
                                     </div>
