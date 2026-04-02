@@ -146,6 +146,12 @@ class ProfileController {
 				const hash = profile.saltedPassword;
 				const newHash = PasswordsUtils.generateDigest(password + salt);
 				if (hash === newHash) {
+					// create user session
+					req.session.user = {
+						id: profile._id,
+						username: profile.username,
+					}
+					
 					res.status(200).send(profile);
 				} else {
 					res.status(401).send({
