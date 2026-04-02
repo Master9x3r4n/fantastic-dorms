@@ -1,23 +1,42 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
+import { useRoute } from 'vue-router';
 import FullReviewCard from '@/components/review-cards/FullReviewCard.vue';
 import ReviewService from '../services/ReviewService.js';
 
-const props = defineProps({
-	// In the context of this route, 'id' is the listingId
-	id: { type: String, required: true }
-})
+const route = useRoute();
+
+// Grab the ID from the URL parameters (or query as a fallback)
+const listingId = route.params.id || route.query.id;
 
 const reviews = ref([]);
 onMounted(() => {
-	if (props.id) {
+	if (listingId) {
 		// Fetch all reviews specific to this listing
-		ReviewService.findAllFromListing(props.id)
-				.then(res => {
+		ReviewService.findAllFromListing(listingId)
+				.then(async (res) => {
 					reviews.value = res.data;
+
+					// Wait, they don't love me like I love you. Wait, they don't love me like I love you
+					await nextTick();
+
+					// If there's a hash in the URL (e.g., #12345), find that element and scroll to it
+					if (route.hash) {
+						const targetElement = document.querySelector(route.hash);
+						if (targetElement) {
+							// We use setTimeout just to ensure any CSS transitions finish first
+							setTimeout(() => {
+								targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+								// Add a brief highlight effect to the target card
+								targetElement.classList.add('ring-2', 'ring-[#355AFF]', 'transition-all', 'duration-500');
+								setTimeout(() => targetElement.classList.remove('ring-2', 'ring-[#355AFF]'), 2000);
+							}, 100);
+						}
+					}
 				})
 				.catch(err => {
-					console.error(`Error retrieving reviews for listing ${props.id}: ${err.message}`);
+					console.error(`Error retrieving reviews for listing ${listingId}: ${err.message}`);
 				});
 	}
 });
@@ -41,7 +60,7 @@ onMounted(() => {
 			<!-- Header Section -->
 			<div class="w-full flex justify-between items-end mb-8 border-b border-slate-200 dark:border-slate-800 pb-4">
 				<h1 class="text-3xl font-bold text-slate-900 dark:text-white">All Reviews</h1>
-				<div v-if="!isLoading && reviews.length > 0" class="text-slate-500 dark:text-slate-400 font-medium">
+				<div v-if="reviews.length > 0" class="text-slate-500 dark:text-slate-400 font-medium">
 					Found {{ reviews.length }} review<template v-if="reviews.length !== 1">s</template>
 				</div>
 			</div>
