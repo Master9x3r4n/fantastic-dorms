@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from "vue-router";
 import Divider from "@/components/divider/Divider.vue";
+import TextEditor from '@/components/write-review-content/TextEditor.vue';
 
 const props = defineProps({
     initialListing: {
@@ -104,17 +105,28 @@ const handleSave = () => {
                         <section class="space-y-6">
                             <h3 class="text-lg font-semibold border-l-4 border-[#355AFF] pl-3">Basic Information</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Name -->
                                 <div class="space-y-2">
                                     <label class="text-sm font-semibold">Listing Name</label>
                                     <input v-model="listing.name" type="text" placeholder="e.g. Green Residences Studio" class="input-field" required />
                                 </div>
+
+                                <!-- Location -->
                                 <div class="space-y-2">
                                     <label class="text-sm font-semibold">Location</label>
                                     <input v-model="listing.location" type="text" placeholder="e.g. Taft Avenue, Manila" class="input-field" required />
                                 </div>
+
+                                <!-- Description -->
                                 <div class="md:col-span-2 space-y-2">
                                     <label class="text-sm font-semibold">Description</label>
-                                    <textarea v-model="listing.description" rows="4" placeholder="Describe the listing..." class="input-field resize-none"></textarea>
+                                    <!-- <textarea v-model="listing.description" rows="4" placeholder="Describe the listing..." class="input-field resize-none"></textarea> -->
+                                    <TextEditor 
+                                        class="mt-2"
+                                        v-model="listing.description"
+                                        placeholder="Describe the listing..."
+                                        :maxLength="200"
+                                    />
                                 </div>
                             </div>
                         </section>
