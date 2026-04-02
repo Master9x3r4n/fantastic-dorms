@@ -8,12 +8,4 @@ const router = express.Router();
 
 router.post('/login', ProfileController.login);
 
-router.get('/status', (req, res) => {
-    if (req.session.user) {
-        res.json({ loggedIn: true, user: req.session.user });
-    } else {
-        res.json({ loggedIn: false });
-    }
-});
-
 export default router;
