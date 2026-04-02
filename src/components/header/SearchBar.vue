@@ -72,6 +72,7 @@ const routeSearch = () => {
           v-model="searchQuery"
           type="text"
           placeholder="Start searching..."
+          name="searchbar"
           :class="[theme.input, 'w-full h-full px-3 outline-none text-gray-700']"
       />
 
