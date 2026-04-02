@@ -3,14 +3,13 @@ import { ref, computed } from 'vue';
 import Divider from "@/components/divider/Divider.vue";
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
 
-const DEFAULT_IMG = 'https://i.pinimg.com/736x/f3/b1/f8/f3b1f8c618080a7d0af8f0dc1b7c90ae.jpg';
 
 const props = defineProps({
 	userInfo: {
 		type: Object,
 		required: true,
 		default: () => ({
-			profileImg: DEFAULT_IMG,
+			profileImg: 'https://i.pinimg.com/736x/f3/b1/f8/f3b1f8c618080a7d0af8f0dc1b7c90ae.jpg',
 			firstName: 'Aya',
 			lastName: 'Oosawa',
 			username: 'ayasjpg',
