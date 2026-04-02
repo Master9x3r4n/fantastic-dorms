@@ -83,6 +83,7 @@ const handleSave = () => {
     <div class="min-h-screen flex flex-col bg-white dark:bg-[#121422] text-black dark:text-white transition-colors duration-200">
         <main class="flex-1 flex items-center justify-center p-4 md:p-10">
             <div class="w-full max-w-4xl">
+                <!-- Return button -->
                 <button @click="goBack" class="flex items-center text-sm text-slate-500 dark:text-slate-400 hover:text-[#355AFF] transition-colors mb-6 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-1.5 bg-white dark:bg-[#121422] shadow-sm">
                     <span class="material-symbols-outlined text-[16px]! mr-1">arrow_back</span>
                     Back to Listing
@@ -92,11 +93,14 @@ const handleSave = () => {
                     <div class="p-6 md:p-8">
                         <h2 class="text-2xl font-bold">Edit Listing</h2>
                         <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Update your property details, amenities, and media.</p>
+                        <span>@listing-id-goes-here</span>
                     </div>
                     <Divider />
 
+                    <!-- Listing Form -->
                     <form @submit.prevent="handleSave" class="p-6 md:p-8 space-y-8">
                         
+                        <!-- Basic Information -->
                         <section class="space-y-6">
                             <h3 class="text-lg font-semibold border-l-4 border-[#355AFF] pl-3">Basic Information</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -117,6 +121,7 @@ const handleSave = () => {
 
                         <Divider />
 
+                        <!-- Amenities -->
                         <section class="space-y-4">
                             <div class="flex justify-between items-center">
                                 <h3 class="text-lg font-semibold border-l-4 border-[#355AFF] pl-3">Amenities ({{ listing.amenities.length }}/6)</h3>
@@ -136,6 +141,7 @@ const handleSave = () => {
 
                         <Divider />
 
+                        <!-- Socials Links -->
                         <section class="space-y-4">
                             <div class="flex justify-between items-center">
                                 <h3 class="text-lg font-semibold border-l-4 border-[#355AFF] pl-3">Social Links ({{ listing.contacts.length }}/6)</h3>
@@ -162,6 +168,7 @@ const handleSave = () => {
 
                         <Divider />
 
+                        <!-- Media -->
                         <section class="space-y-4">
                             <h3 class="text-lg font-semibold border-l-4 border-[#355AFF] pl-3">Media ({{ imagePreviews.length }}/5)</h3>
                             <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -180,6 +187,7 @@ const handleSave = () => {
                             </div>
                         </section>
 
+                        <!-- Save / Cancel -->
                         <div class="flex justify-end gap-4 pt-6">
                             <button type="button" @click="goBack" class="px-6 py-2 rounded-md text-sm font-medium border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                                 Cancel
