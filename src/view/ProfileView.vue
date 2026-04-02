@@ -15,191 +15,174 @@ const props = defineProps({
 
 const user = ref(null);
 ProfileService.find(props.id)
-.then(res => {
-	user.value = res.data;
-})
-.catch(error => {
-	console.error(`Error retrieving profile: ${error.message}.`);
-});
+		.then(res => {
+			user.value = res.data;
+		})
+		.catch(error => {
+			console.error(`Error retrieving profile: ${error.message}.`);
+		});
 
 const reviewsRaw = ref(null);
 const reviews = ref([]);
 ReviewService.findAllByUser(props.id)
-// ReviewService.findAllFromListing('the-daily-bugle')
-.then(res => {
-	reviewsRaw.value = res.data;
-
-	// For each review, pull the listing
-	for (let i = 0; i < reviewsRaw.value.length; i++) {
-		const review = reviewsRaw.value[i];
-		ListingService.find(review.listingId)
 		.then(res => {
-			if (res.data) {
-				reviews.value.push({
-					data: review,
-					listing: res.data
-				})
-			} else {
-				console.error(`Listing ${review.listingId} could not be found for review.`);
+			reviewsRaw.value = res.data;
+
+			// For each review, pull the listing
+			for (let i = 0; i < reviewsRaw.value.length; i++) {
+				const review = reviewsRaw.value[i];
+				ListingService.find(review.listingId)
+						.then(res => {
+							if (res.data) {
+								reviews.value.push({
+									data: review,
+									listing: res.data
+								})
+							} else {
+								console.error(`Listing ${review.listingId} could not be found for review.`);
+							}
+						})
+						.catch(error => {
+							console.error(`Error retrieving listing for review: ${error.message}.`);
+						});
 			}
 		})
 		.catch(error => {
-			console.error(`Error retrieving listing for review: ${error.message}.`);
+			console.error(`Error retrieving profile: ${error.message}.`);
 		});
-	}
-})
-.catch(error => {
-	console.error(`Error retrieving profile: ${error.message}.`);
-});
 
 const getOverallRating = (ratings) => {
-    let overall = 0;
-    for (let p in ratings) {
-        overall += ratings[p];
-    }
-    return (overall/4).toFixed(1);
+	let overall = 0;
+	for (let p in ratings) {
+		overall += ratings[p];
+	}
+	return (overall/4).toFixed(1);
 }
 </script>
 
 <template>
-	<div 
-		class="flex flex-col items-start p-10 gap-10 w-full max-w-7xl min-h-214 mx-auto z-1 font-['Inter']"
-		v-if="user"
-	>
-		<div class="w-full p-4 rounded-lg border border-solid border-slate-200 shadow-sm transition-colors duration-200 dark:border-slate-700">
+	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 font-['Inter']" v-if="user">
+
+		<!-- Top Profile Summary Card -->
+		<div class="bg-white dark:bg-[#121422] border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm p-6 md:p-8 mb-8 transition-colors duration-200">
 			<ProfileSummary
-				:name="user.name.firstName + ' ' + user.name.lastName"
-				:username="user.username"
-				:joinDate="new Date(user.joinDate).toUTCString()"
-				:university="user.school.name"
-				:profileImg="user.picture"
+					:name="user.name?.firstName + ' ' + user.name?.lastName"
+					:username="user.username"
+					:joinDate="new Date(user.joinDate).toUTCString()"
+					:university="user.school?.name"
+					:profileImg="user.picture"
 			/>
 		</div>
 
-		<!-- Biography and Reviews Container -->
-		<div class="flex flex-row flex-wrap justify-center items-start gap-10 w-full max-w-300 min-h-146.5 mx-auto">
+		<!-- Main Two-Column Layout -->
+		<div class="flex flex-col lg:flex-row gap-8 items-start w-full">
 
-			<!-- Profile info column -->
-			<div class="flex flex-col justify-between items-start gap-5 max-w-145 w-full p-4 rounded-lg border border-solid border-slate-200 shadow-sm transition-colors duration-200 dark:border-slate-700">
+			<!-- LEFT COLUMN: Biography & Details -->
+			<div class="w-full lg:w-1/3 flex flex-col gap-6 bg-white dark:bg-[#121422] rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-6 md:p-8 transition-colors duration-200 sticky top-24">
 
-				<!-- Biography and edit container -->
-				<div class="flex flex-row justify-between items-start gap-5 w-full max-w-145 h-7.25 self-stretch flex-none order-0">
-					<h2 class="font-semibold text-[24px] leading-7.25 text-black dark:text-white">
+				<!-- Bio Header -->
+				<div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-4">
+					<h2 class="text-xl font-bold text-slate-900 dark:text-white">
 						Biography
 					</h2>
-
-					<!-- Edit button-->
+					<!-- Edit Button -->
 					<RouterLink to="/settings">
-					<!-- <BlueButton @click="$emit('edit')"> -->
-					<BlueButton>
-						<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-							<path d="M0 11.25V14H2.75L10.8625 5.8875L8.1125 3.1375L0 11.25ZM13.0375 3.7125C13.325 3.425 13.325 2.9625 13.0375 2.675L11.325 0.9625C11.0375 0.675 10.575 0.675 10.2875 0.9625L8.9 2.35L11.65 5.1L13.0375 3.7125Z" fill="white"/>
-						</svg>
-						<span class="text-[16px] leading-4.75 text-white">Edit</span>
-					</BlueButton>
+						<BlueButton class="px-3 py-1.5">
+							<span class="material-symbols-outlined text-[16px] text-white">edit_square</span>
+							<span class="text-sm font-medium text-white">Edit</span>
+						</BlueButton>
 					</RouterLink>
 				</div>
 
-				<!-- Bio text container -->
-				<span class="text-[16px] leading-4.75 text-slate-900 dark:text-white">{{ user.bio }}</span>
+				<!-- Bio Text -->
+				<p class="text-base leading-relaxed text-slate-700 dark:text-slate-300">
+					{{ user.bio }}
+				</p>
 
-				<!-- separator -->
-				<Divider/>
+				<Divider class="opacity-50" />
 
-				<!-- Profile details container-->
-				<div class="flex flex-col items-start gap-5 w-full max-w-145 min-h-39.25 flex-none order-2 self-stretch">
+				<!-- User Details List -->
+				<div class="flex flex-col gap-6">
 
-					<!-- Education details -->
-					<div class="flex flex-row items-center gap-5 w-full max-w-145 h-9.75 self-stretch flex-none order-0">
-						<div class="w-25 font-semibold text-[20px] leading-6 text-right text-[#355AFF] flex-none">
-							School
+					<!-- Education Details -->
+					<div class="flex items-center gap-4">
+						<div class="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center shrink-0">
+							<span class="material-symbols-outlined text-[#355AFF] text-[24px]">school</span>
 						</div>
-						<div class="flex flex-col justify-center items-center w-7.5 h-7.5 flex-none order-1">
-							<svg width="22" height="18" viewBox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<path d="M4 10.18V14.18L11 18L18 14.18V10.18L11 14L4 10.18ZM11 0L0 6L11 12L20 7.09V14H22V6L11 0Z" fill="#355AFF"/>
-							</svg>
-						</div>
-						<div class="flex flex-col justify-center items-start gap-1.25 h-9.75 flex-none order-2">
-							<span class="font-semibold text-[16px] leading-4.75 text-black dark:text-white">
-								{{ user.school.name }}
-							</span>
-							<span class="italic font-normal text-[12px] leading-3.75 text-[#676767]">
-								Since {{ user.school.since }}
-							</span>
+						<div class="flex flex-col">
+							<span class="text-sm font-medium text-slate-500 dark:text-slate-400">School</span>
+							<span class="font-semibold text-slate-900 dark:text-white">
+                {{ user.school?.name }}
+              </span>
 						</div>
 					</div>
 
-					<!-- Dorm details -->
-					<div class="flex flex-row items-center gap-5 w-full max-w-145 h-9.75 self-stretch flex-none order-0">
-						<div class="w-25 font-semibold text-[20px] leading-6 text-right text-[#355AFF] flex-none">
-							Home
+					<!-- Dorm Details -->
+					<div class="flex items-center gap-4">
+						<div class="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center shrink-0">
+							<span class="material-symbols-outlined text-[#355AFF] text-[24px]">apartment</span>
 						</div>
-						<div class="flex flex-col justify-center items-center w-7.5 h-7.5 flex-none order-1">
-							<svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<path d="M10 0L0 7V21H20V7L10 0ZM7.1875 11.0833C8.05 11.0833 8.75 11.7367 8.75 12.5417C8.75 13.3467 8.05 14 7.1875 14C6.325 14 5.625 13.3467 5.625 12.5417C5.625 11.7367 6.325 11.0833 7.1875 11.0833ZM16.25 17.5H15V15.75H5V17.5H3.75V9.33333H5V14.5833H9.375V10.5H13.75C15.125 10.5 16.25 11.55 16.25 12.8333V17.5Z" fill="#355AFF"/>
-							</svg>
-						</div>
-						<div class="flex flex-col justify-center items-start gap-1.25 h-9.75 flex-none order-2">
-							<a class="font-semibold text-[16px] leading-4.75 text-black underline dark:text-white cursor-pointer hover:text-[#355AFF] transition-colors">
-								{{ user.dorm.name }}
+						<div class="flex flex-col">
+							<span class="text-sm font-medium text-slate-500 dark:text-slate-400">Home</span>
+							<a class="font-semibold text-slate-900 dark:text-white hover:text-[#355AFF] dark:hover:text-[#355AFF] underline transition-colors cursor-pointer">
+								{{ user.dorm?.name }}
 							</a>
-							<span class="italic font-normal text-[12px] leading-3.75 text-[#676767]">
-								Since {{ user.dorm.since }}
-							</span>
 						</div>
 					</div>
 
-					<!-- Review details -->
-					<div class="flex flex-row items-center gap-5 w-full max-w-145 h-9.75 self-stretch flex-none order-0">
-						<div class="w-25 font-semibold text-[20px] leading-6 text-right text-[#355AFF] flex-none">
-							Reviews
+					<!-- Reviews Count Details -->
+					<div class="flex items-center gap-4">
+						<div class="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center shrink-0">
+							<span class="material-symbols-outlined text-[#355AFF] text-[24px]">reviews</span>
 						</div>
-						<div class="flex flex-col justify-center items-center w-7.5 h-7.5 flex-none order-1">
-							<svg width="20" height="19" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<path d="M8.86144 0.690965C9.1608 -0.230345 10.4642 -0.230344 10.7636 0.690967L12.3944 5.71022C12.5283 6.12224 12.9122 6.4012 13.3455 6.4012H18.623C19.5917 6.4012 19.9945 7.64082 19.2108 8.21022L14.9412 11.3123C14.5907 11.5669 14.444 12.0183 14.5779 12.4303L16.2088 17.4496C16.5081 18.3709 15.4536 19.137 14.6699 18.5676L10.4003 15.4655C10.0498 15.2109 9.5752 15.2109 9.22471 15.4655L4.95508 18.5676C4.17137 19.137 3.11689 18.3709 3.41624 17.4496L5.0471 12.4303C5.18097 12.0183 5.03431 11.5669 4.68382 11.3123L0.41419 8.21022C-0.369523 7.64082 0.0332539 6.4012 1.00198 6.4012H6.27953C6.71276 6.4012 7.09671 6.12224 7.23059 5.71022L8.86144 0.690965Z" fill="#355AFF"/>
-							</svg>
-						</div>
-						<div class="flex flex-col justify-center items-start gap-1.25 h-9.75 flex-none order-2">
-							<span class="font-semibold text-[16px] leading-4.75 text-black dark:text-white">
-								{{ reviews.length }}
-							</span>
-							<span class="italic font-normal text-[12px] leading-3.75 text-[#676767]">
-								Since {{ new Date(user.joinDate).toUTCString() }}
-							</span>
+						<div class="flex flex-col">
+							<span class="text-sm font-medium text-slate-500 dark:text-slate-400">Reviews Written</span>
+							<span class="font-semibold text-slate-900 dark:text-white">
+                {{ reviews.length }}
+              </span>
 						</div>
 					</div>
+
 				</div>
 			</div>
 
-			<!-- Reviews column -->
-			<div class="flex flex-col justify-center items-center gap-5 max-w-145 min-h-146.5 grow order-1 w-full p-4 rounded-lg border border-solid border-slate-200 shadow-sm transition-colors duration-200 dark:border-slate-700">
-				<div class="font-semibold text-[24px] leading-7.25 text-black w-full dark:text-white">
-					Reviews
-				</div>
+			<!-- RIGHT COLUMN: Reviews List -->
+			<div class="w-full lg:w-2/3 flex flex-col bg-white dark:bg-[#121422] rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-6 md:p-8 transition-colors duration-200">
 
-				<!-- Reviews List (Dynamic) -->
-				<div 
-					class="flex flex-col w-full gap-5"
-					v-if="reviews"
-				>
+				<h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+					Reviews
+				</h2>
+
+				<!-- Reviews Dynamic List -->
+				<div v-if="reviews && reviews.length > 0" class="flex flex-col gap-5">
 					<ReviewPreview
-						v-for="review in reviews"
-						:key="review.data.listingId"
-						:title="review.data.content.title"
-						:rating="getOverallRating(review.data.rating)"
-						:review="review.data.content.body"
-						:img="review.listing.media[0]"
-						:listingId="review.data.listingId"
+							v-for="review in reviews"
+							:key="review.data.listingId"
+							:title="review.data.content.title"
+							:rating="getOverallRating(review.data.rating)"
+							:review="review.data.content.body"
+							:img="review.listing.media?.[0]"
+							:listingId="review.data.listingId"
 					/>
 				</div>
 
-				<div class="flex justify-center items-center w-full mt-auto">
+				<!-- Empty State -->
+				<div v-else class="flex flex-col items-center justify-center py-16 text-center bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
+					<span class="material-symbols-outlined text-4xl text-slate-300 dark:text-slate-600 mb-3">rate_review</span>
+					<p class="text-slate-500 dark:text-slate-400 font-medium">No reviews published yet.</p>
+				</div>
+
+				<div class="flex justify-center items-center w-full mt-8">
 					<PageButtons />
 				</div>
 			</div>
+
 		</div>
 	</div>
 </template>
 
 <style scoped>
+.material-symbols-outlined {
+	font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
 </style>
