@@ -50,6 +50,13 @@ cd backend
 npm install express mongoose dotenv cors
 ```
 
+### Installing Dependencies for Sessions
+
+```sh
+cd backend
+npm install express-session connect-mongo
+```
+
 ### Conventional Commit Types
 
 | **Type**       | **Purpose** |
