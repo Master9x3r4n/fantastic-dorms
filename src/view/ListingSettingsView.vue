@@ -135,15 +135,17 @@ const handleSave = () => {
 
                         <!-- Amenities -->
                         <section class="space-y-4">
+                            <!-- add button -->
                             <div class="flex justify-between items-center">
                                 <h3 class="text-lg font-semibold border-l-4 border-[#355AFF] pl-3">Amenities ({{ listing.amenities.length }}/6)</h3>
                                 <button type="button" @click="addAmenity" :disabled="listing.amenities.length >= 6" class="text-[#355AFF] text-sm font-medium disabled:opacity-50">
                                     + Add Amenity
                                 </button>
                             </div>
+                            <!-- amenity field -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div v-for="(amenity, index) in listing.amenities" :key="index" class="flex gap-2">
-                                    <input v-model="listing.amenities[index]" type="text" placeholder="e.g. Free Wi-Fi" class="input-field" />
+                                    <input v-model="listing.amenities[index]" type="text" placeholder="e.g. Free Wi-Fi" class="input-field" required />
                                     <button type="button" @click="removeAmenity(index)" class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 px-2 rounded-lg transition-colors">
                                         <span class="material-symbols-outlined">delete</span>
                                     </button>
@@ -155,18 +157,22 @@ const handleSave = () => {
 
                         <!-- Socials Links -->
                         <section class="space-y-4">
+                            <!-- add button -->
                             <div class="flex justify-between items-center">
                                 <h3 class="text-lg font-semibold border-l-4 border-[#355AFF] pl-3">Social Links ({{ listing.contacts.length }}/6)</h3>
                                 <button type="button" @click="addSocial" :disabled="listing.contacts.length >= 6" class="text-[#355AFF] text-sm font-medium disabled:opacity-50">
                                     + Add Social
                                 </button>
                             </div>
+
                             <div class="space-y-4">
                                 <div v-for="(social, index) in listing.contacts" :key="index" class="flex flex-col md:flex-row gap-4 p-4 border border-slate-200 dark:border-slate-700 rounded-xl relative">
+                                    <!-- name field -->
                                     <div class="flex-1 space-y-2">
                                         <label class="text-xs font-bold uppercase text-slate-400">Platform Name</label>
-                                        <input v-model="social.name" type="text" placeholder="e.g. Facebook" class="input-field" />
+                                        <input v-model="social.name" type="text" placeholder="e.g. Facebook" class="input-field" required />
                                     </div>
+                                    <!-- link field -->
                                     <div class="flex-2 space-y-2">
                                         <label class="text-xs font-bold uppercase text-slate-400">Link / URL</label>
                                         <input v-model="social.link" type="text" placeholder="https://..." class="input-field" />
