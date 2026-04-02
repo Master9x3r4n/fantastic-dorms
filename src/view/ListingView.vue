@@ -16,7 +16,7 @@
 
 	const listingId = route.params.id; 
 	const listing = ref(null);
-	const reviews = ref(null);
+	const reviews = ref([]);
 
 	onMounted(async () => {
 		// Get listing
