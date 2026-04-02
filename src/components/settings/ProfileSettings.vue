@@ -3,13 +3,16 @@ import { ref, computed } from 'vue';
 import Divider from "@/components/divider/Divider.vue";
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
 
+const DEFAULT_IMG = 'https://i.pinimg.com/736x/f3/b1/f8/f3b1f8c618080a7d0af8f0dc1b7c90ae.jpg';
+
 const props = defineProps({
 	userInfo: {
 		type: Object,
 		required: true,
 		default: () => ({
-			profileImg: 'https://i.pinimg.com/736x/f3/b1/f8/f3b1f8c618080a7d0af8f0dc1b7c90ae.jpg',
-			name: 'Aya Oosawa',
+			profileImg: DEFAULT_IMG,
+			firstName: 'Aya',
+			lastName: 'Oosawa',
 			username: 'ayasjpg',
 			school: 'De La Salle University Manila',
 			home: 'Metro Haven Suites',
@@ -130,26 +133,38 @@ const handleProfileSave = () => {
 
 			<!-- Profile Form Fields -->
 			<form @submit.prevent="handleProfileSave" class="space-y-6">
+
+				<!-- Username -->
+				<div class="space-y-2">
+					<label class="text-sm font-semibold text-black dark:text-white">Username</label>
+					<input
+							v-model="formData.username"
+							type="text"
+							placeholder="Your name"
+							class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
+					/>
+				</div>
+
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-					<!-- Display Name -->
+					<!-- First Name -->
 					<div class="space-y-2">
-						<label class="text-sm font-semibold text-black dark:text-white">Display Name</label>
+						<label class="text-sm font-semibold text-black dark:text-white">First Name</label>
 						<input
-								v-model="formData.name"
+								v-model="formData.firstName"
 								type="text"
 								placeholder="Your name"
 								class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
 						/>
 					</div>
 
-					<!-- Username -->
+					<!-- Last Name -->
 					<div class="space-y-2">
-						<label class="text-sm font-semibold text-black dark:text-white">Username</label>
+						<label class="text-sm font-semibold text-black dark:text-white">Last Name</label>
 						<div class="relative">
 							<span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-sm">@</span>
 							<input
-									v-model="formData.username"
+									v-model="formData.lastName"
 									type="text"
 									placeholder="username"
 									class="w-full pl-8 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"

@@ -34,7 +34,8 @@ onMounted(async () => {
     if (auth.user){
 		userInfo.value = {
 			profileImg: auth.user.picture,
-			name: auth.user.name.firstName,
+			firstName: auth.user.name.firstName,
+			lastName: auth.user.name.lastName,
 			username: auth.user.username,
 			school: auth.user.school.name,
 			home: auth.user.dorm.name,
