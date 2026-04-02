@@ -11,6 +11,7 @@ import LoginView from "@/view/LoginView.vue";
 import WriteView from "@/view/WriteView.vue";
 import SettingsView from "@/view/SettingsView.vue";
 import AccountCreationView from "@/view/AccountCreationView.vue";
+import { useAuthStore } from '@/auth';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,9 +27,12 @@ const router = createRouter({
       name: "admin",
       component: AdminView,
       meta: {search: false},
-      beforeEnter: (to, from, next) => {
-        const user = JSON.parse(localStorage.getItem('USER'));
-        if (user.isAdmin)
+      beforeEnter: async (to, from, next) => {
+        const auth = useAuthStore();
+        if (!auth.user)
+          await auth.fetchCurrentUser();
+
+        if (auth.user.isAdmin)
           return next();
         else
           return next('/login');
@@ -109,9 +113,12 @@ const router = createRouter({
       component: WriteView,
       meta: { search: true, loggedIn: true },
       props: true,
-      beforeEnter: (to, from, next) => {
-        const user = localStorage.getItem('USER');
-        if (!user)
+      beforeEnter: async (to, from, next) => {
+        const auth = useAuthStore();
+        if (!auth.user)
+          await auth.fetchCurrentUser();
+
+        if (!auth.user)
           return next('/login');
         else
           return next();
@@ -123,9 +130,12 @@ const router = createRouter({
       component: SettingsView,
       meta: { search: false, loggedIn: true },
       props: true,
-      beforeEnter: (to, from, next) => {
-        const user = localStorage.getItem('USER');
-        if (!user)
+      beforeEnter: async (to, from, next) => {
+        const auth = useAuthStore();
+        if (!auth.user)
+          await auth.fetchCurrentUser();
+
+        if (!auth.user)
           return next('/login');
         else
           return next();
