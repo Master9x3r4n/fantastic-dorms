@@ -1,35 +1,40 @@
 <script setup>
-	import { ref, onMounted } from 'vue';
-	import { useRoute, useRouter } from 'vue-router';
-	import ListingService from '../services/ListingService.js';
-	import ReviewService from '../services/ReviewService.js';
-	const route = useRoute();
-	const router = useRouter();
+import { ref, onMounted, computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import ListingService from '../services/ListingService.js';
+import ReviewService from '../services/ReviewService.js';
+const route = useRoute();
+const router = useRouter();
 
-	import Carousel from '@/components/carousel/Carousel.vue';
-	import ListingInformation from '@/components/listing-content/ListingInformation.vue';
-	import OverallRating from '@/components/side-cards/OverallRating.vue';
-	import MediaContainer from '@/components/carousel/MediaContainer.vue';
-	import ReviewCard from '@/components/review-cards/ReviewCard.vue';
-	import Divider from '@/components/divider/Divider.vue';
-	import BlueButton from "@/components/page-buttons/BlueButton.vue";
+import Carousel from '@/components/carousel/Carousel.vue';
+import ListingInformation from '@/components/listing-content/ListingInformation.vue';
+import OverallRating from '@/components/side-cards/OverallRating.vue';
+import MediaContainer from '@/components/carousel/MediaContainer.vue';
+import ReviewCard from '@/components/review-cards/ReviewCard.vue';
+import Divider from '@/components/divider/Divider.vue';
+import BlueButton from "@/components/page-buttons/BlueButton.vue";
 
-	const listingId = route.params.id; 
-	const listing = ref(null);
-	const reviews = ref([]);
+const listingId = route.params.id;
+const listing = ref(null);
+const reviews = ref([]);
 
-	onMounted(async () => {
-		// Get listing
-		ListingService.find(listingId)
-		.then(res => {
-			listing.value = res.data;
-		})
-		.catch(err => {
-			if (err.status === 404) {
-				return router.push('/');
-			}
-			console.log(`Error retrieving listing: ${err.message}`);
-		});
+// Computed property to limit the displayed reviews to a maximum of 3
+const displayedReviews = computed(() => {
+	return reviews.value.slice(0, 3);
+});
+
+onMounted(async () => {
+	// Get listing
+	ListingService.find(listingId)
+			.then(res => {
+				listing.value = res.data;
+			})
+			.catch(err => {
+				if (err.status === 404) {
+					return router.push('/');
+				}
+				console.log(`Error retrieving listing: ${err.message}`);
+			});
 
 		// Get reviews
 		ReviewService.findAllFromListing(listingId)
@@ -83,11 +88,23 @@
 					</div>
 
 					<!-- Reviews List -->
-					<div v-if="reviews.length > 0" class="flex flex-col gap-6">
-						<div v-for="(review, index) in reviews" :key="review._id">
+					<div v-if="reviews && reviews.length > 0" class="flex flex-col gap-6">
+						<!-- Iterate over displayedReviews instead of reviews -->
+						<div v-for="(review, index) in displayedReviews" :key="review._id">
 							<ReviewCard :review="review" :id="review._id" />
-							<Divider v-if="index !== reviews.length - 1" class="mt-6"/>
+							<Divider v-if="index !== displayedReviews.length - 1" class="mt-6"/>
 						</div>
+
+						<!-- Show All Reviews Button (Only appears if there are more than 3 reviews) -->
+						<RouterLink
+								v-if="reviews.length > 3"
+								:to="{ name: 'review', params: { id: listingId } }"
+								class="w-full mt-2"
+						>
+							<button class="w-full py-3 px-4 bg-white dark:bg-[#121422] border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm">
+								Show all {{ reviews.length }} reviews
+							</button>
+						</RouterLink>
 					</div>
 
 					<!-- Empty State -->
