@@ -60,39 +60,48 @@ const getOverallRating = (ratings) => {
 	return (overall/4).toFixed(1);
 }
 
-// Pagination Logic
+// Get current username
+const username = ref(null);
+const auth = useAuthStore();
+onMounted(async () => {
+	if (!auth.user) {
+		await auth.fetchCurrentUser();
+	}
+
+	if (auth.user)
+		username.value = auth.user.username;
+})
+
+// --- FILTER LOGIC ---
+const filteredReviews = computed(() => {
+	// If the current logged-in user is viewing their own profile, show all reviews
+	if (username.value === props.id) {
+		return reviews.value;
+	}
+	// Otherwise, filter out anonymous reviews
+	return reviews.value.filter(review => !review.data.isAnonymous);
+});
+
+// --- PAGINATION LOGIC ---
 const currentPage = ref(1);
 const reviewsPerPage = 4; // Set this to smth else if needed
 
 const totalPages = computed(() => {
-	return Math.ceil(reviews.value.length / reviewsPerPage) || 1;
+	// Use filteredReviews instead of reviews
+	return Math.ceil(filteredReviews.value.length / reviewsPerPage) || 1;
 });
 
 const paginatedReviews = computed(() => {
 	const start = (currentPage.value - 1) * reviewsPerPage;
 	const end = start + reviewsPerPage;
-	return reviews.value.slice(start, end);
+	// Use filteredReviews instead of reviews
+	return filteredReviews.value.slice(start, end);
 });
 
 const changePage = (page) => {
 	currentPage.value = page;
 	window.scrollTo({ top: 0, behavior: 'smooth' });
 };
-
-//get current username
-const username = ref(null);
-const auth = useAuthStore();
-onMounted(async () => {
-    if (!auth.user) {
-		await auth.fetchCurrentUser();
-	}
-
-    if (auth.user)
-        username.value = auth.user.username;
-
-})
-
-
 </script>
 
 <template>
@@ -172,8 +181,9 @@ onMounted(async () => {
 						</div>
 						<div class="flex flex-col">
 							<span class="text-sm font-medium text-slate-500 dark:text-slate-400">Reviews Written</span>
+							<!-- Updated to use filteredReviews length -->
 							<span class="font-semibold text-slate-900 dark:text-white">
-                {{ reviews.length }}
+                {{ filteredReviews.length }}
               </span>
 						</div>
 					</div>
@@ -189,7 +199,7 @@ onMounted(async () => {
 				</h2>
 
 				<!-- Reviews Dynamic List -->
-				<div v-if="reviews && reviews.length > 0" class="flex flex-col gap-5">
+				<div v-if="filteredReviews && filteredReviews.length > 0" class="flex flex-col gap-5">
 					<!-- We now iterate over paginatedReviews instead of all reviews -->
 					<ReviewPreview
 							v-for="review in paginatedReviews"
