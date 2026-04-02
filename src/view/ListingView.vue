@@ -14,13 +14,6 @@
 	import Divider from '@/components/divider/Divider.vue';
 	import BlueButton from "@/components/page-buttons/BlueButton.vue";
 
-	const props = defineProps({
-		id: {
-			type: String,
-			default: "1"
-		}
-	})
-
 	const listingId = route.params.id; 
 	const listing = ref(null);
 	const reviews = ref(null);
