@@ -25,7 +25,6 @@ onMounted(async () => {
 	const data = auth.user;
     if (data)
         userInfo.value = data;
-    console.log(data)
 })
 
 // FETCH INITIAL DATA FROM DB

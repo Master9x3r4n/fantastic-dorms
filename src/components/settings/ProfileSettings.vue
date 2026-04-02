@@ -6,7 +6,15 @@ import ProfileIcon from "@/components/profile/ProfileIcon.vue";
 const props = defineProps({
 	userInfo: {
 		type: Object,
-		required: true
+		required: true,
+		default: () => ({
+			profileImg: 'https://i.pinimg.com/736x/f3/b1/f8/f3b1f8c618080a7d0af8f0dc1b7c90ae.jpg',
+			name: 'Aya Oosawa',
+			username: 'ayasjpg',
+			school: 'De La Salle University Manila',
+			home: 'Metro Haven Suites',
+			bio: 'Comp sci student. Loves natural light and good coffee.'
+		})
 	}
 });
 

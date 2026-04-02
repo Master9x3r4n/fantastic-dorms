@@ -1,6 +1,4 @@
 <script setup>
-
-
 // Define Props with Default Values
 import ProfileSettings from "@/components/settings/ProfileSettings.vue";
 

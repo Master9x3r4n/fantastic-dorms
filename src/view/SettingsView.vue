@@ -1,24 +1,10 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from "vue-router";
 import Divider from "@/components/divider/Divider.vue";
 import PasswordToggleButton from "@/components/page-buttons/PasswordToggleButton.vue";
 import ProfileSettingsSection from "@/components/settings/ProfileSettings.vue"
-
-// Define Props with Default Values
-const props = defineProps({
-	userInfo: {
-		type: Object,
-		default: () => ({
-			profileImg: 'https://i.pinimg.com/736x/f3/b1/f8/f3b1f8c618080a7d0af8f0dc1b7c90ae.jpg',
-			name: 'Aya Oosawa',
-			username: 'ayasjpg',
-			school: 'De La Salle University Manila',
-			home: 'Metro Haven Suites',
-			bio: 'Comp sci student. Loves natural light and good coffee.'
-		})
-	}
-});
+import { useAuthStore } from "@/auth";
 
 // Previous Page button
 const router = useRouter();
@@ -36,6 +22,26 @@ const confirmPassword = ref('');
 const showCurrent = ref(false);
 const showNew = ref(false);
 const showConfirm = ref(false);
+
+// Retrieve current user data
+const auth = useAuthStore();
+const userInfo = ref(null);
+onMounted(async () => {
+    if (!auth.user) {
+		await auth.fetchCurrentUser();
+	}
+
+    if (auth.user){
+		userInfo.value = {
+			profileImg: auth.user.picture,
+			name: auth.user.name.firstName,
+			username: auth.user.username,
+			school: auth.user.school.name,
+			home: auth.user.dorm.name,
+			bio: auth.user.bio
+		}
+	}
+})
 
 // Handlers
 const handleProfileSave = ({ formData, newImageFile }) => {
@@ -74,7 +80,8 @@ const handlePasswordUpdate = () => {
 
 				<!--Profile Settings Section -->
 				<ProfileSettingsSection
-						:userInfo="props.userInfo"
+						v-if="userInfo"
+						:userInfo="userInfo"
 						@save="handleProfileSave"
 				/>
 
