@@ -135,14 +135,18 @@ const handleProfileSave = () => {
 			<form @submit.prevent="handleProfileSave" class="space-y-6">
 
 				<!-- Username -->
+				
 				<div class="space-y-2">
-					<label class="text-sm font-semibold text-black dark:text-white">Username</label>
-					<input
-							v-model="formData.username"
-							type="text"
-							placeholder="Your name"
-							class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
-					/>
+					<label class="text-sm font-semibold text-black dark:text-white">Last Name</label>
+					<div class="relative">
+						<span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-sm">@</span>
+						<input
+								v-model="formData.username"
+								type="text"
+								placeholder="username"
+								class="w-full pl-8 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
+						/>
+					</div>
 				</div>
 
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -160,16 +164,13 @@ const handleProfileSave = () => {
 
 					<!-- Last Name -->
 					<div class="space-y-2">
-						<label class="text-sm font-semibold text-black dark:text-white">Last Name</label>
-						<div class="relative">
-							<span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-sm">@</span>
-							<input
-									v-model="formData.lastName"
-									type="text"
-									placeholder="username"
-									class="w-full pl-8 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
-							/>
-						</div>
+						<label class="text-sm font-semibold text-black dark:text-white">Username</label>
+						<input
+								v-model="formData.lastName"
+								type="text"
+								placeholder="Your name"
+								class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
+						/>
 					</div>
 
 					<!-- School -->
