@@ -2,11 +2,16 @@
 import { ref, watch } from "vue"
 import ToggleButton from "@/components/page-buttons/ToggleButton.vue";
 
-const darkMode = ref(false)
+const savedPreference = localStorage.getItem('DARK_PREFERENCE');
+const darkMode = ref(savedPreference !== null ? JSON.parse(savedPreference): false);
+
+document.documentElement.classList.toggle('dark', darkMode.value);
 
 watch(darkMode, (enabled) => {
-	document.documentElement.classList.toggle('dark', enabled)
+	document.documentElement.classList.toggle('dark', enabled);
+	localStorage.setItem('DARK_PREFERENCE', JSON.stringify(enabled));
 })
+
 </script>
 
 <template>
