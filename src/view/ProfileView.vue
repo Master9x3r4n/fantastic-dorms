@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import ProfileSummary from "@/components/profile/ProfileSummary.vue";
 import ReviewPreview from "@/components/profile/ReviewPreview.vue";
 import PageButtons from "@/components/page-buttons/PageButtons.vue";
@@ -58,6 +58,25 @@ const getOverallRating = (ratings) => {
 	}
 	return (overall/4).toFixed(1);
 }
+
+// Pagination Logic
+const currentPage = ref(1);
+const reviewsPerPage = 4; // Set this to smth else if needed
+
+const totalPages = computed(() => {
+	return Math.ceil(reviews.value.length / reviewsPerPage) || 1;
+});
+
+const paginatedReviews = computed(() => {
+	const start = (currentPage.value - 1) * reviewsPerPage;
+	const end = start + reviewsPerPage;
+	return reviews.value.slice(start, end);
+});
+
+const changePage = (page) => {
+	currentPage.value = page;
+	window.scrollTo({ top: 0, behavior: 'smooth' });
+};
 </script>
 
 <template>
@@ -155,8 +174,9 @@ const getOverallRating = (ratings) => {
 
 				<!-- Reviews Dynamic List -->
 				<div v-if="reviews && reviews.length > 0" class="flex flex-col gap-5">
+					<!-- We now iterate over paginatedReviews instead of all reviews -->
 					<ReviewPreview
-							v-for="review in reviews"
+							v-for="review in paginatedReviews"
 							:key="review.data.listingId"
 							:title="review.data.content.title"
 							:rating="getOverallRating(review.data.rating)"
@@ -172,8 +192,13 @@ const getOverallRating = (ratings) => {
 					<p class="text-slate-500 dark:text-slate-400 font-medium">No reviews published yet.</p>
 				</div>
 
-				<div class="flex justify-center items-center w-full mt-8">
-					<PageButtons />
+				<!-- Dynamic Page Buttons -->
+				<div class="flex justify-center items-center w-full mt-8" v-if="totalPages > 1">
+					<PageButtons
+							:current-page="currentPage"
+							:total-pages="totalPages"
+							@update:page="changePage"
+					/>
 				</div>
 			</div>
 
