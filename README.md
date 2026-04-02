@@ -54,7 +54,7 @@ npm install express mongoose dotenv cors
 
 ```sh
 cd backend
-npm install express-session connect-mongo
+npm install express-session connect-mongo pinia
 ```
 
 ### Conventional Commit Types

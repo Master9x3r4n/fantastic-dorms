@@ -21,6 +21,7 @@
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "js-sha3": "^0.9.3",
-    "mongoose": "^9.3.3"
+    "mongoose": "^9.3.3",
+    "pinia": "^3.0.4"
   }
 }
