@@ -17,6 +17,7 @@ const info = ref({
 
 const isLoggedIn = ref(false);
 
+//Get user from session storage
 onMounted(async () => {
 	//const data = JSON.parse(localStorage.getItem('USER'));
 	if (!auth.user) {
