@@ -6,10 +6,11 @@ import ReviewService from '../services/ReviewService.js';
 
 const route = useRoute();
 
-// Grab the ID from the URL parameters (or query as a fallback)
-const listingId = route.params.id || route.query.id;
+// Grab the ID from the URL parameters
+const listingId = route.params.id;
 
 const reviews = ref([]);
+
 onMounted(() => {
 	if (listingId) {
 		// Fetch all reviews specific to this listing
@@ -17,20 +18,23 @@ onMounted(() => {
 				.then(async (res) => {
 					reviews.value = res.data;
 
-					// Wait, they don't love me like I love you. Wait, they don't love me like I love you
+					// Wait, they don't love me like I love you...
 					await nextTick();
 
 					// If there's a hash in the URL (e.g., #12345), find that element and scroll to it
 					if (route.hash) {
-						const targetElement = document.querySelector(route.hash);
+						// Escape the hash if it starts with a number (CSS selector requirement for ObjectIds)
+						const safeHash = CSS.escape(route.hash.substring(1));
+						const targetElement = document.querySelector(`#${safeHash}`);
+
 						if (targetElement) {
 							// We use setTimeout just to ensure any CSS transitions finish first
 							setTimeout(() => {
 								targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
 								// Add a brief highlight effect to the target card
-								targetElement.classList.add('ring-2', 'ring-[#355AFF]', 'transition-all', 'duration-500');
-								setTimeout(() => targetElement.classList.remove('ring-2', 'ring-[#355AFF]'), 2000);
+								targetElement.classList.add('ring-2', 'ring-[#355AFF]', 'rounded-xl', 'transition-all', 'duration-500');
+								setTimeout(() => targetElement.classList.remove('ring-2', 'ring-[#355AFF]', 'rounded-xl'), 2000);
 							}, 100);
 						}
 					}
@@ -46,12 +50,12 @@ onMounted(() => {
 	<div class="min-h-screen w-full bg-white dark:bg-[#121422] transition-colors duration-200 font-['Inter'] pb-12">
 		<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
 
-			<!-- Return to Listing Button -->
+			<!-- Return to Listing Button  -->
 			<RouterLink
-					:to="{ name: 'listing', params: { id: props.id } }"
+					:to="{ name: 'listing', params: { id: listingId } }"
 					class="inline-flex items-center text-sm text-slate-500 dark:text-slate-400 hover:text-[#355AFF]
-														 dark:hover:text-[#355AFF] transition-colors mb-6 border border-slate-200 dark:border-slate-700 rounded-md
-														 px-4 py-2 bg-white dark:bg-[#121422] shadow-sm"
+                dark:hover:text-[#355AFF] transition-colors mb-6 border border-slate-200 dark:border-slate-700 rounded-md
+                px-4 py-2 bg-white dark:bg-[#121422] shadow-sm"
 			>
 				<span class="material-symbols-outlined text-[18px]! mr-1">arrow_back</span>
 				Return to Listing
@@ -68,13 +72,14 @@ onMounted(() => {
 			<!-- Reviews Container -->
 			<div v-if="reviews.length > 0" class="flex flex-col gap-6">
 				<template v-for="review in reviews" :key="review._id">
+					<!-- ID assigned for scrolling -->
 					<div :id="review._id">
 						<FullReviewCard :review="review" />
 					</div>
 				</template>
 			</div>
 
-			<!-- Empty State, idk how you got here bro :sob: -->
+			<!-- Empty State -->
 			<div v-else class="flex flex-col items-center justify-center py-20 text-center bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
 				<span class="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600 mb-3">rate_review</span>
 				<p class="text-slate-500 dark:text-slate-400 font-medium text-lg">No reviews found.</p>
