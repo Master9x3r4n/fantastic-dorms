@@ -11,6 +11,7 @@ import LoginView from "@/view/LoginView.vue";
 import WriteView from "@/view/WriteView.vue";
 import SettingsView from "@/view/SettingsView.vue";
 import AccountCreationView from "@/view/AccountCreationView.vue";
+import ListingSettingsView from "@/view/ListingSettingsView.vue";
 import { useAuthStore } from '@/auth';
 
 const router = createRouter({
@@ -147,6 +148,23 @@ const router = createRouter({
       component: AccountCreationView,
       meta: { search: false, loggedIn: false },
     },
+    {
+      path: "/listing-settings",
+      name: "listing-settings",
+      component: ListingSettingsView,
+      meta: { search: false, loggedIn: true },
+      props: true,
+      beforeEnter: async (to, from, next) => {
+        const auth = useAuthStore();
+        if (!auth.user)
+          await auth.fetchCurrentUser();
+
+        if (!auth.user)
+          return next('/login');
+        else
+          return next();
+      }
+    }
   ],
 })
 
