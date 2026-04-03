@@ -8,6 +8,8 @@ import ProfileService from '../../services/ProfileService.js';
 import ReviewTag from "@/components/write-review-content/ReviewTag.vue";
 import ThumbsContainer from '../thumbs-buttons/ThumbsContainer.vue';
 import OwnerReply from "@/components/side-cards/OwnerReply.vue";
+import BlueButton from '../page-buttons/BlueButton.vue';
+import ReplyReview from './ReplyReview.vue';
 
 const props = defineProps({
 	review: {
@@ -17,6 +19,7 @@ const props = defineProps({
 });
 
 const profile = ref(null);
+const showReview = ref(false);
 
 // only query for the profile data if the review is not anonymous
 if (!props.review.isAnonymous) {
@@ -122,10 +125,25 @@ const parsedBody = computed(() => {
 				:truncate="false"
 		/>
 
-		<!-- Thumbs :D -->
-		<div class="flex items-center gap-4 text-slate-500 dark:text-slate-400 pt-1">
-			<ThumbsContainer :score="review.score"/>
+		<div class="flex w-full justify-between items-center">
+			<!-- Thumbs :D -->
+			<div class="flex items-center gap-3.5 text-slate-500 dark:text-slate-400 pt-1">
+				<ThumbsContainer :score="review.score"/>
+			</div>
+
+			<!-- Reply Button -->
+			<BlueButton 
+			@click="showReview = !showReview"
+			class="font-medium text-[15px] text-white">
+				<template v-if="!showReview">
+					<span v-if="!review.content.reply">Reply</span>
+					<span v-else>Edit Reply</span>
+				</template>
+				<span v-else>Cancel</span>
+			</BlueButton>
 		</div>
+
+		<ReplyReview v-if="showReview"/>
 
 	</div>
 </template>
