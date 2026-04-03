@@ -138,6 +138,7 @@ class ProfileController {
 	async login(req, res) {
 		const username = req.body.username;
 		const password = req.body.password;
+		const rememberMe = req.body.rememberMe;
 
 		try {
 			const profile = await Profile.findOne({ username: username });
@@ -151,6 +152,11 @@ class ProfileController {
 						id: profile._id,
 						username: profile.username,
 					}
+
+					req.session.cookie.maxAge = 60 * 60 * 1000; // 1 hour
+
+					if (rememberMe)
+						req.session.cookie.maxAge *= 30 * 24; // 1 month (30 days)
 					
 					res.status(200).send(profile);
 				} else {
