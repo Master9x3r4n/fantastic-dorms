@@ -43,19 +43,13 @@ npm run dev
 npm run build
 ```
 
-### Setting up backend
+### Setting up backend and installing Dependencies for Sessions
 
 ```sh
 cd backend
-npm install express mongoose dotenv cors
+npm install
 ```
 
-### Installing Dependencies for Sessions
-
-```sh
-cd backend
-npm install express-session connect-mongo pinia
-```
 
 ### Conventional Commit Types
 
