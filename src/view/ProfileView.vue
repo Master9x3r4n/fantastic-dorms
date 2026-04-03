@@ -100,7 +100,7 @@ const paginatedReviews = computed(() => {
 
 const changePage = (page) => {
 	currentPage.value = page;
-	window.scrollTo({ top: 0, behavior: 'smooth' });
+	// window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 </script>
 
@@ -209,6 +209,7 @@ const changePage = (page) => {
 							:review="review.data.content.body"
 							:img="review.listing.media?.[0]"
 							:listingId="review.data.listingId"
+							:reviewId="review.data._id"
 					/>
 				</div>
 

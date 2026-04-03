@@ -7,7 +7,8 @@ const props = defineProps({
 	title: { type: String },
 	review: { type: String },
 	rating: { type: [Number, String] }, // Accepts both to handle '5.0' safely
-	listingId: { type: String }
+	listingId: { type: String },
+	reviewId: { type: String }
 })
 
 // Parse the Markdown body
@@ -19,11 +20,10 @@ const parsedReview = computed(() => {
 
 <template>
 	<RouterLink
-			:to="{name: 'listing', params: {id: listingId}}"
+			:to="{name: 'reviews', params: {id: listingId}, hash: `#${reviewId}`}"
 			class="flex flex-row justify-between items-center w-full p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] hover:shadow-md hover:border-[#355AFF]/50 dark:hover:border-[#355AFF]/50 transition-all duration-200 group cursor-pointer"
 	>
 		<div class="flex flex-row items-center gap-4 overflow-hidden w-full">
-
 			<!-- Thumbnail Image -->
 			<div
 					class="w-20 h-16 sm:w-24 sm:h-20 rounded-xl shrink-0 bg-cover bg-center border border-slate-100 dark:border-slate-800 bg-slate-100 dark:bg-slate-800 overflow-hidden relative"
