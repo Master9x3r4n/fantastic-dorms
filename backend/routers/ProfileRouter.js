@@ -4,10 +4,13 @@
 
 import express from 'express';
 import ProfileController from '../controllers/ProfileController.js';
+import requireAuth from '../middleware/requireAuth.js';
 const router = express.Router();
 
 router.get('/', ProfileController.findAll);
 router.get('/:username', ProfileController.find);
 router.post('/', ProfileController.create);
+router.put('/:username', requireAuth, ProfileController.update);
+router.delete('/:username', requireAuth, ProfileController.delete);
 
 export default router;

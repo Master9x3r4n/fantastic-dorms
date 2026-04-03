@@ -1,9 +1,14 @@
 <script setup>
+import {onMounted} from 'vue';
 import { RouterView, useRoute } from "vue-router";
 import PageFooter from "./components/footer/PageFooter.vue";
 import PageHeader from "@/components/header/PageHeader.vue";
+import { useAuthStore } from '@/auth';
 
 const route = useRoute();
+const auth = useAuthStore();
+onMounted(() => auth.fetchCurrentUser());
+
 </script>
 
 <template>

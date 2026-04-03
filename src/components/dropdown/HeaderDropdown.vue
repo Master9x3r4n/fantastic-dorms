@@ -1,31 +1,45 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/auth';
 import Dropdown from "@/components/dropdown/Dropdown.vue";
 import DarkModeSlider from "@/components/darkmode/DarkModeSlider.vue";
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
 import Divider from "@/components/divider/Divider.vue";
+
 const router = useRouter();
+const auth = useAuthStore();
 
 const info = ref({
 	username: '',
 	picture: ''
 });
-const data = JSON.parse(localStorage.getItem('USER'));
+
 const isLoggedIn = ref(false);
 
-if (data) {
-	isLoggedIn.value = true;
-	info.value.username = data.username;
-	info.value.picture = data.picture;
-} else {
-	isLoggedIn.value = false;
-}
+//Get user from session storage
+onMounted(async () => {
+	//const data = JSON.parse(localStorage.getItem('USER'));
+	if (!auth.user) {
+		await auth.fetchCurrentUser();
+	}
+	const data = auth.user;
 
-const logout = () => {
-	localStorage.removeItem('USER');
+	if (data) {
+		isLoggedIn.value = true;
+		info.value.username = data.username;
+		info.value.picture = data.picture;
+	} else {
+		isLoggedIn.value = false;
+	}
+});
+
+const logout = async () => {
+	//localStorage.removeItem('USER');
+	await auth.logout();
 	router.push('/login')
 }
+
 </script>
 
 <template>
@@ -59,7 +73,7 @@ const logout = () => {
 
 				<!-- Profile Link -->
 				<RouterLink
-					to="/profile"
+					:to='!isLoggedIn? "/login" : `/profile/${info.username}`'
 					class="flex items-center gap-3 p-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#1E1E1E] hover:text-[#355AFF] dark:hover:text-[#355AFF] transition-all duration-200 group"
 				>
 					<span class="material-symbols-outlined text-xl shrink-0 opacity-80 group-hover:opacity-100">
@@ -95,7 +109,10 @@ const logout = () => {
 					<span class="material-symbols-outlined text-xl shrink-0 opacity-80 group-hover:opacity-100">
 						logout
 					</span>
-					<span class="text-base font-medium">Sign out</span>
+					<span class="text-base font-medium">
+						<span v-if="isLoggedIn">Sign out</span>
+						<span v-else>Log in</span>
+					</span>
 				</a>
 			</div>
 		</template>

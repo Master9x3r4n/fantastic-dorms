@@ -8,7 +8,10 @@ import ThumbsContainer from '../thumbs-buttons/ThumbsContainer.vue';
 import OwnerReply from "@/components/side-cards/OwnerReply.vue";
 
 const props = defineProps({
-	review: {},
+	review: {
+		type: Object,
+		required: true
+	},
 	id: {
 		type: String,
 		default: "1"
@@ -17,31 +20,24 @@ const props = defineProps({
 
 const review = props.review;
 const profile = ref(null);
-ProfileService.find(review.username)
-    .then(res => {
-        profile.value = res.data;
-        // console.log('Profile:');
-        // console.log(profile.value);
-    })
-    .catch(error => {
-        console.log(`Error occurred retrieving profile data of user ${review.username} for review ${id}: ${error.message}`);
-    });
 
-const getOverallRating = (ratings) => {
-    let overall = 0;
-    for (let p in ratings) {
-        overall += ratings[p];
-        // console.log(ratings[p]);
-    }
-    return (overall/4).toFixed(1);
+// Only fetch profile data if the review is not anonymous
+if (!review.isAnonymous) {
+	ProfileService.find(review.username)
+			.then(res => {
+				profile.value = res.data;
+			})
+			.catch(error => {
+				console.log(`Error occurred retrieving profile data of user ${review.username} for review ${props.id}: ${error.message}`);
+			});
 }
 
-
-//TODO: REVMOVE THIS, THIS ONLY EXISTS FOR THE VIDEO BUT THE FOLLOWING CODE WILL BE TRASH
-const vote = ref(0);
-
-const updateVotes = (n) => {
-    vote.value = n;
+const getOverallRating = (ratings) => {
+	let overall = 0;
+	for (let p in ratings) {
+		overall += ratings[p];
+	}
+	return (overall/4).toFixed(1);
 }
 
 // Parse the Markdown body
@@ -56,22 +52,35 @@ const parsedBody = computed(() => {
 
 		<!-- Header Container -->
 		<div class="flex justify-between items-start mb-1">
-			<div v-if="profile">
-				<RouterLink :to="{name: 'profile', params: {id: review.username}}" class="hover:opacity-80 transition-opacity">
-					<div class="flex items-center gap-3">
-						<!-- Profile Icon -->
-						<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
-							<ProfileIcon :src="profile.picture" sizeClass="w-full h-full" iconSize="text-[24px]!"></ProfileIcon>
-						</div>
 
-						<!-- Name -->
-						<div>
-							<h3 class="font-bold text-slate-900 dark:text-white">{{ profile?.name.firstName + ' ' + profile?.name.lastName }}</h3>
-							<p class="text-sm text-slate-500 dark:text-slate-400 italic">- Reviews</p>
-						</div>
+			<!-- Anonymous User State -->
+			<div v-if="review.isAnonymous" class="flex items-center gap-3 cursor-default">
+				<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
+					<span class="material-symbols-outlined text-slate-400 text-2xl">person_off</span>
+				</div>
+				<div>
+					<div class="font-bold text-slate-900 dark:text-white">
+						Anonymous
 					</div>
-				</RouterLink>
+					<div class="text-sm text-slate-500 dark:text-slate-400 italic">Reviewer</div>
+				</div>
 			</div>
+
+			<!-- Known User State -->
+			<RouterLink v-else-if="profile" :to="{name: 'profile', params: {id: review.username}}" class="hover:opacity-80 transition-opacity">
+				<div class="flex items-center gap-3">
+					<!-- Profile Icon -->
+					<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
+						<ProfileIcon :src="profile.picture" sizeClass="w-full h-full" iconSize="text-[24px]!"></ProfileIcon>
+					</div>
+
+					<!-- Name -->
+					<div>
+						<h3 class="font-bold text-slate-900 dark:text-white">{{ profile?.name.firstName + ' ' + profile?.name.lastName }}</h3>
+						<p class="text-sm text-slate-500 dark:text-slate-400 italic">- Reviews</p>
+					</div>
+				</div>
+			</RouterLink>
 
 			<!-- Rating -->
 			<div class="flex items-center text-[#355AFF] text-2xl font-bold">
@@ -110,12 +119,11 @@ const parsedBody = computed(() => {
 				:truncate="true"
 		/>
 
-
 		<!-- Footer Container -->
 		<div class="w-full flex justify-between items-center mt-3 pt-4 border-t border-slate-100 dark:border-slate-700/50">
 			<!-- Show More -->
 			<div class="font-medium text-[15px] text-[#355AFF] hover:underline hover:opacity-80 transition-all">
-				<RouterLink :to="'/reviews/'+id">Show More</RouterLink>
+				<RouterLink :to="{ name: 'review', params: { id: review.listingId }, hash: '#' + id }">Show More</RouterLink>
 			</div>
 
 			<!-- Upvote -->

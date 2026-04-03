@@ -17,20 +17,24 @@ const props = defineProps({
 });
 
 const profile = ref(null);
-ProfileService.find(props.review.username)
-    .then(res => {
-        profile.value = res.data;
-    })
-    .catch(error => {
-        console.log(`Error retrieving profile \'${props.review.username}\': ${error.message}`)
-    });
+
+// only query for the profile data if the review is not anonymous
+if (!props.review.isAnonymous) {
+	ProfileService.find(props.review.username)
+			.then(res => {
+				profile.value = res.data;
+			})
+			.catch(error => {
+				console.log(`Error retrieving profile \'${props.review.username}\': ${error.message}`)
+			});
+}
 
 const getOverallRating = (ratings) => {
-    let overall = 0;
-    for (let p in ratings) {
-        overall += ratings[p];
-    }
-    return (overall/4).toFixed(1);
+	let overall = 0;
+	for (let p in ratings) {
+		overall += ratings[p];
+	}
+	return (overall/4).toFixed(1);
 }
 
 const parsedBody = computed(() => {
@@ -44,7 +48,22 @@ const parsedBody = computed(() => {
 
 		<!-- Header Container (Profile & Rating) -->
 		<div class="flex justify-between items-start">
-			<RouterLink :to="{name: 'profile', params: {id: review.username}}" class="hover:opacity-80 transition-opacity">
+
+			<!-- Anonymous User State -->
+			<div v-if="review.isAnonymous" class="flex items-center gap-3 cursor-default">
+				<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
+					<span class="material-symbols-outlined text-slate-400 text-2xl">person_off</span>
+				</div>
+				<div>
+					<div class="font-bold text-slate-900 dark:text-white">
+						Anonymous
+					</div>
+					<div class="text-sm text-slate-500 dark:text-slate-400 italic">Reviewer</div>
+				</div>
+			</div>
+
+			<!-- Known User State -->
+			<RouterLink v-else :to="{name: 'profile', params: {id: review.username}}" class="hover:opacity-80 transition-opacity">
 				<div class="flex items-center gap-3">
 					<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
 						<ProfileIcon :src="profile?.picture" sizeClass="w-full h-full" iconSize="text-[24px]!"></ProfileIcon>
@@ -58,6 +77,7 @@ const parsedBody = computed(() => {
 				</div>
 			</RouterLink>
 
+			<!-- Overall Rating -->
 			<div class="flex items-center text-[#355AFF] text-2xl font-bold">
 				<span class="material-symbols-outlined text-[28px]! mr-1 filled">star</span>
 				{{ getOverallRating(review.rating) }}

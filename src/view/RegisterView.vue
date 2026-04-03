@@ -66,8 +66,13 @@
 
 		ProfileService.create(data)
 			.then(res => {
-				localStorage.setItem('USER', JSON.stringify(res.data));
-				router.push('/')
+				//Create new profile
+				ProfileService.create(data).then(async () => {
+					await ProfileService.login({ username: data.username, password: data.password });
+					router.push('/');
+				});
+
+				//router.push('/')
 			})
 			.catch(err => {
 				console.log('An error occurred registering new Profile: ' + err.message);

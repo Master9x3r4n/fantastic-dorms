@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, onBeforeUnmount } from 'vue';
+import { ref, computed, watch, onBeforeUnmount, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import ToggleButton from "@/components/page-buttons/ToggleButton.vue"
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
@@ -10,6 +10,7 @@ import Divider from "@/components/divider/Divider.vue";
 import ListingService from "../services/ListingService.js";
 import ReviewService from "../services/ReviewService.js";
 import LivePreview from "@/components/write-review-content/LivePreview.vue";
+import { useAuthStore } from '@/auth';
 
 const props = defineProps({
 	id: { type: String, default: '' }
@@ -22,7 +23,17 @@ ListingService.find(props.id)
 	.catch(error => {
 		console.log(`Error retrieving listing: ${error.message}.`);
 	});
-const user = JSON.parse(localStorage.getItem('USER'));
+
+// Get user from session storage
+const user = ref(null)
+const auth = useAuthStore();
+onMounted(async () => {
+	//const user = JSON.parse(localStorage.getItem('USER'));
+	if (!auth.user) {
+		await auth.fetchCurrentUser();
+	}
+	user.value = auth.user;
+});
 
 // Listing page
 const router = useRouter();
@@ -92,7 +103,7 @@ const submitReview = () => {
 	
 	const newReview = {
 		listingId: props.id,
-		username: form.value.isAnonymous ? '< Anonymous >' : user.username,
+		username: user.value.username,
 		isAnonymous: form.value.isAnonymous,
 		content: {
 			title: form.value.title,
@@ -205,7 +216,7 @@ onBeforeUnmount(() => {
 				</div>
 
 				<!-- Anonymous Toggle -->
-				<div class="mb-6 bg-white dark:bg-[#121422] p-4 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm transition-colors duration-200">
+				<div v-if="user" class="mb-6 bg-white dark:bg-[#121422] p-4 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm transition-colors duration-200">
 					<div class="flex items-center justify-between mb-2">
 						<div>
 							<h3 class="font-semibold text-slate-900 dark:text-white text-sm">Post as Anonymous</h3>
@@ -248,7 +259,6 @@ onBeforeUnmount(() => {
 					/>
 
 					<!-- Photo Upload -->
-					<!-- NOT FUNCTIONAL YET -->
 					<UploadBox v-model="form.media"/>
 					
 					<!-- Ratings Box -->
@@ -333,6 +343,7 @@ onBeforeUnmount(() => {
 
 			<!-- Right Column: Live Preview (Hidden on small screens) -->
 			<LivePreview
+					v-if="user"
 					:is-anonymous="form.isAnonymous"
 					:user="user"
 					:overall-rating="overallRating"
