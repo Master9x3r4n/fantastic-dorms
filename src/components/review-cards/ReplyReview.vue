@@ -18,7 +18,6 @@ const handleReplySave = () => {
     } else {
         ReviewService.update(props.reviewId, {"content.reply": reply.value})
             .then(res => {
-                alert("Reply saved!")
                 console.log("Reply made: " + reply.value);
             })
             .catch(error => {
