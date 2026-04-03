@@ -117,21 +117,37 @@ const submitReview = () => {
 			location: form.value.rating.location
 		},
 		score: 0,
-		media: form.value.media,
+		// media: form.value.media,
 		tags: form.value.tags,
 		createdAt: Date.now()
 	};
 
+	// To submit images, the review object has to be collapsed into a FormData object
+	// POJOs can't store images; the more you know...
+	const intermediary = new FormData();
+	intermediary.append('content', JSON.stringify(newReview));
+	// intermediary.append('media', form.value.media);
+	// for (const m in form.value.media) {
+	// 	intermediary.append('media', m);
+	// }
+	form.value.media.forEach((file) => {
+		intermediary.append('media', file);
+	});
+
+	console.log(form.value.media);
+	console.log(intermediary);
+
 	submitting.value = true;
-	ReviewService.create(newReview)
-		.then(res => {
-			router.push(`/reviews/${res.data._id}`)
-		})
-		.catch(error => {
-			console.log(`Error creating review: ${error.message}.`);
-			submitting.value = false;
-			errorMessage.value = `Failed to create review. Please try again later.`;
-		});
+	// ReviewService.create(newReview)
+	ReviewService.create(intermediary)
+	.then(res => {
+		router.push(`/reviews/${res.data._id}`);
+	})
+	.catch(error => {
+		console.log(`Error creating review: ${error.message}.`);
+		submitting.value = false;
+		errorMessage.value = `Failed to create review. Please try again later.`;
+	});
 };
 
 // Watch for any changes to the imageFiles array
@@ -145,7 +161,7 @@ watch(() => form.value.media, (newFiles) => {
 		if (typeof url === 'string' && url.startsWith('blob:')) {
 			URL.revokeObjectURL(url)
 		}
-	})
+	});
 
 	// 2. GENERATE: Create new URLs for the current state of the array
 	previewUrls.value = newFiles.map(file => {
@@ -154,7 +170,9 @@ watch(() => form.value.media, (newFiles) => {
 			return URL.createObjectURL(file)
 		}
 		return file // Fallback for existing server image URLs
-	})
+	});
+
+	console.log(form.value.media);
 }, { deep: true }) // deep: true ensures we catch array mutations
 
 // 3. FINAL CLEANUP: Prevent memory leaks when navigating away from this component
