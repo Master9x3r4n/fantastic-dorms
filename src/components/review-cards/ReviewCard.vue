@@ -1,129 +1,199 @@
 <script setup>
+import { ref, computed } from 'vue';
+import { marked } from 'marked';
 import MediaContainer from '../carousel/MediaContainer.vue';
-import ThumbsButton from '../thumbs-buttons/ThumbsButton.vue';
-
-import {computed} from 'vue';
-import {profileData} from '@/assets/temp-data/profile-temp.js';
+import ProfileIcon from "@/components/profile/ProfileIcon.vue";
+import ProfileService from "../../services/ProfileService.js";
+import ThumbsContainer from '../thumbs-buttons/ThumbsContainer.vue';
+import OwnerReply from "@/components/side-cards/OwnerReply.vue";
 
 const props = defineProps({
-    reviewData: {
-        type: Object,
-        default: 
-        {
-            username: "",
-            content: {
-                "title": "Title of Review",
-                "description": "",
-                "reply": ""
-            },
-            rating: 4,
-            score: 0,
-            mediaSrcs: []
-        },
-    },
-    routeId: {
-        type: String,
-        default: "1"
-    }
+	review: {
+		type: Object,
+		required: true
+	},
+	id: {
+		type: String,
+		default: "1"
+	}
 })
 
-const profile = computed(() => profileData[props.reviewData.username]);
+const review = props.review;
+const profile = ref(null);
 
+// Only fetch profile data if the review is not anonymous
+if (!review.isAnonymous) {
+	ProfileService.find(review.username)
+			.then(res => {
+				profile.value = res.data;
+			})
+			.catch(error => {
+				console.log(`Error occurred retrieving profile data of user ${review.username} for review ${props.id}: ${error.message}`);
+			});
+}
+
+const getOverallRating = (ratings) => {
+	let overall = 0;
+	for (let p in ratings) {
+		overall += ratings[p];
+	}
+	return (overall/4).toFixed(1);
+}
+
+// Parse the Markdown body
+const parsedBody = computed(() => {
+	const rawText = props.review?.content?.body || "";
+	return marked.parse(rawText);
+});
 </script>
 
 <template>
-    <div class="flex flex-col justify-center items-center 
-    p-2 pb-4 gap-4.5 w-105.25 h-fit bg-white dark:bg-[#121422] dark:text-white">
-        <!-- Header Container -->
-        <div class="w-full flex justify-between items-center">
-            <RouterLink :to="{name: 'profile', params: {id: reviewData.username}}">
-            <div class="flex gap-3 items-center">
-                <!-- Profile -->
-                <div class="w-13 h-13 rounded-[50%] bg-amber-100 bg-gradient">
-                    <img :src="profile.profileImgSrc" width="52px" class="w-13 h-13 rounded-[50%]" 
-                    v-if="profile.profileImgSrc">
-                </div>
-                
-                <!-- Name -->
-                <div>
-                    <div class="font-medium text-[20px] leading-6">{{ profile.name }}</div>
-                    <div class="font-normal leading-5 italic">{{ profile.reviewData.reviews.length }} Reviews</div>
-                </div>
-            </div>
-            </RouterLink>
+	<div class="bg-white dark:bg-[#121422] border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm p-6 w-full transition-colors duration-200 flex flex-col gap-3">
 
-            <!-- Rating -->
-            <div class="flex justify-between items-center w-3/12 px-2">
-                <img src="@\assets\rating-assets\star-full.svg" width="28px">
-                <div class="font-bold text-3xl leading-10">{{ reviewData.rating.toFixed(1) }}</div>
-            </div>
-        </div>
+		<!-- Header Container -->
+		<div class="flex justify-between items-start mb-1">
 
-        <!-- Title Container -->
-        <div class="w-full h-[14%] flex items-center font-bold leading-8 text-2xl">
-            <slot name = "review-title">{{ reviewData.content.title }}</slot>
-        </div>
+			<!-- Anonymous User State -->
+			<div v-if="review.isAnonymous" class="flex items-center gap-3 cursor-default">
+				<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
+					<span class="material-symbols-outlined text-slate-400 text-2xl">person_off</span>
+				</div>
+				<div>
+					<div class="font-bold text-slate-900 dark:text-white">
+						Anonymous
+					</div>
+					<div class="text-sm text-slate-500 dark:text-slate-400 italic">Reviewer</div>
+				</div>
+			</div>
 
-        <!-- Comment Container -->
-        <div class="h-[56%] flex flex-col">
-            <!-- Review Container -->
-            <div class="w-full text-[16px] leading-6 grow flex">
-                <!-- Review proper -->
-                <div>
-                    <slot name="review">
-                        I have stayed at this apartment for a while, and let me say, it is as the name says. 
-                        It's a really cool apartment and it has a lot of the amenities 
-                        that a student would want from...
-                    </slot>
-                </div>
+			<!-- Known User State -->
+			<RouterLink v-else-if="profile" :to="{name: 'profile', params: {id: review.username}}" class="hover:opacity-80 transition-opacity">
+				<div class="flex items-center gap-3">
+					<!-- Profile Icon -->
+					<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
+						<ProfileIcon :src="profile.picture" sizeClass="w-full h-full" iconSize="text-[24px]!"></ProfileIcon>
+					</div>
 
-                <!-- Media -->
-                <div class="shrink-0 ml-2 relative">
-                    <div class="absolute bg-white dark:bg-[#111111] p-auto pl-1 rounded-full size-6 top-16 right-2 text-[14px] dark:text-white">+3</div>
-                    <MediaContainer size="small"/>
-                </div>
+					<!-- Name -->
+					<div>
+						<h3 class="font-bold text-slate-900 dark:text-white">{{ profile?.name.firstName + ' ' + profile?.name.lastName }}</h3>
+						<p class="text-sm text-slate-500 dark:text-slate-400 italic">- Reviews</p>
+					</div>
+				</div>
+			</RouterLink>
 
-            </div>
+			<!-- Rating -->
+			<div class="flex items-center text-[#355AFF] text-2xl font-bold">
+				<span class="material-symbols-outlined text-[28px]! mr-1 filled">star</span>
+				{{ getOverallRating(review.rating) }}
+			</div>
+		</div>
 
-            <!-- CHANGE THIS TO CONDITIONAL SLOTTING -->
-            <template v-if="$slots.ownerReply"> 
-            <!-- Reply Container -->
-            <div class="w-full h-[50%] mt-3">
-                <div class="bg-[#D9D9D9] dark:bg-[#111111] h-full rounded-3xl 
-                flex flex-col justify-center items-center p-5 gap-1.25">
-                    <div class="italic text-left w-full text-[14px] leading-6">
-                        Reply from the owner
-                    </div>
-                    <div class="w-full text-[16px] leading-6">
-                        <slot name="ownerReply"></slot>
-                    </div>
-                </div>
-            </div>
-            </template>
-        </div>
+		<!-- Title Container -->
+		<h2 class="text-2xl font-bold text-slate-900 dark:text-white truncate mt-1">
+			{{ review.content.title }}
+		</h2>
 
-        <!-- Footer Container -->
-        <div class="w-full h-[16%] flex justify-between items-center mt-1">
-            <!-- Show More -->
-            <div class="font-semibold underline text-[16px] leading-6">
-                <RouterLink :to="'/reviews/'+routeId">Show More</RouterLink>
-            </div>
+		<!-- Comment Container -->
+		<div class="flex w-full text-slate-800 dark:text-slate-300">
+			<!-- Review proper (Markdown Output) -->
+			<div class="w-full editor-output pr-2 overflow-hidden" style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;">
+				<div v-html="parsedBody"></div>
+			</div>
 
-            <!-- Upvote -->
-            <div class="italic font-normal text-[16px] leading-6 flex items-center justify-around gap-2">
-                <ThumbsButton direction="up"/>
-                <div>{{ reviewData.score }}</div>
-                <ThumbsButton direction="down"/>
-            </div>
-        </div>
+			<!-- Media -->
+			<div class="shrink-0 ml-4 relative" v-if="review.media && review.media.length > 0">
+				<!-- Dynamic Remaining Images Badge -->
+				<div v-if="review.media.length > 1" class="absolute bg-white/90 backdrop-blur-sm dark:bg-[#111111]/90 flex items-center justify-center rounded-full size-7 top-1 right-1 text-[12px] font-bold shadow-sm dark:text-white z-10 border border-slate-200 dark:border-slate-700">
+					+{{ review.media.length - 1 }}
+				</div>
+				<!-- First Image injected into MediaContainer -->
+				<MediaContainer size="small" :src="review.media[0]" />
+			</div>
+		</div>
 
-    </div>
+		<!-- Reply Container -->
+		<OwnerReply
+				v-if="review.content.reply"
+				:replyText="review.content.reply"
+				:truncate="true"
+		/>
+
+		<!-- Footer Container -->
+		<div class="w-full flex justify-between items-center mt-3 pt-4 border-t border-slate-100 dark:border-slate-700/50">
+			<!-- Show More -->
+			<div class="font-medium text-[15px] text-[#355AFF] hover:underline hover:opacity-80 transition-all">
+				<RouterLink :to="{ name: 'review', params: { id: review.listingId }, hash: '#' + id }">Show More</RouterLink>
+			</div>
+
+			<!-- Upvote -->
+			<div class="text-slate-500 dark:text-slate-400 flex items-center gap-2">
+				<ThumbsContainer :score="review.score"/>
+			</div>
+		</div>
+
+	</div>
 </template>
 
 <style scoped>
-
-.bg-gradient {
-    background: linear-gradient(99.9deg, #74b2fd 1.35%, #517FFF 99.48%);
+/* Base Markdown formatting exactly matching FullReviewCard */
+.editor-output :deep(p) {
+	margin-bottom: 0.5rem;
+}
+.editor-output :deep(b), .editor-output :deep(strong) {
+	font-weight: 700;
+}
+.editor-output :deep(i), .editor-output :deep(em) {
+	font-style: italic;
+}
+.editor-output :deep(u) {
+	text-decoration: underline;
+}
+.editor-output :deep(strike), .editor-output :deep(del) {
+	text-decoration: line-through;
 }
 
+/* Lists */
+.editor-output :deep(ul) {
+	list-style-type: disc;
+	padding-left: 1.5rem;
+	margin-top: 0.25rem;
+	margin-bottom: 0.25rem;
+}
+.editor-output :deep(ol) {
+	list-style-type: decimal;
+	padding-left: 1.5rem;
+	margin-top: 0.25rem;
+	margin-bottom: 0.25rem;
+}
+
+/* Headings */
+.editor-output :deep(h2) {
+	font-size: 1.25em;
+	font-weight: 700;
+	margin-top: 1rem;
+	margin-bottom: 0.5rem;
+	line-height: 1.2;
+}
+.editor-output :deep(h3) {
+	font-size: 1.125em;
+	font-weight: 600;
+	margin-top: 1rem;
+	margin-bottom: 0.5rem;
+	line-height: 1.2;
+}
+
+/* Blockquote */
+.editor-output :deep(blockquote) {
+	border-left: 3px solid #cbd5e1; /* Tailwind slate-300 */
+	padding-left: 1rem;
+	margin-top: 0.5rem;
+	margin-bottom: 0.5rem;
+	font-style: italic;
+	color: #64748b; /* Tailwind slate-500 */
+}
+.dark .editor-output :deep(blockquote) {
+	border-left-color: #475569; /* Tailwind slate-600 */
+	color: #94a3b8; /* Tailwind slate-400 */
+}
 </style>

@@ -10,7 +10,7 @@ const props = defineProps({
     },
     reviewCount: {
         type: Number,
-        default: 32
+        default: 0
     }
 })
 

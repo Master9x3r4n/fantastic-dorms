@@ -43,6 +43,14 @@ npm run dev
 npm run build
 ```
 
+### Setting up backend and installing Dependencies for Sessions
+
+```sh
+cd backend
+npm install
+```
+
+
 ### Conventional Commit Types
 
 | **Type**       | **Purpose** |

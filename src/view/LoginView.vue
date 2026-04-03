@@ -1,17 +1,57 @@
 <script setup>
-import { ref } from 'vue';
-import Divider from "@/components/divider/Divider.vue";
+  import { ref } from 'vue';
+  import { useRouter } from 'vue-router';
+  import { useAuthStore } from '@/auth';
+  import Divider from "@/components/divider/Divider.vue";
+  import ProfileService from "../services/ProfileService";
+	import PasswordToggleButton from "@/components/page-buttons/PasswordToggleButton.vue";
+  const router = useRouter();
+  const auth = useAuthStore();
 
-// State for password visibility toggle
-const showPassword = ref(false);
+  // Form-related stuff
+  // https://test-utils.vuejs.org/guide/essentials/forms
+  const processing = ref(false);
+  const invalid = ref(false);
+  const form = ref({
+    username: '',
+    password: '',
+    rememberMe: false
+  });
 
-const togglePassword = () => {
-  showPassword.value = !showPassword.value;
-};
+  const loginForm = ref(null);
+  const isFormValid = ref(false);
+  const checkFormValidity = () => {
+    isFormValid.value = loginForm.value?.checkValidity();
+  }
+
+  const login = () => {
+    processing.value = true;
+
+    ProfileService.login({ 
+      username: form.value.username, 
+      password: form.value.password,
+      rememberMe: form.value.rememberMe
+    })
+    .then(res => {
+      auth.user = res.data;
+      router.push('/');
+    })
+    .catch(error => {
+      console.log(error);
+      processing.value = false;
+      invalid.value = true;
+    });
+  }
+
+  // State for password visibility toggle
+  const showPassword = ref(false);
+  const togglePassword = () => {
+    showPassword.value = !showPassword.value;
+  };
 </script>
 
 <template>
-  <div class="flex min-h-screen bg-white dark:bg-[#111111] transition-colors duration-200">
+  <div class="flex min-h-screen bg-white dark:bg-[#121422] transition-colors duration-200 font-['Inter']">
 
     <!-- Left Side -->
     <div class="hidden lg:flex lg:w-1/2 bg-gradient p-12 flex-col justify-center text-white relative overflow-hidden">
@@ -28,28 +68,42 @@ const togglePassword = () => {
     </div>
 
     <!-- Right Side: Form -->
-    <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white dark:bg-[#111111] transition-colors duration-200">
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white dark:bg-[#121422] transition-colors duration-200">
       <div class="max-w-md w-full">
 
         <!-- Header -->
-        <div class="mb-10 text-center lg:text-left">
-          <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-2 transition-colors">Login</h2>
-          <p class="text-slate-500 dark:text-slate-400 transition-colors">We're glad to have you back!</p>
+        <div class="mb-5 text-center lg:text-left">
+          <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-2 transition-colors">Log into your account</h2>
+          <!-- <p class="text-slate-500 dark:text-slate-400 transition-colors">We're glad to have you back!</p> -->
         </div>
 
         <!-- Form -->
-        <form action="#" class="space-y-6" method="POST" @submit.prevent>
-
-          <!-- Email -->
+        <form ref="loginForm" action="#" class="space-y-6" method="POST" @submit.prevent="login" @input="checkFormValidity">
+          <!-- Errors -->
+          <div 
+            class="bg-red-200 dark:bg-red-300 border-l-5 border-red-500 dark:border-red-900 p-3 rounded-r-lg"
+            v-if="invalid"
+          >
+            <div class="flex flex-row gap-2">
+              <span class="text-red-900 material-symbols-outlined text-xl select-none">error</span>
+              <!-- <svg class="h-12 w-12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={4} stroke="currentColor" className="size-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+              </svg> -->
+              <p class="text-red-900">Invalid credentials</p>
+            </div>
+          </div>
+          
+          <!-- Username -->
           <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1 transition-colors" for="email">Email Address</label>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1 transition-colors" for="username">Username</label>
             <input
                 class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1E1E1E] text-slate-900 dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
-                id="email"
-                name="email"
-                placeholder="you@university.edu"
+                id="username"
+                name="username"
+                placeholder="really_good_username"
                 required
-                type="email"
+                type="text"
+                v-model="form.username"
             />
           </div>
 
@@ -64,29 +118,62 @@ const togglePassword = () => {
                   name="password"
                   placeholder="••••••••"
                   required
+                  v-model="form.password"
               />
-              <button
-                  @click="togglePassword"
-                  class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 focus:outline-none"
-                  type="button"
-              >
-                <span class="material-symbols-outlined text-xl select-none">
-                  {{ showPassword ? 'visibility' : 'visibility_off' }}
-                </span>
-              </button>
+              <PasswordToggleButton v-model="showPassword" />
             </div>
-            <p class="mt-1.5 text-xs text-slate-400 dark:text-slate-500 transition-colors">Minimum 8 characters with at least one number.</p>
+            <!-- <p class="mt-1.5 text-xs text-slate-400 dark:text-slate-500 transition-colors">Minimum 8 characters with at least one number.</p> -->
+          </div>
+
+          <!-- Remember Me -->
+          <div>
+            <div class="flex items-center justify-between">
+              <div class="flex">
+                <input
+                  id="remember-me"
+                  name="remember-me"
+                  type="checkbox"
+                  v-model="form.rememberMe"
+                  class="h-4 w-4 rounded border-slate-300 text-[#355AFF] focus:ring-[#355AFF] dark:border-slate-700 dark:bg-[#1E1E1E] transition-all cursor-pointer"
+                />
+                <label for="remember-me" class="ml-2 block text-sm text-slate-700 dark:text-slate-300 cursor-pointer select-none">
+                  Remember me
+                </label>
+              </div>
+              
+              <div class="text-sm">
+                <a href="#" class="font-medium text-[#355AFF] hover:text-[#2a48cc] transition-colors">
+                  Forgot password?
+                </a>
+              </div>
+            </div>
           </div>
 
           <!-- Submit Button -->
-          <RouterLink to="/">
+          <!-- <RouterLink to="/">
+            <button
+                class="w-full bg-[#355AFF] hover:bg-[#2b4bcc] text-white font-semibold py-3.5 px-4 rounded-lg shadow-lg shadow-[#355AFF]/20 transition-all transform active:scale-[0.99]"
+                type="submit"
+            >
+              Login
+            </button>
+          </RouterLink> -->
           <button
-              class="w-full bg-[#355AFF] hover:bg-[#2b4bcc] text-white font-semibold py-3.5 px-4 rounded-lg shadow-lg shadow-[#355AFF]/20 transition-all transform active:scale-[0.99]"
+              :disabled="!isFormValid || processing"
+              class="
+                w-full bg-[#355AFF] hover:bg-[#2b4bcc] text-white 
+                disabled:bg-gray-300 disabled:hover:bg-gray-200 disabled:dark:bg-gray-800 disabled:dark:hover:bg-gray-700 disabled:shadow-transparent
+                font-semibold py-3.5 px-4 rounded-lg shadow-lg shadow-[#355AFF]/20 transition-all transform active:scale-[0.99]
+              "
               type="submit"
           >
-            Login
+            <div v-if="!processing">
+              Login
+            </div>
+            <div v-else>
+              Processing...
+            </div>
           </button>
-          </RouterLink>
 
           <p class="text-center text-slate-600 dark:text-slate-400 text-sm transition-colors">
             Don't have an account?
@@ -108,7 +195,6 @@ const togglePassword = () => {
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0');
-
 
 .bg-gradient {
   background: linear-gradient(-90deg, rgba(0, 0, 0, 0) 0%, #355AFF 27.7%);

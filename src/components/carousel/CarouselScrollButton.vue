@@ -1,51 +1,48 @@
 <script setup>
-    const props = defineProps({
-        direction: {
-            type: String,
-            default: "left"
-        },
-        spacing: {
-            type: Number,
-            default: 5
-        },
-        adjust: {
-            type: String,
-            default: "small"
-        }
-    })
+const props = defineProps({
+	direction: {
+		type: String,
+		default: "left"
+	},
+	spacing: {
+		type: Number,
+		default: 5
+	},
+	adjust: {
+		type: String,
+		default: "small"
+	}
+})
 </script>
 
 <template>
-    <button 
-    class="border-none rounded-[50%] flex justify-center items-center top-6/12 w-full
-    font-bold p-0 absolute text-center
-    text-white text-shadow-lg"
-    :style="{ [direction === 'left' ? 'left' : 'right']: `${spacing * 0.25}rem` }"
-    :class="props.adjust">
-        <div class="h-full w-full flex text-center items-center justify-center absolute">
-            <span v-if="direction === 'left'">
-                <img src="@/assets/carousel-assets/caret-left.svg" width="48px" alt="<" class="drop-shadow-2xl">
-            </span>
-            <span v-else>
-                <img src="@/assets/carousel-assets/caret-right.svg" width="48px" alt=">" class="drop-shadow-2xl">
-            </span>
-        </div>
-    </button>
+	<button
+			class="border-none rounded-full flex justify-center items-center font-bold p-0 text-white shadow-lg relative cursor-pointer"
+			:style="{ [direction === 'left' ? 'marginLeft' : 'marginRight']: `${spacing * 0.25}rem` }"
+			:class="props.adjust"
+	>
+		<span class="material-symbols-outlined block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 drop-shadow-md select-none">
+			{{ direction === 'left' ? 'chevron_left' : 'chevron_right' }}
+		</span>
+	</button>
 </template>
 
 <style scoped>
 @reference "tailwindcss";
 
 .circular {
-    @apply bg-blue-500;
+	@apply bg-blue-500 hover:bg-blue-600 transition-colors;
 }
 
 .small {
-    @apply size-7 text-2xl;
+	width: 28px;
+	height: 28px;
+	@apply text-xl;
 }
 
 .large {
-    @apply size-12 text-4xl;
+	width: 48px;
+	height: 48px;
+	@apply text-3xl;
 }
-
 </style>

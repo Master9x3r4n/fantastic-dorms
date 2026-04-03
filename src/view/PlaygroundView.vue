@@ -13,10 +13,15 @@
     import FilterButton from '@/components/page-buttons/FilterButton.vue';
     import ListingInformation from '@/components/listing-content/ListingInformation.vue';
     import DarkModeSlider from '@/components/darkmode/DarkModeSlider.vue';
-    import PageButtons from "@/components/page-buttons/PageButtons.vue";
+    import SkeletonApCardSmall from '@/components/skeleton/SkeletonApCardSmall.vue';
+    import SkeletonApCardLarge from '@/components/skeleton/SkeletonApCardLarge.vue';
+    import SkeletonOverallRating from '@/components/skeleton/SkeletonOverallRating.vue';
+    import SkeletonReviewCard from '@/components/skeleton/SkeletonReviewCard.vue';
+    import SkeletonFullReview from '@/components/skeleton/SkeletonFullReview.vue';
+    import Divider from '@/components/divider/Divider.vue';
 
-    import {ref} from 'vue'
-
+    import {ref, computed} from 'vue'
+    
     const items= [1, 2, 3, 4, 5]
 
     const ratings = [
@@ -39,6 +44,7 @@
     ]
 
     const selectedItems = ref([])
+
 </script>
 
 <template>
@@ -48,6 +54,18 @@
         <div class="flex gap-4">
             <DarkModeButton />
             <DarkModeSlider />
+        </div>
+    </TestContainer>
+
+    <TestContainer dir ="col" class="gap-4">
+        <TestLabel>Loading Components</TestLabel>
+        <SkeletonApCardSmall/>
+        <SkeletonApCardLarge/>
+        <SkeletonOverallRating/>
+        <SkeletonReviewCard/>
+
+        <div class="w-[75%] flex flex-col">
+            <SkeletonFullReview/>
         </div>
     </TestContainer>
 

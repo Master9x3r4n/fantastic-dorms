@@ -1,0 +1,135 @@
+[
+    {
+        "listingId": "the-daily-bugle",
+        "username": "casey_c",
+        "isAnonymous": false,
+        "content": {
+            "title": "Le Grand Apartment",
+            "body": "## An Absolute Gem\nOne of my **favorite** places ever. I am glad that I decided to visit this place.\n\n> \"A true home away from home.\"\n\nHere is why I loved it:\n* Great ambiance\n* <u>Superb</u> cleanliness\n* Friendly staff",
+            "reply": "Glad to hear that you were satisfied with our space! ^_^"
+        },
+        "rating": {
+            "cleanliness": 4,
+            "comfort": 5,
+            "communication": 4,
+            "location": 3
+        },
+        "score": 67,
+        "media": [
+            "https://i.pinimg.com/1200x/d5/05/c6/d505c6a645efe6a0dd42898d18d083b1.jpg",
+            "https://i.pinimg.com/736x/e7/bd/62/e7bd624679d8a12e8b46c387fc078011.jpg"
+        ],
+        "tags": ["Great Ambiance", "Clean", "Friendly Staff"],
+        "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+        "listingId": "the-daily-bugle",
+        "username": "jlee_99",
+        "isAnonymous": false,
+        "content": {
+            "title": "My review",
+            "body": "### Highly Recommended!\n**Absolutely Grand!** That is *all* I have to say for this wonderful place.\n\n1. Check-in was a breeze\n2. Amenities were ~~okay~~ fantastic!\n3. The view is <u>unbeatable</u>",
+            "reply": ""
+        },
+        "rating": {
+            "cleanliness": 4,
+            "comfort": 5,
+            "communication": 5,
+            "location": 4
+        },
+        "score": 52,
+        "media": [
+            "https://i.pinimg.com/736x/1a/ff/7c/1aff7cd2aacfd19af23577e70cc992c4.jpg"
+        ],
+        "tags": ["Great View", "Good Amenities"],
+        "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+        "listingId": "the-future-foundation",
+        "username": "casey_c",
+        "isAnonymous": false,
+        "content": {
+            "title": "Fantastic For Us",
+            "body": "## Student Paradise\nI have stayed at this apartment for a while, and let me say, it is **as the name says**.\n\nIt's a *really cool* apartment and it has a lot of the amenities that a student would want:\n* Fast Wi-Fi\n* Study desks\n* <u>Quiet environment</u>\n\n> Perfect for cramming before finals!",
+            "reply": "Glad to hear that you were satisfied with our space! ^_^"
+        },
+        "rating": {
+            "cleanliness": 3,
+            "comfort": 5,
+            "communication": 5,
+            "location": 4
+        },
+        "score": 44,
+        "media": [
+            "https://i.pinimg.com/736x/66/36/1a/66361a1adddb3da9da42b2e2dfe3b26a.jpg",
+            "https://i.pinimg.com/1200x/d5/05/c6/d505c6a645efe6a0dd42898d18d083b1.jpg"
+        ],
+        "tags": ["Student Friendly", "Fast Wi-Fi", "Quiet"],
+        "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+        "listingId": "the-future-foundation",
+        "username": "tmorgan_med",
+        "isAnonymous": false,
+        "content": {
+            "title": "I Love it!",
+            "body": "### Starstruck!\nEasy **4 stars** 4 me. I even got to meet the *Human Torch*!\n\n~~Boring~~ **Fantastic!**\n\nThings that stood out:\n1. The location\n2. The <u>heroic</u> encounters",
+            "reply": "Happy to hear that!"
+        },
+        "rating": {
+            "cleanliness": 5,
+            "comfort": 5,
+            "communication": 4,
+            "location": 4
+        },
+        "score": 44,
+        "media": [],
+        "tags": ["Great Location"],
+        "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+        "listingId": "miros-house",
+        "username": "jlee_99",
+        "isAnonymous": false,
+        "content": {
+            "title": "Cool ig",
+            "body": "## Underwhelming Experience\nHonestly, not *too* bad, but just very **mid**.\n\n> I didn't even get to see Miro. Fuck.\n\nThings to improve:\n* Communication\n* Better directions\n\nOverall: ~~Great~~ <u>Disappointing</u>.",
+            "reply": ""
+        },
+        "rating": {
+            "cleanliness": 2,
+            "comfort": 3,
+            "communication": 2,
+            "location": 2
+        },
+        "score": 7,
+        "media": [
+            "https://i.pinimg.com/736x/e7/bd/62/e7bd624679d8a12e8b46c387fc078011.jpg"
+        ],
+        "tags": ["Mid", "Poor Communication"],
+        "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+        "listingId": "miros-house",
+        "username": "casey_c",
+        "isAnonymous": false,
+        "content": {
+            "title": "Very very meh",
+            "body": "### False Advertising\nMiro wasn't even there and the apartment **does not match** what was advertised.\n\nIt is driving me *insane*.\n\nIssues encountered:\n1. Missing amenities\n2. <u>Unresponsive</u> host\n3. ~~Clean~~ Dirty floors",
+            "reply": ""
+        },
+        "rating": {
+            "cleanliness": 1,
+            "comfort": 5,
+            "communication": 1,
+            "location": 1
+        },
+        "score": 5,
+        "media": [
+            "https://i.pinimg.com/736x/1a/ff/7c/1aff7cd2aacfd19af23577e70cc992c4.jpg",
+            "https://i.pinimg.com/736x/66/36/1a/66361a1adddb3da9da42b2e2dfe3b26a.jpg"
+        ],
+        "tags": ["False Advertising", "Unresponsive Host", "Dirty"],
+        "createdAt": "2026-01-01T00:00:00Z"
+    }
+]

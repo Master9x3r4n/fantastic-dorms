@@ -13,13 +13,17 @@
 		}
 	}
 
-    const darkMode = ref(false) // ref for dark mode toggle
-	const iconSrc = ref(theme.light) // ref for current theme
+	//get theme preference from local storage
+	const savedPreference = localStorage.getItem('DARK_PREFERENCE');
+    const darkMode = ref(savedPreference !== null ? JSON.parse(savedPreference): false);
+
+	const iconSrc = ref(darkMode.value ? theme.dark : theme.light) // ref for current theme
 
 	// Trigger dark mode call back when darkMode boolean is changed
     watch(darkMode, (enabled) => {
 		iconSrc.value = darkMode.value ? theme.dark : theme.light;
         document.documentElement.classList.toggle('dark', enabled)
+		localStorage.setItem('DARK_PREFERENCE', JSON.stringify(enabled));
     })
 
 	// Callback function to toggle dark mode

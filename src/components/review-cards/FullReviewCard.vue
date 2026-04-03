@@ -1,115 +1,194 @@
 <script setup>
+import { ref, computed } from 'vue';
+import { marked } from 'marked';
 import Carousel from '../carousel/Carousel.vue';
 import MediaContainer from '../carousel/MediaContainer.vue';
-import ThumbsButton from '../thumbs-buttons/ThumbsButton.vue';
-
-import {computed} from 'vue';
-import {profileData} from '@/assets/temp-data/profile-temp.js';
+import ProfileIcon from "@/components/profile/ProfileIcon.vue";
+import ProfileService from '../../services/ProfileService.js';
+import ReviewTag from "@/components/write-review-content/ReviewTag.vue";
+import ThumbsContainer from '../thumbs-buttons/ThumbsContainer.vue';
+import OwnerReply from "@/components/side-cards/OwnerReply.vue";
 
 const props = defineProps({
-    reviewData: {
-        type: Object,
-        default: 
-        {
-            username: "casey_c",
-            content: {
-                "title": "Title of Review",
-                "description": "",
-                "reply": ""
-            },
-            rating: 4,
-            score: 0,
-            mediaSrcs: []
-        },
-    }
-})
+	review: {
+		type: Object,
+		required: true
+	}
+});
 
-const profile = computed(() => profileData[props.reviewData.username]);
+const profile = ref(null);
 
+// only query for the profile data if the review is not anonymous
+if (!props.review.isAnonymous) {
+	ProfileService.find(props.review.username)
+			.then(res => {
+				profile.value = res.data;
+			})
+			.catch(error => {
+				console.log(`Error retrieving profile \'${props.review.username}\': ${error.message}`)
+			});
+}
+
+const getOverallRating = (ratings) => {
+	let overall = 0;
+	for (let p in ratings) {
+		overall += ratings[p];
+	}
+	return (overall/4).toFixed(1);
+}
+
+const parsedBody = computed(() => {
+	const rawText = props.review?.content?.body || "I have stayed at this apartment for a while, and let me say, it is as the name says...";
+	return marked.parse(rawText);
+});
 </script>
 
 <template>
-    <!-- 1120 x 769 h-228 -->
-    <div class="w-295 h-fit p-5 flex flex-col items-center justify-center gap-6.5
-    bg-white dark:bg-[#121422] dark:text-white">
-        <!-- Header Container -->
-        <div class="w-full flex justify-between items-center ">
-            <RouterLink :to="{name: 'profile', params: {id: reviewData.username}}">
-            <div class="flex gap-3 items-center">
-                <!-- Profile -->
-                <div class="w-13 h-13 rounded-[50%] bg-blue-300 bg-gradient">
-                    <img :src="profile.profileImgSrc" width="52px" class="w-13 h-13 rounded-[50%]" 
-                    v-if="profile.profileImgSrc">
-                </div>
+	<div class="bg-white dark:bg-[#121422] border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm p-6 transition-colors duration-200 flex flex-col gap-5">
 
-                <!-- Name -->
-                <div>
-                    <div class="font-medium text-[20px] leading-6">{{ profile.name }}</div>
-                    <div class="font-normal leading-5 italic">{{ profile.reviewData.reviews.length }} Reviews</div>
-                </div>
-            </div>
-            </RouterLink>
+		<!-- Header Container (Profile & Rating) -->
+		<div class="flex justify-between items-start">
 
-            <!-- Rating -->
-            <div class="flex justify-between items-center w-[8%] text-center">
-                <img src="@\assets\rating-assets\star-full.svg" width="36px">
-                <div class="font-bold text-3xl leading-10">{{ reviewData.rating.toFixed(1) }}</div>
-            </div>
-        </div>
+			<!-- Anonymous User State -->
+			<div v-if="review.isAnonymous" class="flex items-center gap-3 cursor-default">
+				<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
+					<span class="material-symbols-outlined text-slate-400 text-2xl">person_off</span>
+				</div>
+				<div>
+					<div class="font-bold text-slate-900 dark:text-white">
+						Anonymous
+					</div>
+					<div class="text-sm text-slate-500 dark:text-slate-400 italic">Reviewer</div>
+				</div>
+			</div>
 
-        <!-- Title Container -->
-        <div class="w-full h-[8%] flex items-center font-bold leading-8 text-4xl pl-2 pr-2">
-            <slot name = "review-title">Title of Review</slot>
-        </div>
+			<!-- Known User State -->
+			<RouterLink v-else :to="{name: 'profile', params: {id: review.username}}" class="hover:opacity-80 transition-opacity">
+				<div class="flex items-center gap-3">
+					<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
+						<ProfileIcon :src="profile?.picture" sizeClass="w-full h-full" iconSize="text-[24px]!"></ProfileIcon>
+					</div>
+					<div>
+						<div class="font-bold text-slate-900 dark:text-white">
+							{{ profile?.name?.firstName ? (profile.name.firstName + ' ' + profile.name.lastName) : review.username }}
+						</div>
+						<div class="text-sm text-slate-500 dark:text-slate-400 italic">- Reviews</div>
+					</div>
+				</div>
+			</RouterLink>
 
-        <!-- Comment Container -->
-        <div class="flex flex-col justify-center grow gap-4 w-286 m-0">
-            <!-- Review Container -->
-            <div class="w-[99%] text-[20px] leading-6 grow pl-3 pr-3">
-                <slot name="review-content">
-                    I have stayed at this apartment for a while, and let me say, it is as the name says. 
-                    It's a really cool apartment and it has a lot of the amenities 
-                    that a student would want from...
-                </slot>
-            </div>
+			<!-- Overall Rating -->
+			<div class="flex items-center text-[#355AFF] text-2xl font-bold">
+				<span class="material-symbols-outlined text-[28px]! mr-1 filled">star</span>
+				{{ getOverallRating(review.rating) }}
+			</div>
+		</div>
 
-            <!-- Carousel Container -->
-            <div class="mt-3 h-[47%] flex w-full justify-center items-center">
-                <Carousel :count="4" buttonStyling="large" :buttonSpacing="4">
-                <template #content>
-                    <template v-for="i in 10">
-                        <div class="flex shrink-0 snap-start pl-2 pr-2">
-                            <MediaContainer size="medium"/>
-                        </div>
-                    </template>
-                </template>
-                </Carousel>
-            </div>
+		<!-- Content Container -->
+		<div class="flex flex-col gap-3">
+			<!-- Main Title -->
+			<div class="text-2xl font-bold text-slate-900 dark:text-white wrap-break-word">
+				{{ review.content.title }}
+			</div>
 
-            <!-- Reply Container -->
-            <div v-if="$slots.ownerReply && $slots.ownerReply !== ''" class="w-full h-[23%] mt-3 pl-2 pr-2">
-                <div class="bg-[#D9D9D9] dark:bg-[#111111] h-full rounded-3xl
-                flex flex-col justify-start items-center p-5.5 gap-1.25">
-                    <div class="italic text-left w-full text-[14px] leading-6">
-                        Reply from the owner
-                    </div>
-                    <div class="w-full text-[16px] leading-6">
-                        <slot name="ownerReply"></slot>
-                    </div>
-                </div>
-            </div>
-        </div>
+			<!-- Review Body -->
+			<div class="text-slate-800 dark:text-slate-300 wrap-break-word min-h-16 editor-output">
+				<div v-html="parsedBody"></div>
+			</div>
+		</div>
 
-        <!-- Footer Container -->
-        <div class="w-full h-[7%] flex justify-start items-center pl-2 pr-2">
-            <!-- Upvote -->
-            <div class="italic font-normal text-[16px] leading-6 flex items-center justify-around gap-2">
-                <ThumbsButton direction="up"/>
-                <div><slot name="score">0</slot></div>
-                <ThumbsButton direction="down"/>
-            </div>
-        </div>
+		<!-- Tags -->
+		<div v-if="review.tags && review.tags.length > 0">
+			<ReviewTag :tags="review.tags"></ReviewTag>
+		</div>
 
-    </div>
+		<!-- Media Carousel -->
+		<div v-if="review.media && review.media.length > 0" class="h-[47%] flex w-full justify-center items-center">
+			<Carousel :count="4" buttonStyling="small circular" :buttonSpacing="4">
+				<template #content>
+					<template v-for="(url, index) in review.media" :key="index">
+						<div class="flex shrink-0 snap-start pl-2 pr-2">
+							<MediaContainer size="medium" :src="url" :alt="'Upload preview ' + index" class="border-2 border-dashed border-slate-400 dark:border-slate-200"/>
+						</div>
+					</template>
+				</template>
+			</Carousel>
+		</div>
 
+		<!-- Owner Reply Component -->
+		<OwnerReply
+				v-if="review.content.reply"
+				:replyText="review.content.reply"
+				:truncate="false"
+		/>
+
+		<!-- Thumbs :D -->
+		<div class="flex items-center gap-4 text-slate-500 dark:text-slate-400 pt-1">
+			<ThumbsContainer :score="review.score"/>
+		</div>
+
+	</div>
 </template>
+
+<style scoped>
+/* Base formatting */
+.editor-output :deep(p) {
+	margin-bottom: 0.5rem;
+}
+.editor-output :deep(b), .editor-output :deep(strong) {
+	font-weight: 700;
+}
+.editor-output :deep(i), .editor-output :deep(em) {
+	font-style: italic;
+}
+.editor-output :deep(u) {
+	text-decoration: underline;
+}
+.editor-output :deep(strike), .editor-output :deep(del) {
+	text-decoration: line-through;
+}
+
+/* Lists */
+.editor-output :deep(ul) {
+	list-style-type: disc;
+	padding-left: 1.5rem;
+	margin-top: 0.25rem;
+	margin-bottom: 0.25rem;
+}
+.editor-output :deep(ol) {
+	list-style-type: decimal;
+	padding-left: 1.5rem;
+	margin-top: 0.25rem;
+	margin-bottom: 0.25rem;
+}
+
+/* Headings */
+.editor-output :deep(h2) {
+	font-size: 1.25em;
+	font-weight: 700;
+	margin-top: 1rem;
+	margin-bottom: 0.5rem;
+	line-height: 1.2;
+}
+.editor-output :deep(h3) {
+	font-size: 1.125em;
+	font-weight: 600;
+	margin-top: 1rem;
+	margin-bottom: 0.5rem;
+	line-height: 1.2;
+}
+
+/* Blockquote */
+.editor-output :deep(blockquote) {
+	border-left: 3px solid #cbd5e1; /* Tailwind slate-300 */
+	padding-left: 1rem;
+	margin-top: 0.5rem;
+	margin-bottom: 0.5rem;
+	font-style: italic;
+	color: #64748b; /* Tailwind slate-500 */
+}
+.dark .editor-output :deep(blockquote) {
+	border-left-color: #475569; /* Tailwind slate-600 */
+	color: #94a3b8; /* Tailwind slate-400 */
+}
+</style>

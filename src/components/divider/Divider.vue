@@ -1,5 +1,5 @@
 <script setup>
 </script>
 <template>
-<div class="border-b-2 border-[#C5C5C5] dark:border-[#3C4583] w-full my-2 transition-colors duration-200"></div>
+<div class="my-3 border-t border-slate-200 dark:border-slate-700 transition-colors w-full"></div>
 </template>
