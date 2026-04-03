@@ -63,8 +63,8 @@ class ReviewController {
 		try {
 			let count = 0;
 			for (const media of rawMedia) {
-				console.log('--- #' + count);
-				console.log(media);
+				// console.log('--- #' + count);
+				// console.log(media);
 				if (count >= MAX_MEDIA_COUNT)
 					break;
 
@@ -84,8 +84,8 @@ class ReviewController {
 				count++;
 			}
 
-			console.log('Uploaded media:');
-			console.log(uploadedMedia);
+			// console.log('Uploaded media:');
+			// console.log(uploadedMedia);
 
 			review.media = uploadedMedia;
 			const response = await new Review(review).save();

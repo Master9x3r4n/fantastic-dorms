@@ -75,7 +75,7 @@ const handleSave = () => {
         ...listing.value,
         newImages: newImageFiles.value
     };
-    console.log('Saving Listing Data:', payload);
+    // console.log('Saving Listing Data:', payload);
     alert("Listing updated successfully!");
 };
 </script>

@@ -46,6 +46,7 @@ onMounted(async () => {
 
 // Handlers
 const handleProfileSave = ({ formData, newImageFile }) => {
+	//TODO: AFTER FINISHING THE BACKEND, REMOVE THE CONSOLE.LOGS
 	console.log('Saving profile data...', formData);
 	if (newImageFile) {
 		console.log('New image ready to be uploaded to server:', newImageFile.name);

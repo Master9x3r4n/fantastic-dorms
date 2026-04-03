@@ -134,8 +134,8 @@ const submitReview = () => {
 		intermediary.append('media', file);
 	});
 
-	console.log(form.value.media);
-	console.log(intermediary);
+	// console.log(form.value.media);
+	// console.log(intermediary);
 
 	submitting.value = true;
 	// ReviewService.create(newReview)
@@ -173,7 +173,7 @@ watch(() => form.value.media, (newFiles) => {
 		return file // Fallback for existing server image URLs
 	});
 
-	console.log(form.value.media);
+	// console.log(form.value.media);
 }, { deep: true }) // deep: true ensures we catch array mutations
 
 // 3. FINAL CLEANUP: Prevent memory leaks when navigating away from this component
