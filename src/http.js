@@ -1,7 +1,9 @@
 import axios from "axios";
 const port = import.meta.env.VITE_PORT;
 
-axios.defaults.withCredentials = true; //bruh i cant believe miro was hiding this line of code from me -
+axios.defaults.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+axios.defaults.withCredentials = true; 
+
 const api = axios.create({
     baseURL: `http://localhost:${port}/api`,
     headers: {

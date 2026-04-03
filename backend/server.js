@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:5173', 
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
   credentials: true
 }));
 app.use(express.json());
@@ -39,10 +39,15 @@ app.use(session({
   cookie: { 
     maxAge: 1000 * 60 * 60, //* 24, // Cookie lasts for 1 day
     httpOnly: true, // Security: prevents frontend JS from stealing the cookie
-    secure: false, // Must be false for localhost
-    sameSite: 'lax'
-  }
+    secure: process.env.NODE_ENV === 'production', // Must be false for localhost
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+  },
+  proxy: process.env.NODE_ENV === 'production',
 }));
+
+if (process.env.NODE_ENV === 'production') {
+    app.set('trust proxy', 1); 
+}
 
 // Database routers
 import AuthRouter from './routers/AuthRouter.js';
