@@ -1,6 +1,7 @@
 <script setup>
 import Divider from '../divider/Divider.vue';
 import Icon from '../icon/Icon.vue';
+import BlueButton from '../page-buttons/BlueButton.vue';
 
 const props = defineProps({
 	listing: {
@@ -24,9 +25,17 @@ const props = defineProps({
 
 		<!-- Header Section: Title & Address -->
 		<div class="flex flex-col gap-2">
-			<h1 class="font-bold text-3xl md:text-4xl text-slate-900 dark:text-white tracking-tight">
-				{{ listing.name }}
-			</h1>
+			<div class="flex w-full justify-between">
+				<h1 class="font-bold text-3xl md:text-4xl text-slate-900 dark:text-white tracking-tight">
+					{{ listing.name }}
+				</h1>
+				<RouterLink :to="{ name: 'listing-settings' }">
+					<BlueButton class="flex items-center gap-2 px-4 py-2">
+						<span class="material-symbols-outlined text-white text-[18px]">edit_square</span>
+						<span class="font-medium text-[15px] text-white">Edit</span>
+					</BlueButton>
+				</RouterLink>
+			</div>
 			<div class="flex items-center gap-2 text-slate-500 dark:text-slate-400">
 				<span class="material-symbols-outlined text-[20px]">location_on</span>
 				<p class="italic text-base md:text-lg">
