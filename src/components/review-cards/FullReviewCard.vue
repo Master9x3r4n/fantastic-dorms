@@ -125,6 +125,7 @@ const parsedBody = computed(() => {
 				:truncate="false"
 		/>
 
+		<!-- Owner Reply Field -->
 		<ReplyReview 
 		v-if="showReview"
 		@closeReview="showReview = false"
@@ -141,7 +142,7 @@ const parsedBody = computed(() => {
 			v-if="!showReview"
 			@click="showReview = !showReview"
 			class="font-medium text-[15px] text-white">
-				<span v-if="!review.content.reply">Reply</span>
+				<span v-if="!review.content.reply">Add Reply</span>
 				<span v-else>Edit Reply</span>
 			</BlueButton>
 		</div>
