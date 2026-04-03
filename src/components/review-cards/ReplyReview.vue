@@ -15,8 +15,6 @@ const handleReplySave = () => {
     // Validation check for reply length
 	if (isReplyInvalid.value) {
 		alert(`Your reply is ${replyCharacterCount.value} characters long, which exceeds the 200 character limit. Please shorten it before saving.`);
-	} else if (replyCharacterCount.value <= 0) {
-        alert("Reply field is empty");
     } else {
         ReviewService.update(props.reviewId, {"content.reply": reply.value})
             .then(res => {
