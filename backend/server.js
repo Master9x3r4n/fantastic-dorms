@@ -65,9 +65,9 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected."))
   .catch(err => console.log("Connection error:", err));
 
-app.get('/', (req, res) => {
-  res.send('Japan is turning footsteps into electricty');
-});
+// app.get('/', (req, res) => {
+//   res.send('Japan is turning footsteps into electricty');
+// });
 
 //connect vue frontend
 app.use(express.static(join(__dirname, '../dist')));
