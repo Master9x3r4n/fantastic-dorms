@@ -141,7 +141,8 @@ const submitReview = () => {
 	// ReviewService.create(newReview)
 	ReviewService.create(intermediary)
 	.then(res => {
-		router.push(`/reviews/${res.data._id}`);
+		// this
+		router.push(`/reviews/${newReview.listingId}#${res.data._id}`);
 	})
 	.catch(error => {
 		console.log(`Error creating review: ${error.message}.`);
