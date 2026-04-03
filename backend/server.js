@@ -27,6 +27,12 @@ cloudinary.config({
   secure: true
 });
 
+app.use(express.static(join(__dirname, '../dist')));
+
+app.get('*', (req, res) => {
+  res.sendFile(join(__dirname, '../dist', 'index.html'));
+});
+
 // Setting up sessions
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
