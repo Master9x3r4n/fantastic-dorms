@@ -22,7 +22,7 @@
     "express-session": "^1.19.0",
     "js-sha3": "^0.9.3",
     "mongoose": "^9.3.3",
-    "multer": "^2.1.1"
+    "multer": "^2.1.1",
     "pinia": "^3.0.4"
   }
 }
