@@ -16,7 +16,8 @@ export const useAuthStore = defineStore('auth', {
       try {
         const { data } = await api.get('/auth/me');
         this.user = data.user;
-      } catch (err) { this.user = null; 
+      } catch (err) { 
+        this.user = null; 
         console.log('fetchCurrentUser error:', err.response);
       }
     }
