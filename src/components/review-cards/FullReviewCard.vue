@@ -133,17 +133,18 @@ const parsedBody = computed(() => {
 
 			<!-- Reply Button -->
 			<BlueButton 
+			v-if="!showReview"
 			@click="showReview = !showReview"
 			class="font-medium text-[15px] text-white">
-				<template v-if="!showReview">
-					<span v-if="!review.content.reply">Reply</span>
-					<span v-else>Edit Reply</span>
-				</template>
-				<span v-else>Cancel</span>
+				<span v-if="!review.content.reply">Reply</span>
+				<span v-else>Edit Reply</span>
 			</BlueButton>
 		</div>
 
-		<ReplyReview v-if="showReview"/>
+		<ReplyReview 
+		v-if="showReview"
+		@closeReview="showReview = false"
+		/>
 
 	</div>
 </template>

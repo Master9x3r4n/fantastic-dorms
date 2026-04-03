@@ -1,7 +1,8 @@
 <script setup>
 
-import { ref, computed } from "vue";
+import { ref, computed, defineEmits } from "vue";
 
+const emit = defineEmits(['closeReview']);
 const reply = ref("");
 const replyCharacterCount = computed(() => reply.value?.length || 0);
 const isReplyInvalid = computed(() => replyCharacterCount.value > 200);
@@ -47,6 +48,12 @@ const handleReplySave = () => {
 
     <!-- Action Buttons -->
     <div class="flex justify-end gap-4 border-slate-100 dark:border-slate-800">
+        <button 
+        @click="emit('closeReview')"
+        type="button" 
+        class="text-slate-500 dark:text-slate-400 px-4 py-2 text-sm font-medium hover:text-slate-900 dark:hover:text-white transition-colors">
+            Cancel
+        </button>
         <button type="submit" class="bg-[#355AFF] hover:bg-[#2b4bcc] text-white px-6 py-2 rounded-md text-sm font-medium transition-colors shadow-sm">
             Save
         </button>
