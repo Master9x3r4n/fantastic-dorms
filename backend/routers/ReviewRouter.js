@@ -11,7 +11,7 @@ const upload = multer({ dest: 'buffer/' });
 router.get('/', ReviewController.findAll);
 router.get('/:id', ReviewController.find);
 router.post('/', upload.array('media', 4), ReviewController.create);
-router.patch('/', ReviewController.update);
+router.patch('/:id', ReviewController.update);
 router.delete('/:id', ReviewController.delete);
 
 export default router;

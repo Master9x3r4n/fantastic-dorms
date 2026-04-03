@@ -1,8 +1,12 @@
 <script setup>
 
+import ReviewService from "@/services/ReviewService";
 import { ref, computed, defineEmits } from "vue";
 
-const emit = defineEmits(['closeReview']);
+const props = defineProps({
+    reviewId: {type: String}
+})
+const emit = defineEmits(['closeReview', 'rerouteLink']);
 const reply = ref("");
 const replyCharacterCount = computed(() => reply.value?.length || 0);
 const isReplyInvalid = computed(() => replyCharacterCount.value > 200);
@@ -14,11 +18,17 @@ const handleReplySave = () => {
 	} else if (replyCharacterCount.value <= 0) {
         alert("Reply field is empty");
     } else {
-        alert("Reply saved!")
-        console.log("Reply made: " + reply.value);
-        //MAKE REPLY OVER HERE
+        ReviewService.update(props.reviewId, {"content.reply": reply.value})
+            .then(res => {
+                alert("Reply saved!")
+                console.log("Reply made: " + reply.value);
+            })
+            .catch(error => {
+                console.log(`Error retrieving review \'${props.reviewId}\': ${error.message}`)
+            });
 
         emit('closeReview');
+        emit('rerouteLink', reply.value);
     }
 }
 </script>

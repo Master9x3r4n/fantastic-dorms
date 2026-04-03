@@ -10,6 +10,10 @@ import ThumbsContainer from '../thumbs-buttons/ThumbsContainer.vue';
 import OwnerReply from "@/components/side-cards/OwnerReply.vue";
 import BlueButton from '../page-buttons/BlueButton.vue';
 import ReplyReview from './ReplyReview.vue';
+import { useRoute, useRouter } from 'vue-router'
+
+const route = useRoute()
+const router = useRouter()
 
 const props = defineProps({
 	review: {
@@ -44,6 +48,12 @@ const parsedBody = computed(() => {
 	const rawText = props.review?.content?.body || "I have stayed at this apartment for a while, and let me say, it is as the name says...";
 	return marked.parse(rawText);
 });
+
+const rerouteTo = (reply) => {
+	props.review.content.reply = reply;
+	router.push({ name: 'reviews', params: { id: route.params.id }, hash: '#' + props.review._id });
+	//window.location.reload();
+}
 </script>
 
 <template>
@@ -128,7 +138,9 @@ const parsedBody = computed(() => {
 		<!-- Owner Reply Field -->
 		<ReplyReview 
 		v-if="showReview"
+		:reviewId="review._id"
 		@closeReview="showReview = false"
+		@rerouteLink="rerouteTo"
 		/>
 
 		<div class="flex w-full justify-between items-center">
