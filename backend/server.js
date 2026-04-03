@@ -65,15 +65,20 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected."))
   .catch(err => console.log("Connection error:", err));
 
-// app.get('/', (req, res) => {
-//   res.send('Japan is turning footsteps into electricty');
-// });
-
+  
 //connect vue frontend
-app.use(express.static(join(__dirname, '../dist')));
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(join(__dirname, '../dist')));
+  
+  app.get('/{*path}', (req, res) => {
+    res.sendFile(join(__dirname, '../dist', 'index.html'));
+  });
 
-app.get('/{*path}', (req, res) => {
-  res.sendFile(join(__dirname, '../dist', 'index.html'));
-});
+//local frontend
+} else {    
+  app.get('/', (req, res) => {
+    res.send('Japan is turning footsteps into electricty');
+  });
+}
 
 app.listen(PORT, () => console.log(`[Server started on port ${PORT}]`));
