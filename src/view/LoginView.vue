@@ -14,7 +14,8 @@
   const invalid = ref(false);
   const form = ref({
     username: '',
-    password: ''
+    password: '',
+    rememberMe: false
   });
 
   const loginForm = ref(null);
@@ -28,7 +29,8 @@
 
     ProfileService.login({ 
       username: form.value.username, 
-      password: form.value.password 
+      password: form.value.password,
+      rememberMe: form.value.rememberMe
     })
     .then(res => {
       auth.user = res.data;
@@ -121,6 +123,30 @@
               <PasswordToggleButton v-model="showPassword" />
             </div>
             <!-- <p class="mt-1.5 text-xs text-slate-400 dark:text-slate-500 transition-colors">Minimum 8 characters with at least one number.</p> -->
+          </div>
+
+          <!-- Remember Me -->
+          <div>
+            <div class="flex items-center justify-between">
+              <div class="flex">
+                <input
+                  id="remember-me"
+                  name="remember-me"
+                  type="checkbox"
+                  v-model="form.rememberMe"
+                  class="h-4 w-4 rounded border-slate-300 text-[#355AFF] focus:ring-[#355AFF] dark:border-slate-700 dark:bg-[#1E1E1E] transition-all cursor-pointer"
+                />
+                <label for="remember-me" class="ml-2 block text-sm text-slate-700 dark:text-slate-300 cursor-pointer select-none">
+                  Remember me
+                </label>
+              </div>
+              
+              <div class="text-sm">
+                <a href="#" class="font-medium text-[#355AFF] hover:text-[#2a48cc] transition-colors">
+                  Forgot password?
+                </a>
+              </div>
+            </div>
           </div>
 
           <!-- Submit Button -->
