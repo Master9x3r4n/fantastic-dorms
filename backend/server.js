@@ -4,7 +4,7 @@ import cors from 'cors';
 import { v2 as cloudinary } from 'cloudinary';
 
 import dotenv from 'dotenv';
-import path from 'path';
+import path, { join } from 'path';
 import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
@@ -25,12 +25,6 @@ cloudinary.config({
   hide_sensitive: true,
   private_cdn: false,
   secure: true
-});
-
-app.use(express.static(join(__dirname, '../dist')));
-
-app.get('*', (req, res) => {
-  res.sendFile(join(__dirname, '../dist', 'index.html'));
 });
 
 // Setting up sessions
@@ -73,6 +67,13 @@ mongoose.connect(process.env.MONGO_URI)
 
 app.get('/', (req, res) => {
   res.send('Japan is turning footsteps into electricty');
+});
+
+//connect vue frontend
+app.use(express.static(join(__dirname, '../dist')));
+
+app.get('*', (req, res) => {
+  res.sendFile(join(__dirname, '../dist', 'index.html'));
 });
 
 app.listen(PORT, () => console.log(`[Server started on port ${PORT}]`));
