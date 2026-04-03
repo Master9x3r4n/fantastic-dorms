@@ -123,7 +123,7 @@ const parsedBody = computed(() => {
 		<div class="w-full flex justify-between items-center mt-3 pt-4 border-t border-slate-100 dark:border-slate-700/50">
 			<!-- Show More -->
 			<div class="font-medium text-[15px] text-[#355AFF] hover:underline hover:opacity-80 transition-all">
-				<RouterLink :to="{ name: 'review', params: { id: review.listingId }, hash: '#' + id }">Show More</RouterLink>
+				<RouterLink :to="{ name: 'reviews', params: { id: review.listingId }, hash: '#' + id }">Show More</RouterLink>
 			</div>
 
 			<!-- Upvote -->

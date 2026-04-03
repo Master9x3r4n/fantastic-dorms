@@ -98,7 +98,7 @@ onMounted(async () => {
 						<!-- Show All Reviews Button (Only appears if there are more than 3 reviews) -->
 						<RouterLink
 								v-if="reviews.length > 3"
-								:to="{ name: 'review', params: { id: listingId } }"
+								:to="{ name: 'reviews', params: { id: listingId } }"
 								class="w-full mt-2"
 						>
 							<button class="w-full py-3 px-4 bg-white dark:bg-[#121422] border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm">

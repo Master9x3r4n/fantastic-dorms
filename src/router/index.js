@@ -101,14 +101,11 @@ const router = createRouter({
     },
     {
       path: "/reviews",
-      name: "reviews",
-      component: ReviewsView,
-      meta: { search: true, loggedIn: true },
-      props: true,
+      redirect: "/",
     },
     {
       path: "/reviews/:id",
-      name: "review",
+      name: "reviews",
       component: ReviewsView,
       meta: { search: true, loggedIn: true },
       props: true,
