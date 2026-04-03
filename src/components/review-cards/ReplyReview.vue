@@ -14,7 +14,11 @@ const handleReplySave = () => {
 	} else if (replyCharacterCount.value <= 0) {
         alert("Reply field is empty");
     } else {
-        console.log("Reply made: " + reply.value)
+        alert("Reply saved!")
+        console.log("Reply made: " + reply.value);
+        //MAKE REPLY OVER HERE
+
+        emit('closeReview');
     }
 }
 </script>
