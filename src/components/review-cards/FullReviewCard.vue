@@ -1,15 +1,15 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { marked } from 'marked';
-import Carousel from '../carousel/Carousel.vue';
-import MediaContainer from '../carousel/MediaContainer.vue';
+import Carousel from '@/components/carousel/Carousel.vue';
+import MediaContainer from '@/components/carousel/MediaContainer.vue';
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
-import ProfileService from '../../services/ProfileService.js';
+import ProfileService from '@/services/ProfileService.js';
 import ReviewTag from "@/components/write-review-content/ReviewTag.vue";
-import ThumbsContainer from '../thumbs-buttons/ThumbsContainer.vue';
+import ThumbsContainer from '@/components/thumbs-buttons/ThumbsContainer.vue';
 import OwnerReply from "@/components/side-cards/OwnerReply.vue";
-import BlueButton from '../page-buttons/BlueButton.vue';
-import ReplyReview from './ReplyReview.vue';
+import BlueButton from '@/components/page-buttons/BlueButton.vue';
+import ReplyReview from '@/components/review-cards/ReplyReview.vue';
 import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()

@@ -1,75 +1,170 @@
 <script setup>
 import ApartmentCardLarge from '@/components/apartment-cards/ApartmentCardLarge.vue';
-
-import { useRoute } from 'vue-router';
-import {computed} from 'vue';
-
-const props = defineProps({
-    searchResults: {
-        type: Array,
-        default: [
-        {
-            name: "Grand Apartment", 
-            description: "A very grand, beautiful, and luxurious apartment that features multiple rooms and doors. A must stay for the holidays.",
-            ratingData: {
-                rating: 4.5,
-                reviewCount: 124,
-            },
-            imageSrc: "https://youre.outof.games/media/uploads/cb/da/cbda1bb4-ee0d-4c65-989f-05a24edd22cf/daily-bugle-featured-location.jpg",
-            routerLink: "/listing/1",
-        },
-        {
-            name: "The Baxter Suite",
-            description: "Inspired by the heroes of the Fantastic Four, this beautiful deluxe suite features 4 bedrooms and a visit from Galactus. It's Fantastic.",
-            ratingData: {
-                rating: 4,
-                reviewCount: 44,
-            },
-            imageSrc: "https://static0.cbrimages.com/wordpress/wp-content/uploads/2020/09/rsz-baxter-buildingv1.jpg",
-            routerLink: "/listing/2",
-        },
-        {
-            name: "Miro's House",
-            description: "Freshly doxxed, Miro's house is a beautiful home that features Miro.",
-            ratingData: {
-                rating: 3.5,
-                reviewCount: 67,
-            },
-            imageSrc: "https://static.wikitide.net/peppafanonwiki/thumb/e/ee/Peppa%27s_house_updated.webp/800px-Peppa%27s_house_updated.webp.png",
-            routerLink: "/listing/3",
-        },
-        ]
-    }
-})
+import FilterDropdown from "@/components/dropdown/FilterDropdown.vue";
+import {computed, onMounted, ref, watch} from 'vue';
+import {useRoute} from 'vue-router';
+import ListingService from '@/services/ListingService.js';
+import ReviewService from '@/services/ReviewService.js';
 
 const route = useRoute();
-const searchQuery = computed(() => route.query.q);
+const searchQuery = computed(() => route.query.q || "");
 
+const searchResults = ref([]); // This holds the "raw" search results
+const activeFilters = ref({
+	minRating: 0,
+	amenities: []
+});
+const isLoading = ref(true);
+
+const handleFilterUpdate = (newFilters) => {
+	activeFilters.value = newFilters;
+};
+
+const fetchSearchResults = async () => {
+	isLoading.value = true;
+	try {
+		// Fetch all listings from the backend
+		const response = await ListingService.findAll();
+		let listings = response.data;
+
+		// Filter listings locally if there is a search query
+		if (searchQuery.value) {
+			const query = searchQuery.value.toLowerCase();
+			listings = listings.filter(listing =>
+					listing.name?.toLowerCase().includes(query) ||
+					listing.address?.toLowerCase().includes(query) ||
+					listing.description?.toLowerCase().includes(query)
+			);
+		}
+
+		// Map listings to the format expected by ApartmentCardLarge
+		searchResults.value = await Promise.all(listings.map(async (listing) => {
+
+			// Calculate average rating from the rating object
+			let avgRating = 0;
+			if (listing.rating) {
+				const validCategories = ['cleanliness', 'comfort', 'communication', 'location'];
+				let sum = 0;
+				let count = 0;
+
+				for (const category of validCategories) {
+					if (typeof listing.rating[category] === 'number') {
+						sum += listing.rating[category];
+						count++;
+					}
+				}
+				if (count > 0) avgRating = sum / count;
+			}
+
+			// Fetch reviews for this specific listing to get the review count
+			let reviewCount = 0;
+			try {
+				const reviewsRes = await ReviewService.findAllFromListing(listing.listingId);
+				reviewCount = reviewsRes.data?.length || 0;
+			} catch (err) {
+				console.error(`Failed to fetch reviews for ${listing.listingId}:`, err);
+			}
+
+			return {
+				name: listing.name,
+				description: listing.description,
+				ratingData: {
+					rating: Number(avgRating.toFixed(1)),
+					reviewCount: reviewCount
+				},
+				imageSrc: listing.media && listing.media.length > 0 ? listing.media[0] : "",
+				routerLink: `/listing/${listing.listingId}`,
+				amenities: listing.amenities || []
+			};
+		}));
+
+	} catch (err) {
+		console.error("Error fetching search results:", err.message);
+	} finally {
+		isLoading.value = false;
+	}
+};
+
+const filteredResults = computed(() => {
+	return searchResults.value.filter(listing => {
+		// 1. Filter by Rating
+		if (listing.ratingData.rating < activeFilters.value.minRating) return false;
+
+		// 2. Filter by Amenities (Checks if listing has ALL selected amenities)
+		if (activeFilters.value.amenities.length > 0) {
+			const hasAllAmenities = activeFilters.value.amenities.every(
+					amenity => (listing.amenities || []).includes(amenity)
+			);
+			if (!hasAllAmenities) return false;
+		}
+
+		return true; // Keep listing
+	});
+});
+
+// Fetch results when the component first mounts
+onMounted(() => {
+	fetchSearchResults();
+});
+
+// Re-fetch if the search query in the URL changes
+watch(() => route.query.q, () => {
+	fetchSearchResults();
+});
 </script>
 
 <template>
-<div class="flex justify-center w-full font-['Inter']">
-    <div class="flex flex-col justify-around gap-8 m-7 w-fit">
-        <!-- Body Header -->
-        <div class="w-full flex justify-between items-center px-2">
-            <!-- Search Result -->
-            <div class="font-light text-[20px] italic leading-6 dark:text-white">Found {{ searchResults.length }} results for “{{ searchQuery }}”</div>
+	<div class="min-h-screen w-full transition-colors duration-200 font-['Inter']">
+		<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
 
-            <!-- Filter Button -->
-            <div class="flex justify-center items-center py-1 px-3.75 border-2 rounded-[40px]
-            leading-5 text-[#355AFF] border-[#355AFF]">
-                ⏬ Filter
-            </div>
-        </div>
+			<!-- Header Section -->
+			<div class="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 pb-6 border-b border-slate-200 dark:border-slate-800">
+				<div class="flex flex-col">
+					<!-- Dynamic Title -->
+					<h1 class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">
+						{{ searchQuery ? 'Search Results' : 'All Properties' }}
+					</h1>
+					<p class="text-slate-500 dark:text-slate-400 mt-1 text-sm md:text-base">
+						<template v-if="searchQuery">
+							Found {{ filteredResults.length }} results for <span class="font-semibold text-[#355AFF]">"{{ searchQuery }}"</span>
+						</template>
+						<template v-else>
+							Displaying {{ filteredResults.length }} propert{{ filteredResults.length === 1 ? 'y' : 'ies' }}
+						</template>
+					</p>
+				</div>
 
-        <!-- Body Content -->
-        <div class="h-fit w-full flex flex-col gap-8">
-            <template v-for="i in searchResults">
-            <div>
-            <ApartmentCardLarge :cardData="i"/>
-            </div>
-            </template>
-        </div>
-    </div>
-</div>
+				<!-- Filter Button -->
+				<FilterDropdown :listings="searchResults" @update:filters="handleFilterUpdate" />
+			</div>
+
+			<!-- Loading State -->
+			<div v-if="isLoading" class="flex justify-center items-center py-32">
+				<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#355AFF]"></div>
+			</div>
+
+			<!-- Body Content -->
+			<div v-else-if="filteredResults.length > 0" class="flex flex-col gap-6 md:gap-8">
+				<template v-for="(item, index) in filteredResults" :key="index">
+					<ApartmentCardLarge :cardData="item"/>
+				</template>
+			</div>
+
+			<!-- Empty State -->
+			<div v-else class="flex flex-col items-center justify-center py-20 text-center bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700 mt-4">
+				<span class="material-symbols-outlined text-6xl text-slate-300 dark:text-slate-600 mb-4">search_off</span>
+				<h2 class="text-xl font-bold text-slate-900 dark:text-white mb-2">No results found</h2>
+				<p class="text-slate-500 dark:text-slate-400 max-w-md"> We couldn't find any apartments matching {{ searchQuery.length > 0 ? `"${searchQuery}"` : "your filters" }}. Try adjusting your search or using different filters.</p>
+			</div>
+
+		</div>
+	</div>
 </template>
+
+<style scoped>
+@reference "tailwindcss";
+
+.material-symbols-outlined {
+	font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+</style>

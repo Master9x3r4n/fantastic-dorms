@@ -10,10 +10,13 @@ const ReviewSchema = new mongoose.Schema({
 		reply: { type: String, default: '' }
 	},
 	rating: {
-		cleanliness: { type: Number, default: 0 },
-		comfort: { type: Number, default: 0 },
-		communication: { type: Number, default: 0 },
-		location: { type: Number, default: 0 }
+		type: {
+			cleanliness: { type: Number, default: 0 },
+			comfort: { type: Number, default: 0 },
+			communication: { type: Number, default: 0 },
+			location: { type: Number, default: 0 }
+		},
+		_id: false // <-- Add this to prevent Mongoose from injecting the ObjectId
 	},
 	score: { type: Number, default: 0 },
 	media: [String],
