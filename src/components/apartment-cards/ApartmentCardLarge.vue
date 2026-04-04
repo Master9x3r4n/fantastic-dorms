@@ -1,90 +1,99 @@
 <script setup>
-import CardRating from '@/components/rating/CardRating.vue';  
+import CardRating from '@/components/rating/CardRating.vue';
 
 const props = defineProps({
-    cardData: {
-        type: Object,
-        default: {
-            name: "Apartment Name",
-            description: "This apartment is very nice. It has very nice rooms and is placed very nicely.",
-            imageSrc: "",
-            routerLink: "/listing",
-            ratingData: {
-                rating: 4,
-                reviewCount: 32
-            }
-        }
-    }
+	cardData: {
+		type: Object,
+		default: () => ({
+			name: "Apartment Name",
+			description: "This apartment is very nice. It has very nice rooms and is placed very nicely.",
+			imageSrc: "",
+			routerLink: "/listing",
+			ratingData: {
+				rating: 4,
+				reviewCount: 32
+			}
+		})
+	}
 })
-
 </script>
 
 <template>
-    <!-- 3x W 0.8x H -->
-    <div class=
-    "h-86 w-304 rounded-[25px] 
-    p-0 shadow-2xl relative
-    bg-white flex flex-row items-center dark:bg-[#111111]">
-        <!-- Photo h-40%-->
-        <div class=
-        "h-full w-5/12 rounded-l-[25px] 
-        absolute left-0 bottom-0 top-0
-        bg-gradient flex items-center justify-center">
-            <img v-if="props.cardData.imageSrc" :src="props.cardData.imageSrc" 
-            class="h-full w-full rounded-l-[25px]">
-        </div>
+	<!-- Entire card acts as a link. Uses a responsive flex column on mobile, row on md+ -->
+	<RouterLink
+			:to="props.cardData.routerLink"
+			class="group flex flex-col md:flex-row w-full bg-white dark:bg-[#121422] border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
+	>
+		<!-- Photo Section -->
+		<div class="w-full md:w-5/12 relative bg-gradient-to-br from-[#517FFF] to-[#312AFF] min-h-[240px] md:min-h-[340px] shrink-0 overflow-hidden">
+			<img
+					v-if="props.cardData.imageSrc"
+					:src="props.cardData.imageSrc"
+					class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+					alt="Apartment Thumbnail"
+			>
+			<!-- Fallback if no image is provided -->
+			<div v-else class="absolute inset-0 flex items-center justify-center text-white/50">
+				<span class="material-symbols-outlined text-6xl">image</span>
+			</div>
+		</div>
 
-        <!-- Frame -->
-       <div class=" absolute right-8 w-[36%] h-[80%] flex flex-col">
-            <!-- Upper Container -->
-            <div class="flex flex-col justify-end text-right gap-6 grow">
-                <!-- Apartment Name -->
-                <div>
-                    <h1 class="font-bold text-[32px] leading-10 dark:text-white hover:underline">
-                        <RouterLink :to="props.cardData.routerLink">{{ props.cardData.name }}</RouterLink>
-                    </h1>
-                </div>
+		<!-- Content Section -->
+		<div class="w-full md:w-7/12 p-6 md:p-8 flex flex-col justify-between">
 
-                <!-- Apartment Description -->
-                <div class="h-[60%]">
-                    <p class="italic font-normal text-[20px] leading-6 dark:text-white">
-                        {{ props.cardData.description }}
-                    </p>
-                </div>
-            </div>
+			<!-- Upper Container: Text -->
+			<div class="flex flex-col gap-3">
+				<!-- Apartment Name -->
+				<h2 class="font-bold text-2xl md:text-3xl leading-tight text-slate-900 dark:text-white group-hover:text-[#355AFF] transition-colors line-clamp-2">
+					{{ props.cardData.name }}
+				</h2>
 
-            <!-- Flairs Container -->
-            <div class="h-[20%] flex justify-end items-center gap-3 pr-1">
-                <!-- Apartment Flairs -->
-                <template v-for="i in ['❄️ Air Conditioning', '❤️‍🔥 Heating']">
-                    <div class="bg-[#355AFF] p-2.5 rounded-4xl text-white 
-                    flex items-center justify-cente h-10">
-                        {{ i }}
-                    </div>
-                </template>
-                <div class="bg-[#355AFF] p-2.5 rounded-[50%] text-white 
-                flex items-center justify-center h-10 w-10">
-                    +3
-                </div>
-            </div>
+				<!-- Apartment Description -->
+				<p class="italic text-base md:text-lg text-slate-600 dark:text-slate-400 line-clamp-3">
+					{{ props.cardData.description }}
+				</p>
+			</div>
 
-            <!-- Lower Review Container -->
-            <div class="h-[20%] flex justify-end items-center">
-                <CardRating 
-                :rating="props.cardData.ratingData.rating" 
-                :reviewCount="props.cardData.ratingData.reviewCount"/>
-            </div>
-       </div>
-    </div>
+			<!-- Lower Container: Flairs & Ratings -->
+			<div class="mt-8 flex flex-col gap-5">
+
+				<!-- Flairs Container -->
+				<div class="flex flex-wrap items-center gap-2">
+                    <span
+												v-for="flair in ['❄️ Air Conditioning', '❤️‍🔥 Heating']"
+												:key="flair"
+												class="px-3 py-1.5 bg-[#355AFF]/10 text-[#355AFF] dark:bg-[#355AFF]/20 dark:text-blue-300 border border-[#355AFF]/20 rounded-full text-sm font-medium whitespace-nowrap"
+										>
+                        {{ flair }}
+                    </span>
+					<span class="flex items-center justify-center px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-full text-sm font-bold">
+                        +3
+                    </span>
+				</div>
+
+				<!-- Footer: Rating & Action -->
+				<div class="flex items-center justify-between pt-5 border-t border-slate-100 dark:border-slate-800/60 mt-1">
+					<CardRating
+							:rating="props.cardData.ratingData.rating"
+							:reviewCount="props.cardData.ratingData.reviewCount"
+					/>
+
+					<!-- When hover turn blue -->
+					<div class="hidden sm:flex items-center gap-1 text-[#355AFF] font-medium text-sm opacity-80 group-hover:opacity-100 transition-opacity">
+						View details
+						<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</RouterLink>
 </template>
 
-
-
 <style scoped>
+@reference "tailwindcss";
 
-.bg-gradient {
-    background: linear-gradient(99.9deg, #517FFF 1.35%, #312AFF 99.48%);
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+.material-symbols-outlined {
+	font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
-
 </style>
