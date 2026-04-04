@@ -126,10 +126,10 @@ watch(() => route.query.q, () => {
 					</h1>
 					<p class="text-slate-500 dark:text-slate-400 mt-1 text-sm md:text-base">
 						<template v-if="searchQuery">
-							Found {{ searchResults.length }} results for <span class="font-semibold text-[#355AFF]">"{{ searchQuery }}"</span>
+							Found {{ filteredResults.length }} results for <span class="font-semibold text-[#355AFF]">"{{ searchQuery }}"</span>
 						</template>
 						<template v-else>
-							Displaying {{ searchResults.length }} propert{{ searchResults.length === 1 ? 'y' : 'ies' }}
+							Displaying {{ filteredResults.length }} propert{{ filteredResults.length === 1 ? 'y' : 'ies' }}
 						</template>
 					</p>
 				</div>
@@ -154,7 +154,7 @@ watch(() => route.query.q, () => {
 			<div v-else class="flex flex-col items-center justify-center py-20 text-center bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700 mt-4">
 				<span class="material-symbols-outlined text-6xl text-slate-300 dark:text-slate-600 mb-4">search_off</span>
 				<h2 class="text-xl font-bold text-slate-900 dark:text-white mb-2">No results found</h2>
-				<p class="text-slate-500 dark:text-slate-400 max-w-md">We couldn't find any apartments matching "{{ searchQuery }}". Try adjusting your search or using different filters.</p>
+				<p class="text-slate-500 dark:text-slate-400 max-w-md"> We couldn't find any apartments matching {{ searchQuery.length > 0 ? `"${searchQuery}"` : "your filters" }}. Try adjusting your search or using different filters.</p>
 			</div>
 
 		</div>
