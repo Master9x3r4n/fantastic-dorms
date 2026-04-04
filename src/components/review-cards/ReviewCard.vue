@@ -1,10 +1,11 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { marked } from 'marked';
-import MediaContainer from '@/components/carousel/MediaContainer.vue';
+import MediaContainer from '../carousel/MediaContainer.vue';
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
-import ProfileService from "@/services/ProfileService.js";
-import ThumbsContainer from '@/components/thumbs-buttons/ThumbsContainer.vue';
+import ProfileService from "../../services/ProfileService.js";
+import ReviewService from "../../services/ReviewService.js";
+import ThumbsContainer from '../thumbs-buttons/ThumbsContainer.vue';
 import OwnerReply from "@/components/side-cards/OwnerReply.vue";
 
 const props = defineProps({
@@ -20,6 +21,7 @@ const props = defineProps({
 
 const review = props.review;
 const profile = ref(null);
+const reviewCount = ref(0);
 
 ProfileService.find(review.username)
 		.then(res => {
@@ -27,6 +29,14 @@ ProfileService.find(review.username)
 		})
 		.catch(error => {
 			console.log(`Error occurred retrieving profile data of user ${review.username} for review: ${error.message}`);
+		});
+
+ReviewService.findAllByUser(review.username)
+		.then(res => {
+			reviewCount.value = res.data?.length || 0;
+		})
+		.catch(error => {
+			console.log(`Error retrieving reviews for user ${review.username}: ${error.message}`);
 		});
 
 const getOverallRating = (ratings) => {
@@ -74,11 +84,9 @@ const parsedBody = computed(() => {
 					<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
 						<ProfileIcon :src="profile.picture" sizeClass="w-full h-full" iconSize="text-[24px]!"></ProfileIcon>
 					</div>
-
-					<!-- Name -->
 					<div>
 						<h3 class="font-bold text-slate-900 dark:text-white">{{ profile?.name.firstName + ' ' + profile?.name.lastName }}</h3>
-						<p class="text-sm text-slate-500 dark:text-slate-400 italic">- Reviews</p>
+						<p class="text-sm text-slate-500 dark:text-slate-400 italic">{{ reviewCount }} Review{{ reviewCount === 1 ? '' : 's' }}</p>
 					</div>
 				</div>
 			</RouterLink>
