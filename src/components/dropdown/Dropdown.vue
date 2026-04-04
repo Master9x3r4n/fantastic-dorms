@@ -43,7 +43,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<div class="relative inline-block text-left" ref="dropdownRef">
+	<div class="relative inline-block text-left text-['Inter']" ref="dropdownRef">
 
 		<div @click="toggle" class="cursor-pointer">
 			<slot name="trigger"></slot>
