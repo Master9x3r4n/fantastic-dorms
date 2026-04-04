@@ -84,7 +84,7 @@ const selectListing = async (id) => {
     try {
         /****** GET LISTING ID ******/
         const [listingRes] = await Promise.all([
-            ListingService.get(id)
+            ListingService.find(id)
         ]);
         selectedListing.value = listingRes.data;
 
@@ -183,7 +183,7 @@ const selectProfile = async (id) => {
     try {
         /****** GET PROFILE ID ******/
         const [profileRes] = await Promise.all([
-            ProfileService.get(id),
+            ProfileService.find(id),
         ]);
         selectedProfile.value = profileRes.data;
 
@@ -211,6 +211,7 @@ const addProfile = () => {
             //Alert
             console.log("Added profile: " + profileForm.username);
             window.alert("Added profile: " + profileForm.username);
+
         }
         else
         {
