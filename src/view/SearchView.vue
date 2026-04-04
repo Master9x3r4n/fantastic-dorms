@@ -1,6 +1,5 @@
 <script setup>
 import ApartmentCardLarge from '@/components/apartment-cards/ApartmentCardLarge.vue';
-import BlueButton from '@/components/page-buttons/BlueButton.vue';
 import FilterDropdown from "@/components/dropdown/FilterDropdown.vue";
 import {computed, onMounted, ref, watch} from 'vue';
 import {useRoute} from 'vue-router';
