@@ -6,9 +6,9 @@ import ReviewPreview from "@/components/profile/ReviewPreview.vue";
 import PageButtons from "@/components/page-buttons/PageButtons.vue";
 import Divider from "@/components/divider/Divider.vue";
 import BlueButton from "@/components/page-buttons/BlueButton.vue";
-import ProfileService from "../services/ProfileService.js";
-import ReviewService from "../services/ReviewService.js";
-import ListingService from "../services/ListingService.js";
+import ProfileService from "@/services/ProfileService.js";
+import ReviewService from "@/services/ReviewService.js";
+import ListingService from "@/services/ListingService.js";
 import { useAuthStore } from '@/auth';
 
 const props = defineProps({

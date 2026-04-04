@@ -1,10 +1,10 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { marked } from 'marked';
-import MediaContainer from '../carousel/MediaContainer.vue';
+import MediaContainer from '@/components/carousel/MediaContainer.vue';
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
-import ProfileService from "../../services/ProfileService.js";
-import ThumbsContainer from '../thumbs-buttons/ThumbsContainer.vue';
+import ProfileService from "@/services/ProfileService.js";
+import ThumbsContainer from '@/components/thumbs-buttons/ThumbsContainer.vue';
 import OwnerReply from "@/components/side-cards/OwnerReply.vue";
 
 const props = defineProps({
