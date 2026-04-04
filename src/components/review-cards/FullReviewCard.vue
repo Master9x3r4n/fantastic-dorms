@@ -117,7 +117,7 @@ const rerouteTo = (reply) => {
 
 		<!-- Media Carousel -->
 		<div v-if="review.media && review.media.length > 0" class="h-[47%] flex w-full justify-center items-center">
-			<Carousel :count="4" buttonStyling="small circular" :buttonSpacing="4">
+			<Carousel buttonStyling="small circular" :buttonSpacing="4">
 				<template #content>
 					<template v-for="(url, index) in review.media" :key="index">
 						<div class="flex shrink-0 snap-start pl-2 pr-2">
