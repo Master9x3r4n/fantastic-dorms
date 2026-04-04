@@ -7,7 +7,7 @@ import ListingService from '@/services/ListingService';
 
 const listing = ref({
         name: '',
-        location: '',
+        address: '',
         description: '',
         amenities: [],
         contacts: [],
@@ -127,7 +127,7 @@ const handleSave = () => {
                                 <!-- Location -->
                                 <div class="space-y-2">
                                     <label class="text-sm font-semibold">Location</label>
-                                    <input v-model="listing.location" type="text" placeholder="e.g. Taft Avenue, Manila" class="input-field" required />
+                                    <input v-model="listing.address" type="text" placeholder="e.g. Taft Avenue, Manila" class="input-field" required />
                                 </div>
 
                                 <!-- Description -->
