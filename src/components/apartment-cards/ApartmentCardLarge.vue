@@ -1,4 +1,5 @@
 <script setup>
+import { computed } from 'vue';
 import CardRating from '@/components/rating/CardRating.vue';
 
 const props = defineProps({
@@ -12,10 +13,22 @@ const props = defineProps({
 			ratingData: {
 				rating: 4,
 				reviewCount: 32
-			}
+			},
+			amenities: []
 		})
 	}
 })
+
+// Configure how many amenities to show before truncating
+const maxAmenities = 2;
+
+const displayedAmenities = computed(() => {
+	return props.cardData.amenities?.slice(0, maxAmenities) || [];
+});
+
+const hiddenAmenitiesCount = computed(() => {
+	return Math.max(0, (props.cardData.amenities?.length || 0) - maxAmenities);
+});
 </script>
 
 <template>
@@ -59,16 +72,21 @@ const props = defineProps({
 
 				<!-- Flairs Container -->
 				<div class="flex flex-wrap items-center gap-2">
-                    <span
-												v-for="flair in ['❄️ Air Conditioning', '❤️‍🔥 Heating']"
-												:key="flair"
-												class="px-3 py-1.5 bg-[#355AFF]/10 text-[#355AFF] dark:bg-[#355AFF]/20 dark:text-blue-300 border border-[#355AFF]/20 rounded-full text-sm font-medium whitespace-nowrap"
-										>
-                        {{ flair }}
-                    </span>
-					<span class="flex items-center justify-center px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-full text-sm font-bold">
-                        +3
-                    </span>
+        <span
+						v-for="flair in displayedAmenities"
+						:key="flair"
+						class="px-3 py-1.5 bg-[#355AFF]/10 text-[#355AFF] dark:bg-[#355AFF]/20 dark:text-blue-300 border border-[#355AFF]/20 rounded-full text-sm font-medium whitespace-nowrap"
+				>
+          {{ flair }}
+        </span>
+
+					<!-- Dynamic Remaining Flairs Badge -->
+					<span
+							v-if="hiddenAmenitiesCount > 0"
+							class="flex items-center justify-center px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-full text-sm font-bold"
+					>
+          +{{ hiddenAmenitiesCount }}
+        </span>
 				</div>
 
 				<!-- Footer: Rating & Action -->
