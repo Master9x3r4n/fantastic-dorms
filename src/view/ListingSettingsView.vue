@@ -83,7 +83,22 @@ const handleSave = () => {
         newImages: newImageFiles.value
     };
     // console.log('Saving Listing Data:', payload);
-    alert("Listing updated successfully!");
+
+    //TODO: ADD AN IF CHECK FOR 500+ CHARS
+    ListingService.update(route.params.id, {
+            name: listing.value.name,
+            address: listing.value.address,
+            description: listing.value.description,
+            amenities: listing.value.amenities,
+            contacts: listing.value.contacts,
+        })
+        .then(res => {
+            alert("Listing updated successfully!");
+        })
+        .catch(error => {
+            console.error(`Error retrieving listing \'${route.params.id}\': ${error.message}`)
+        });
+
 };
 </script>
 
@@ -138,7 +153,7 @@ const handleSave = () => {
                                         class="mt-2"
                                         v-model="listing.description"
                                         placeholder="Describe the listing..."
-                                        :maxLength="200"
+                                        :maxLength="500"
                                     />
                                 </div>
                             </div>
