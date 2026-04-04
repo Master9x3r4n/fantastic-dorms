@@ -64,5 +64,6 @@ npm install
 | **`build`**    | Modify Makefile or compilation setup |
 | **`docs`**     | Update README, specs, or comments |
 | **`chore`**    | Non-code maintenance (renaming files, updating `.gitignore`) |
+| **`merge`**    | Merging branches |
 
 > [See conventional commits](https://www.conventionalcommits.org/en/v1.0.0/)
