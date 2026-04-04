@@ -55,31 +55,26 @@
 
 	const processing = ref(false);
 	const hasError = ref(false);
-	const register = () => {
+	const register = async () => {
 		processing.value = true;
-		
-		// Attempt to create account
-		const data = { 
+		hasError.value = false;
+
+		const data = {
 			username: inputs.value.fields.username,
 			password: inputs.value.fields.password,
+		};
+
+		try {
+			await ProfileService.create(data);
+			await ProfileService.login({ username: data.username, password: data.password });
+			await router.push('/');
+		} catch (err) {
+			console.error('An error occurred registering new Profile: ' + err.message);
+			hasError.value = true;
+		} finally {
+			processing.value = false;
 		}
-
-		ProfileService.create(data)
-			.then(res => {
-				//Create new profile
-				ProfileService.create(data).then(async () => {
-					await ProfileService.login({ username: data.username, password: data.password });
-					router.push('/');
-				});
-
-				//router.push('/')
-			})
-			.catch(err => {
-				console.log('An error occurred registering new Profile: ' + err.message);
-				processing.value = false;
-				hasError.value = true;
-			});
-	}
+	};
 </script>
 
 <template>
