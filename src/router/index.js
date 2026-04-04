@@ -42,9 +42,9 @@ const router = createRouter({
         if (!auth.user)
           await auth.fetchCurrentUser();
 
-        // if (!auth.user)
-        //   return next('/login');
-        // else
+        if (!auth.user)
+          return next('/login');
+        else
           return next();
       }
     },
@@ -58,6 +58,16 @@ const router = createRouter({
       //   if (user && from.path !== '/register')
       //     return next('/');
       // }
+      beforeEnter: async (to, from, next) => {
+        const auth = useAuthStore();
+        if (!auth.user)
+          await auth.fetchCurrentUser();
+
+        if (auth.user)
+          return next('/');
+        else
+          return next();
+      }
     },
     {
       path: "/register",
