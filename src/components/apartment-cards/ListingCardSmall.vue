@@ -1,6 +1,7 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import CardRating from '@/components/rating/CardRating.vue';
+import ReviewService from '@/services/ReviewService.js';
 
 const props = defineProps({
 	listing: {
@@ -10,9 +11,9 @@ const props = defineProps({
 			description: "A lovely apartment.",
 			media: [],
 			listingId: null,
+			_id: null,
 			amenities: [],
 			rating: null,
-			reviewCount: 0
 		})
 	}
 });
@@ -35,11 +36,29 @@ const avgRating = computed(() => {
 	const sum = valid.reduce((acc, c) => acc + props.listing.rating[c], 0);
 	return Number((sum / valid.length).toFixed(1));
 });
+
+// Dynamic Review Count State
+const fetchedReviewCount = ref(0);
+
+// Fetch reviews for this specific listing to get the accurate count when the card mounts
+onMounted(async () => {
+	const targetId = props.listing.listingId;
+
+	// Only fetch if we don't already have a review count passed directly via props
+	if (targetId) {
+		try {
+			const res = await ReviewService.findAllFromListing(targetId);
+			fetchedReviewCount.value = res.data?.length || 0;
+		} catch (err) {
+			console.error(`Failed to fetch review count for ${targetId}:`, err);
+		}
+	}
+});
 </script>
 
 <template>
 	<RouterLink
-			:to="{ name: 'listing', params: { id: listing.listingId } }"
+			:to="{ name: 'listing', params: { id: listing.listingId || listing._id } }"
 			class="group flex flex-col w-full max-w-sm bg-white dark:bg-[#121422] border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
 	>
 		<!-- Image -->
@@ -88,7 +107,7 @@ const avgRating = computed(() => {
 			<div class="pt-3 mt-auto border-t border-slate-100 dark:border-slate-800/60">
 				<CardRating
 						:rating="avgRating"
-						:reviewCount="listing.reviewCount || 0"
+						:reviewCount="fetchedReviewCount"
 				/>
 			</div>
 		</div>
