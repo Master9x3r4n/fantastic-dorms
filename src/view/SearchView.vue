@@ -1,6 +1,7 @@
 <script setup>
 import ApartmentCardLarge from '@/components/apartment-cards/ApartmentCardLarge.vue';
 import BlueButton from '@/components/page-buttons/BlueButton.vue';
+import FilterDropdown from "@/components/dropdown/FilterDropdown.vue";
 import {computed, onMounted, ref, watch} from 'vue';
 import {useRoute} from 'vue-router';
 import ListingService from '@/services/ListingService.js';
@@ -9,8 +10,16 @@ import ReviewService from '@/services/ReviewService.js';
 const route = useRoute();
 const searchQuery = computed(() => route.query.q || "");
 
-const searchResults = ref([]);
+const searchResults = ref([]); // This holds the "raw" search results
+const activeFilters = ref({
+	minRating: 0,
+	amenities: []
+});
 const isLoading = ref(true);
+
+const handleFilterUpdate = (newFilters) => {
+	activeFilters.value = newFilters;
+};
 
 const fetchSearchResults = async () => {
 	isLoading.value = true;
@@ -77,6 +86,23 @@ const fetchSearchResults = async () => {
 	}
 };
 
+const filteredResults = computed(() => {
+	return searchResults.value.filter(listing => {
+		// 1. Filter by Rating
+		if (listing.ratingData.rating < activeFilters.value.minRating) return false;
+
+		// 2. Filter by Amenities (Checks if listing has ALL selected amenities)
+		if (activeFilters.value.amenities.length > 0) {
+			const hasAllAmenities = activeFilters.value.amenities.every(
+					amenity => (listing.amenities || []).includes(amenity)
+			);
+			if (!hasAllAmenities) return false;
+		}
+
+		return true; // Keep listing
+	});
+});
+
 // Fetch results when the component first mounts
 onMounted(() => {
 	fetchSearchResults();
@@ -110,10 +136,7 @@ watch(() => route.query.q, () => {
 				</div>
 
 				<!-- Filter Button -->
-				<BlueButton class="shrink-0 shadow-sm px-5 py-2.5">
-					<span class="material-symbols-outlined text-[20px] text-white">tune</span>
-					<span class="font-semibold text-white">Filter</span>
-				</BlueButton>
+				<FilterDropdown @update:filters="handleFilterUpdate" />
 			</div>
 
 			<!-- Loading State -->
@@ -122,8 +145,8 @@ watch(() => route.query.q, () => {
 			</div>
 
 			<!-- Body Content -->
-			<div v-else-if="searchResults.length > 0" class="flex flex-col gap-6 md:gap-8">
-				<template v-for="(item, index) in searchResults" :key="index">
+			<div v-else-if="filteredResults.length > 0" class="flex flex-col gap-6 md:gap-8">
+				<template v-for="(item, index) in filteredResults" :key="index">
 					<ApartmentCardLarge :cardData="item"/>
 				</template>
 			</div>
