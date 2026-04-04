@@ -1,64 +1,111 @@
 <script setup>
 import ApartmentCardLarge from '@/components/apartment-cards/ApartmentCardLarge.vue';
-import BlueButton from "@/components/page-buttons/BlueButton.vue";
-import { useRoute } from 'vue-router';
-import { computed } from 'vue';
-
-const props = defineProps({
-	searchResults: {
-		type: Array,
-		default: () => [
-			{
-				name: "Grand Apartment",
-				description: "A very grand, beautiful, and luxurious apartment that features multiple rooms and doors. A must stay for the holidays.",
-				ratingData: {
-					rating: 4.5,
-					reviewCount: 124,
-				},
-				imageSrc: "https://youre.outof.games/media/uploads/cb/da/cbda1bb4-ee0d-4c65-989f-05a24edd22cf/daily-bugle-featured-location.jpg",
-				routerLink: "/listing/1",
-			},
-			{
-				name: "The Baxter Suite",
-				description: "Inspired by the heroes of the Fantastic Four, this beautiful deluxe suite features 4 bedrooms and a visit from Galactus. It's Fantastic.",
-				ratingData: {
-					rating: 4,
-					reviewCount: 44,
-				},
-				imageSrc: "https://static0.cbrimages.com/wordpress/wp-content/uploads/2020/09/rsz-baxter-buildingv1.jpg",
-				routerLink: "/listing/2",
-			},
-			{
-				name: "Miro's House",
-				description: "Freshly doxxed, Miro's house is a beautiful home that features Miro.",
-				ratingData: {
-					rating: 3.5,
-					reviewCount: 67,
-				},
-				imageSrc: "https://static.wikitide.net/peppafanonwiki/thumb/e/ee/Peppa%27s_house_updated.webp/800px-Peppa%27s_house_updated.webp.png",
-				routerLink: "/listing/3",
-			},
-		]
-	}
-});
+import BlueButton from '@/components/page-buttons/BlueButton.vue';
+import {computed, onMounted, ref, watch} from 'vue';
+import {useRoute} from 'vue-router';
+import ListingService from '@/services/ListingService.js';
+import ReviewService from '@/services/ReviewService.js';
 
 const route = useRoute();
-// Added a fallback just in case the query is empty
-const searchQuery = computed(() => route.query.q || "apartments");
+const searchQuery = computed(() => route.query.q || "");
+
+const searchResults = ref([]);
+const isLoading = ref(true);
+
+const fetchSearchResults = async () => {
+	isLoading.value = true;
+	try {
+		// Fetch all listings from the backend
+		const response = await ListingService.findAll();
+		let listings = response.data;
+
+		// Filter listings locally if there is a search query
+		if (searchQuery.value) {
+			const query = searchQuery.value.toLowerCase();
+			listings = listings.filter(listing =>
+					listing.name?.toLowerCase().includes(query) ||
+					listing.address?.toLowerCase().includes(query) ||
+					listing.description?.toLowerCase().includes(query)
+			);
+		}
+
+		// Map listings to the format expected by ApartmentCardLarge
+		searchResults.value = await Promise.all(listings.map(async (listing) => {
+
+			// Calculate average rating from the rating object
+			let avgRating = 0;
+			if (listing.rating) {
+				const validCategories = ['cleanliness', 'comfort', 'communication', 'location'];
+				let sum = 0;
+				let count = 0;
+
+				for (const category of validCategories) {
+					if (typeof listing.rating[category] === 'number') {
+						sum += listing.rating[category];
+						count++;
+					}
+				}
+				if (count > 0) avgRating = sum / count;
+			}
+
+			// Fetch reviews for this specific listing to get the review count
+			let reviewCount = 0;
+			try {
+				const reviewsRes = await ReviewService.findAllFromListing(listing.listingId);
+				reviewCount = reviewsRes.data?.length || 0;
+			} catch (err) {
+				console.error(`Failed to fetch reviews for ${listing.listingId}:`, err);
+			}
+
+			return {
+				name: listing.name,
+				description: listing.description,
+				ratingData: {
+					rating: Number(avgRating.toFixed(1)),
+					reviewCount: reviewCount
+				},
+				imageSrc: listing.media && listing.media.length > 0 ? listing.media[0] : "",
+				routerLink: `/listing/${listing.listingId}`,
+				amenities: listing.amenities || []
+			};
+		}));
+
+	} catch (err) {
+		console.error("Error fetching search results:", err.message);
+	} finally {
+		isLoading.value = false;
+	}
+};
+
+// Fetch results when the component first mounts
+onMounted(() => {
+	fetchSearchResults();
+});
+
+// Re-fetch if the search query in the URL changes
+watch(() => route.query.q, () => {
+	fetchSearchResults();
+});
 </script>
 
 <template>
-	<div class="min-h-screen w-full bg-white dark:bg-[#121422] transition-colors duration-200 font-['Inter']">
+	<div class="min-h-screen w-full transition-colors duration-200 font-['Inter']">
 		<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
 
 			<!-- Header Section -->
 			<div class="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 pb-6 border-b border-slate-200 dark:border-slate-800">
 				<div class="flex flex-col">
+					<!-- Dynamic Title -->
 					<h1 class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">
-						Search Results
+						{{ searchQuery ? 'Search Results' : 'All Properties' }}
 					</h1>
 					<p class="text-slate-500 dark:text-slate-400 mt-1 text-sm md:text-base">
-						Found {{ searchResults.length }} results for <span class="font-semibold text-[#355AFF]">"{{ searchQuery }}"</span>
+						<template v-if="searchQuery">
+							Found {{ searchResults.length }} results for <span class="font-semibold text-[#355AFF]">"{{ searchQuery }}"</span>
+						</template>
+						<template v-else>
+							Displaying {{ searchResults.length }} propert{{ searchResults.length === 1 ? 'y' : 'ies' }}
+						</template>
 					</p>
 				</div>
 
@@ -69,8 +116,13 @@ const searchQuery = computed(() => route.query.q || "apartments");
 				</BlueButton>
 			</div>
 
+			<!-- Loading State -->
+			<div v-if="isLoading" class="flex justify-center items-center py-32">
+				<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#355AFF]"></div>
+			</div>
+
 			<!-- Body Content -->
-			<div v-if="searchResults.length > 0" class="flex flex-col gap-6 md:gap-8">
+			<div v-else-if="searchResults.length > 0" class="flex flex-col gap-6 md:gap-8">
 				<template v-for="(item, index) in searchResults" :key="index">
 					<ApartmentCardLarge :cardData="item"/>
 				</template>
