@@ -16,19 +16,19 @@ const props = defineProps({
 const searchQuery = ref(route.query.q || "");
 const inputRef = ref(null);
 
-// Style Configuration
+// Style Configuration - Updated to match app design language
 const styles = {
 	default: {
-		container: "max-w-[620px] h-9 bg-[#EAEAEA] dark:bg-slate-800 pr-1",
-		input: "text-sm bg-transparent text-gray-700 dark:text-white placeholder-gray-500 dark:placeholder-gray-400",
-		searchBtn: "bg-[#355AFF] hover:bg-[#2C0ED6] text-white h-full px-2",
-		clearBtn: "p-1 hover:bg-[#BFBFBF] dark:hover:bg-slate-700 text-gray-500 dark:text-gray-400",
+		container: "max-w-[620px] h-9 bg-slate-100 dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-700 pr-1",
+		input: "text-sm bg-transparent text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400",
+		searchBtn: "bg-[#355AFF] hover:bg-[#2b4bcc] text-white h-full px-2",
+		clearBtn: "p-1 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400",
 	},
 	alt: {
-		container: "max-w-[591px] h-[54px] bg-[#FFFFFF] dark:bg-[#1E1E1E] pr-1 border border-slate-200 dark:border-slate-700",
-		input: "text-lg bg-transparent text-gray-700 dark:text-white placeholder-gray-400 dark:placeholder-gray-500",
-		searchBtn: "bg-[#355AFF] hover:bg-[#2C0ED6] text-white p-2 rounded-full mr-1",
-		clearBtn: "p-2 hover:bg-[#BFBFBF] dark:hover:bg-slate-700 text-gray-500 dark:text-gray-400",
+		container: "max-w-[591px] h-[54px] bg-white dark:bg-[#121422] pr-1 border border-slate-200 dark:border-slate-700",
+		input: "text-lg bg-transparent text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500",
+		searchBtn: "bg-[#355AFF] hover:bg-[#2b4bcc] text-white p-2 rounded-full mr-1 shadow-sm",
+		clearBtn: "p-2 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400",
 	},
 };
 
@@ -69,7 +69,7 @@ watch(() => route.query.q, (newQuery) => {
 	<div
 			:class="[
         theme.container,
-        'w-full flex items-center overflow-hidden border-gray-300 rounded-full focus-within:ring-2 focus-within:ring-[#355AFF] focus-within:border-transparent transition-all shadow-sm'
+        'w-full flex items-center overflow-hidden rounded-full focus-within:ring-2 focus-within:ring-[#355AFF]/30 focus-within:border-[#355AFF] transition-all shadow-sm'
       ]"
 	>
 		<button
@@ -88,7 +88,7 @@ watch(() => route.query.q, (newQuery) => {
 				type="text"
 				placeholder="Start searching..."
 				name="searchbar"
-				:class="[theme.input, 'w-full h-full px-3 outline-none text-[`Inter`]']"
+				:class="[theme.input, 'w-full h-full px-3 outline-none font-[\'Inter\']']"
 		/>
 
 		<button
