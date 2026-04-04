@@ -21,26 +21,27 @@ const props = defineProps({
 const review = props.review;
 const profile = ref(null);
 
-// Only fetch profile data if the review is not anonymous
-if (!review.isAnonymous) {
-	ProfileService.find(review.username)
-			.then(res => {
-				profile.value = res.data;
-			})
-			.catch(error => {
-				console.log(`Error occurred retrieving profile data of user ${review.username} for review ${props.id}: ${error.message}`);
-			});
-}
+ProfileService.find(review.username)
+		.then(res => {
+			profile.value = res.data;
+		})
+		.catch(error => {
+			console.log(`Error occurred retrieving profile data of user ${review.username} for review: ${error.message}`);
+		});
 
 const getOverallRating = (ratings) => {
+	const validCategories = ['cleanliness', 'comfort', 'communication', 'location'];
 	let overall = 0;
-	for (let p in ratings) {
-		overall += ratings[p];
+	let count = 0;
+	for (const category of validCategories) {
+		if (ratings && typeof ratings[category] === 'number') {
+			overall += ratings[category];
+			count++;
+		}
 	}
-	return (overall/4).toFixed(1);
+	return count > 0 ? (overall / count).toFixed(1) : "0.0";
 }
 
-// Parse the Markdown body
 const parsedBody = computed(() => {
 	const rawText = props.review?.content?.body || "";
 	return marked.parse(rawText);
@@ -81,6 +82,15 @@ const parsedBody = computed(() => {
 					</div>
 				</div>
 			</RouterLink>
+
+			<!-- Fallback if profile is still loading and not anonymous -->
+			<div v-else class="flex items-center gap-3 opacity-50 cursor-wait">
+				<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center animate-pulse"></div>
+				<div>
+					<div class="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded animate-pulse mb-2"></div>
+					<div class="h-3 w-16 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
+				</div>
+			</div>
 
 			<!-- Rating -->
 			<div class="flex items-center text-[#355AFF] text-2xl font-bold">
