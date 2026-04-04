@@ -21,7 +21,7 @@ class ListingService {
 	}
 
 	update(id, data) {
-		return http.put(`/l/${id}`, data);
+		return http.patch(`/l/${id}`, data);
 	}
 
 	delete(id) {

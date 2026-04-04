@@ -72,23 +72,40 @@ class ListingController {
 			});
 		}
 
-		const listingId = req.params.listingId;
-		const fieldName = req.params.fieldName;
+		const listingId = req.params.id;
+		const fieldName = req.body;
 		const newVal = req.params.newVal;
+		const updates = req.body;
 
-		Listing.findAndUpdate( {listingId: listingId}, { fieldName: newVal}, { useFindAndModify: false })
-			.then(data => {
+		// const updatedListing = await Listing.findOneAndUpdate( {listingId: listingId}, { fieldName: updates}, { useFindAndModify: false })
+		// 	.then(data => {
+		// 	if (!data) {
+		// 		res.status(404).send({
+		// 		message: `Cannot update Listings with listingId=${listingId}. Maybe Listings was not found!`
+		// 		});
+		// 	} else {
+		// 		res.send({ message: "Listings was updated successfully." });
+		// 	}
+		// 	})
+		// 	.catch(err => {
+		// 	res.status(500).send({
+		// 		message: "Error updating Listings with listingid=" + listingId + err
+		// 	});
+		// });
+		try {
+			const data = await Listing.findOneAndUpdate( {listingId: listingId}, updates, { useFindAndModify: false });
 			if (!data) {
 				res.status(404).send({
 				message: `Cannot update Listings with listingId=${listingId}. Maybe Listings was not found!`
 				});
-			} else res.send({ message: "Listings was updated successfully." });
-			})
-			.catch(err => {
+			} else {
+				res.send({ message: "Listings was updated successfully." });
+			}
+		} catch (err) {
 			res.status(500).send({
-				message: "Error updating Listings with listingid=" + listingId
+				message: "Error updating Listings with listingid=" + listingId + err
 			});
-		});
+		}
 	};
 
 	// Delete a Listings with the specified listingId in the request

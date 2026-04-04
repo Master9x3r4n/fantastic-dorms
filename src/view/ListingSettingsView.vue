@@ -93,10 +93,11 @@ const handleSave = () => {
             contacts: listing.value.contacts,
         })
         .then(res => {
-            alert("Listing updated successfully!");
+            alert("Listing successfully updated!");
+            goBack();
         })
         .catch(error => {
-            console.error(`Error retrieving listing \'${route.params.id}\': ${error.message}`)
+            console.error(`Error retrieving listing \'${route.params.id}\': ${error}`)
         });
 
 };
