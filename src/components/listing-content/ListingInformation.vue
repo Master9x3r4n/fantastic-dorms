@@ -9,6 +9,7 @@ const props = defineProps({
 		required: true,
 		// Provide a fallback structure for safety
 		default: () => ({
+			listingId: '',
 			name: '',
 			address: '',
 			description: '',
@@ -29,7 +30,7 @@ const props = defineProps({
 				<h1 class="font-bold text-3xl md:text-4xl text-slate-900 dark:text-white tracking-tight">
 					{{ listing.name }}
 				</h1>
-				<RouterLink :to="{ name: 'listing-settings' }">
+				<RouterLink :to="{ name: 'listing-settings', params: {id: listing.listingId}}">
 					<BlueButton class="flex items-center gap-2 px-4 py-2">
 						<span class="material-symbols-outlined text-white text-[18px]">edit_square</span>
 						<span class="font-medium text-[15px] text-white">Edit</span>

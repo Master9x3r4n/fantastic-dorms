@@ -1,31 +1,39 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import Divider from "@/components/divider/Divider.vue";
 import TextEditor from '@/components/write-review-content/TextEditor.vue';
+import ListingService from '@/services/ListingService';
 
-const props = defineProps({
-    initialListing: {
-        type: Object,
-        default: () => ({
-            name: '',
-            location: '',
-            description: '',
-            amenities: [],
-            contacts: [],
-            media: []
+const initialListing = ref({
+        name: '',
+        location: '',
+        description: '',
+        amenities: [],
+        contacts: [],
+        media: []
+    });
+
+// FETCH INITIAL LISTING INFORMATION
+onMounted(async () => {
+    ListingService.find(route.params.id)
+        .then(async (res) => {
+            initialListing.value = res.data
         })
-    }
+        .catch(err => {
+            console.error("Error retrieving listing information for " + route.params.id + " error: " + err)
+        })
 });
 
 const router = useRouter();
-const listing = ref({ ...props.initialListing });
+const route = useRoute();
+const listing = ref({ ...initialListing.value });
 const newImageFiles = ref([]);
-const imagePreviews = ref([...props.initialListing.media]);
+const imagePreviews = ref([...initialListing.value.media]);
 
 const goBack = () => router.back();
 
-// --- Amenities Logic ---
+// Amenities Helper Functions
 const addAmenity = () => {
     if (listing.value.amenities.length < 6) {
         listing.value.amenities.push('');
@@ -36,7 +44,7 @@ const removeAmenity = (index) => {
     listing.value.amenities.splice(index, 1);
 };
 
-// --- Socials Logic ---
+// Socials Helper Functions
 const addSocial = () => {
     if (listing.value.contacts.length < 6) {
         listing.value.contacts.push({ name: '', link: '' });
@@ -47,7 +55,7 @@ const removeSocial = (index) => {
     listing.value.contacts.splice(index, 1);
 };
 
-// --- Media Logic ---
+// Media Helper Functions
 const handleImageUpload = (event) => {
     const files = Array.from(event.target.files);
     const remainingSlots = 5 - imagePreviews.value.length;
@@ -94,7 +102,7 @@ const handleSave = () => {
                     <div class="p-6 md:p-8">
                         <h2 class="text-2xl font-bold">Edit Listing</h2>
                         <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Update your property details, amenities, and media.</p>
-                        <span>@listing-id-goes-here</span>
+                        <span>@{{ route.params.id }}</span>
                     </div>
                     <Divider />
 

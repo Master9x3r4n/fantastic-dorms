@@ -166,6 +166,10 @@ const router = createRouter({
     },
     {
       path: "/listing-settings",
+      redirect: "/"
+    },
+    {
+      path: "/listing-settings/:id",
       name: "listing-settings",
       component: ListingSettingsView,
       meta: { search: false, loggedIn: true },
