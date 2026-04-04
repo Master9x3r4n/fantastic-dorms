@@ -13,24 +13,24 @@ const listing = ref({
         contacts: [],
         media: []
     });
+const router = useRouter();
+const route = useRoute();
+const newImageFiles = ref([]);
+const imagePreviews = ref([]);
+
+const goBack = () => router.back();
 
 // FETCH INITIAL LISTING INFORMATION
 onMounted(async () => {
     ListingService.find(route.params.id)
         .then(async (res) => {
             listing.value = res.data
+            imagePreviews.value = [...listing.value.media];
         })
         .catch(err => {
             console.error("Error retrieving listing information for " + route.params.id + " error: " + err)
         })
 });
-
-const router = useRouter();
-const route = useRoute();
-const newImageFiles = ref([]);
-const imagePreviews = ref([...listing.value.media]);
-
-const goBack = () => router.back();
 
 // Amenities Helper Functions
 const addAmenity = () => {
