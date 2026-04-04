@@ -96,7 +96,7 @@ const resetFilters = () => {
 									type="checkbox"
 									:value="amenity"
 									v-model="filters.amenities"
-									class="w-4 h-4 rounded border-slate-300 text-[#355AFF] focus:ring-[#355AFF] dark:bg-slate-800 dark:border-slate-600"
+									class="w-4 h-4 rounded border-slate-300 accent-[#355AFF] focus:ring-[#355AFF] dark:bg-slate-800 dark:border-slate-600"
 							/>
 							<span class="text-sm text-slate-700 dark:text-slate-300 group-hover:text-[#355AFF] transition-colors truncate">
                 {{ amenity }}
