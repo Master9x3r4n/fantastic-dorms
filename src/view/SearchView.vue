@@ -1,5 +1,5 @@
 <script setup>
-import ApartmentCardLarge from '@/components/apartment-cards/ApartmentCardLarge.vue';
+import ListingCardLarge from '@/components/apartment-cards/ListingCardLarge.vue';
 import FilterDropdown from "@/components/dropdown/FilterDropdown.vue";
 import {computed, onMounted, ref, watch} from 'vue';
 import {useRoute} from 'vue-router';
@@ -37,7 +37,7 @@ const fetchSearchResults = async () => {
 			);
 		}
 
-		// Map listings to the format expected by ApartmentCardLarge
+		// Map listings to the format expected by ListingCardLarge
 		searchResults.value = await Promise.all(listings.map(async (listing) => {
 
 			// Calculate average rating from the rating object
@@ -146,7 +146,7 @@ watch(() => route.query.q, () => {
 			<!-- Body Content -->
 			<div v-else-if="filteredResults.length > 0" class="flex flex-col gap-6 md:gap-8">
 				<template v-for="(item, index) in filteredResults" :key="index">
-					<ApartmentCardLarge :cardData="item"/>
+					<ListingCardLarge :cardData="item"/>
 				</template>
 			</div>
 

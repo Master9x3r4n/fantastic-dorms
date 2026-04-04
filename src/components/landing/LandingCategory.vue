@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import ApartmentCardSmall from '../apartment-cards/ApartmentCardSmall.vue';
+import ListingCardSmall from '../apartment-cards/ListingCardSmall.vue';
 import Carousel from '../carousel/Carousel.vue';
 import FilterButton from '../page-buttons/FilterButton.vue';
 
@@ -39,7 +39,7 @@ const selectedItems = ref([])
             <template #content>
             <template v-for="listing in props.listings">
                 <div class="px-3 flex shrink-0 snap-start">
-                <ApartmentCardSmall :listing="listing"/>
+                <ListingCardSmall :listing="listing"/>
                 </div>
             </template>
             </template>

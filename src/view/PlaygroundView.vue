@@ -1,6 +1,6 @@
 <script setup>
-    import ApartmentCardSmall from '@/components/apartment-cards/ApartmentCardSmall.vue';
-    import ApartmentCardLarge from '@/components/apartment-cards/ApartmentCardLarge.vue';
+    import ListingCardSmall from '@/components/apartment-cards/ListingCardSmall.vue';
+    import ListingCardLarge from '@/components/apartment-cards/ListingCardLarge.vue';
     import Carousel from '@/components/carousel/Carousel.vue';
     import DarkModeButton from '@/components/darkmode/DarkModeButton.vue';
     import TestContainer from '@/components/test-components/TestContainer.vue';
@@ -96,18 +96,18 @@
     <!-- Small Card -->
     <TestContainer dir="col">
         <TestLabel>Small Card</TestLabel>
-        <ApartmentCardSmall />
+        <ListingCardSmall />
     </TestContainer>
 
     <!-- Large Card -->
      <TestContainer dir="col">
         <TestLabel>Large Card</TestLabel>
         <template v-for="i in 2">
-            <ApartmentCardLarge 
+            <ListingCardLarge
                 :ratingData="{rating: 1.5 * (4-i), reviewCount: 69}"
                 class="m-1.5">
                 <template #header>Apartment {{ i }}</template>
-            </ApartmentCardLarge>
+            </ListingCardLarge>
         </template>
     </TestContainer>
     
@@ -132,12 +132,12 @@
             <!-- Content -->
             <template #content>
                 <template v-for="i in items">
-                    <ApartmentCardSmall class="flex shrink-0 snap-start"
+                    <ListingCardSmall class="flex shrink-0 snap-start"
                     :ratingData="{rating: 5 - i + 0.5, reviewCount: (i)* 6}">
                         <template #header>
                             Apartment {{ i }}
                         </template>
-                    </ApartmentCardSmall>
+                    </ListingCardSmall>
                 </template>
             </template>
         </Carousel>
