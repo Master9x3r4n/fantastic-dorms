@@ -135,7 +135,7 @@ watch(() => route.query.q, () => {
 				</div>
 
 				<!-- Filter Button -->
-				<FilterDropdown @update:filters="handleFilterUpdate" />
+				<FilterDropdown :listings="searchResults" @update:filters="handleFilterUpdate" />
 			</div>
 
 			<!-- Loading State -->
