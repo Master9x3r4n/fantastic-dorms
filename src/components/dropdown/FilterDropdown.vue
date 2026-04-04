@@ -1,49 +1,52 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, computed } from 'vue';
 import Dropdown from '@/components/dropdown/Dropdown.vue';
 import BlueButton from '@/components/page-buttons/BlueButton.vue';
-import ListingService from '@/services/ListingService.js';
 
 const emit = defineEmits(['update:filters']);
 
+const props = defineProps({
+	listings: {
+		type: Array,
+		default: () => []
+	},
+	maxAmenities: {
+		type: Number,
+		default: 8
+	}
+});
 
 const filters = ref({
 	minRating: 0,
 	amenities: []
 });
 
-// Changed from a hardcoded array to a reactive ref
-const availableAmenities = ref([]);
-const isLoadingAmenities = ref(true);
+// Count frequency of each amenity across current search results
+const availableAmenities = computed(() => {
+	const frequency = {};
 
-// Fetch listings and extract unique amenities
-onMounted(async () => {
-	try {
-		const response = await ListingService.findAll();
-		const listings = response.data;
-
-		const uniqueAmenities = new Set();
-
-		// Loop through all listings and add their amenities to the Set (which prevents duplicates)
-		listings.forEach(listing => {
-			if (listing.amenities && Array.isArray(listing.amenities)) {
-				listing.amenities.forEach(amenity => uniqueAmenities.add(amenity));
-			}
+	props.listings.forEach(listing => {
+		(listing.amenities || []).forEach(amenity => {
+			frequency[amenity] = (frequency[amenity] || 0) + 1;
 		});
+	});
 
-		// Convert Set back to an array and sort it alphabetically
-		availableAmenities.value = Array.from(uniqueAmenities).sort();
-	} catch (error) {
-		console.error("Error fetching amenities for filters:", error.message);
-	} finally {
-		isLoadingAmenities.value = false;
-	}
+	return Object.entries(frequency)
+			.sort((a, b) => b[1] - a[1])        // sort by popularity descending
+			.slice(0, props.maxAmenities)        // take top N
+			.map(([amenity]) => amenity)         // return just the name
+			.sort();                             // alphabetize the final list
 });
 
-// Watch for changes and emit to parent (SearchView)
 watch(filters, (newFilters) => {
 	emit('update:filters', { ...newFilters });
 }, { deep: true });
+
+watch(availableAmenities, (newAmenities) => {
+	filters.value.amenities = filters.value.amenities.filter(
+			selected => newAmenities.includes(selected)
+	);
+});
 
 const resetFilters = () => {
 	filters.value.minRating = 0;
@@ -82,11 +85,7 @@ const resetFilters = () => {
             Amenities
           </span>
 
-					<div v-if="isLoadingAmenities" class="flex items-center justify-center py-4">
-						<span class="w-5 h-5 border-2 border-[#355AFF]/30 border-t-[#355AFF] rounded-full animate-spin"></span>
-					</div>
-
-					<div v-else-if="availableAmenities.length > 0" class="flex flex-col gap-2 max-h-48 overflow-y-auto pr-1 custom-scrollbar">
+					<div v-if="availableAmenities.length > 0" class="flex flex-col gap-2 max-h-48 overflow-y-auto pr-1 custom-scrollbar">
 						<label
 								v-for="amenity in availableAmenities"
 								:key="amenity"
@@ -99,8 +98,8 @@ const resetFilters = () => {
 									class="w-4 h-4 rounded border-slate-300 accent-[#355AFF] focus:ring-[#355AFF] dark:bg-slate-800 dark:border-slate-600"
 							/>
 							<span class="text-sm text-slate-700 dark:text-slate-300 group-hover:text-[#355AFF] transition-colors truncate">
-                {{ amenity }}
-              </span>
+      					{{ amenity }}
+    					</span>
 						</label>
 					</div>
 
