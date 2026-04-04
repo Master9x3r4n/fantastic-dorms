@@ -57,16 +57,6 @@ onUnmounted(() => {
 			leave-from-class="transform opacity-100 scale-100"
 			leave-to-class="transform opacity-0 scale-95"
 		>
-			<!-- <div
-				v-show="isOpen"
-				class="absolute right-0 top-full z-50 mt-2
-					h-fit w-screen
-					flex flex-col justify-center items-center gap-5
-					origin-top-right focus:outline-none
-					bg-white dark:bg-[#121422] p-4 rounded-lg border border-solid
-					border-slate-200 shadow-sm dark:border-slate-700"
-				:style="{ maxWidth: width }"
-			> -->
 			<div
 				v-show="isOpen"
 				class="absolute right-0 top-full z-50 mt-2
