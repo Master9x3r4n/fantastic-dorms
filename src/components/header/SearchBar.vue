@@ -73,7 +73,7 @@ const routeSearch = () => {
 				type="text"
 				placeholder="Start searching..."
 				name="searchbar"
-				:class="[theme.input, 'w-full h-full px-3 outline-none']"
+				:class="[theme.input, 'w-full h-full px-3 outline-none text-[`Inter`]']"
 		/>
 
 		<button
