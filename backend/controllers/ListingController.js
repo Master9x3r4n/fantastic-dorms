@@ -76,7 +76,7 @@ class ListingController {
 		const fieldName = req.params.fieldName;
 		const newVal = req.params.newVal;
 
-		Listing.findAndUpdate( {listingId: listingId}, { fieldName: newval}, { useFindAndModify: false })
+		Listing.findAndUpdate( {listingId: listingId}, { fieldName: newVal}, { useFindAndModify: false })
 			.then(data => {
 			if (!data) {
 				res.status(404).send({
