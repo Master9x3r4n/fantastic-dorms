@@ -5,7 +5,7 @@ import Divider from "@/components/divider/Divider.vue";
 import TextEditor from '@/components/write-review-content/TextEditor.vue';
 import ListingService from '@/services/ListingService';
 
-const initialListing = ref({
+const listing = ref({
         name: '',
         location: '',
         description: '',
@@ -18,7 +18,7 @@ const initialListing = ref({
 onMounted(async () => {
     ListingService.find(route.params.id)
         .then(async (res) => {
-            initialListing.value = res.data
+            listing.value = res.data
         })
         .catch(err => {
             console.error("Error retrieving listing information for " + route.params.id + " error: " + err)
@@ -27,9 +27,8 @@ onMounted(async () => {
 
 const router = useRouter();
 const route = useRoute();
-const listing = ref({ ...initialListing.value });
 const newImageFiles = ref([]);
-const imagePreviews = ref([...initialListing.value.media]);
+const imagePreviews = ref([...listing.value.media]);
 
 const goBack = () => router.back();
 
@@ -103,6 +102,11 @@ const handleSave = () => {
                         <h2 class="text-2xl font-bold">Edit Listing</h2>
                         <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Update your property details, amenities, and media.</p>
                         <span>@{{ route.params.id }}</span>
+
+                        <!-- TODO: THIS -->
+                        <p class="strong text-red-500">
+                            NOTE: THIS ROUTE SHOULDN'T BE ACCESSIBLE BY NON-OWNERS, PLEASE FIX THAT
+                        </p>
                     </div>
                     <Divider />
 
@@ -116,7 +120,8 @@ const handleSave = () => {
                                 <!-- Name -->
                                 <div class="space-y-2">
                                     <label class="text-sm font-semibold">Listing Name</label>
-                                    <input v-model="listing.name" type="text" placeholder="e.g. Green Residences Studio" class="input-field" required />
+                                    <input v-model="listing.name" type="text" 
+                                    placeholder="e.g. Green Residences Studio" class="input-field" required />
                                 </div>
 
                                 <!-- Location -->
