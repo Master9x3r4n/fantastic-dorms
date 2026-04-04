@@ -128,19 +128,20 @@ const rerouteTo = (reply) => {
 			</Carousel>
 		</div>
 
-		<!-- Owner Reply Component -->
+		<!-- Owner Reply Component (Hidden while editing) -->
 		<OwnerReply
-				v-if="review.content.reply"
+				v-if="review.content.reply && !showReview"
 				:replyText="review.content.reply"
 				:truncate="false"
 		/>
 
-		<!-- Owner Reply Field -->
-		<ReplyReview 
-		v-if="showReview"
-		:reviewId="review._id"
-		@closeReview="showReview = false"
-		@rerouteLink="rerouteTo"
+		<!-- Owner Reply Field (Pre-filled with existing reply) -->
+		<ReplyReview
+				v-if="showReview"
+				:reviewId="review._id"
+				:initialReply="review.content.reply || ''"
+				@closeReview="showReview = false"
+				@rerouteLink="rerouteTo"
 		/>
 
 		<div class="flex w-full justify-between items-center">
@@ -150,10 +151,11 @@ const rerouteTo = (reply) => {
 			</div>
 
 			<!-- Reply Button -->
-			<BlueButton 
-			v-if="!showReview"
-			@click="showReview = !showReview"
-			class="font-medium text-[15px] text-white">
+			<BlueButton
+					v-if="!showReview"
+					@click="showReview = !showReview"
+					class="font-medium text-[15px] text-white"
+			>
 				<span v-if="!review.content.reply">Add Reply</span>
 				<span v-else>Edit Reply</span>
 			</BlueButton>
