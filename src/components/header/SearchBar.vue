@@ -1,8 +1,9 @@
 <script setup>
-import { ref, computed, nextTick } from "vue";
-import { useRouter } from 'vue-router';
+import { ref, computed, nextTick, watch } from "vue";
+import { useRouter, useRoute } from 'vue-router';
 
 const router = useRouter();
+const route = useRoute();
 
 const props = defineProps({
 	type: {
@@ -11,7 +12,8 @@ const props = defineProps({
 	},
 });
 
-const searchQuery = ref("");
+// Initialize from URL so the input is pre-filled when on search page
+const searchQuery = ref(route.query.q || "");
 const inputRef = ref(null);
 
 // Style Configuration
@@ -36,7 +38,10 @@ const theme = computed(() => styles[props.type] || styles.default);
 // clear search logic
 const clearSearch = () => {
 	searchQuery.value = "";
-	nextTick(() => inputRef.value?.focus());
+	nextTick(() => {
+		inputRef.value?.focus();
+		if (route.name === 'search') routeSearch();
+	});
 };
 
 // route to search page
@@ -48,6 +53,16 @@ const routeSearch = () => {
 		query: trimmedQuery ? { q: trimmedQuery } : {}
 	});
 };
+
+// Sync input when the route query changes (e.g. navigating away and back)
+watch(() => route.query.q, (newQuery) => {
+	// Only update if this isn't the search page (clears on other routes)
+	if (route.name !== 'search') {
+		searchQuery.value = "";
+	} else {
+		searchQuery.value = newQuery || "";
+	}
+});
 </script>
 
 <template>
