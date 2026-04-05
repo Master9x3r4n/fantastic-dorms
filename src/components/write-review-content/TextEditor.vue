@@ -130,4 +130,61 @@ onBeforeUnmount(() => {
 	pointer-events: none;
 	height: 0;
 }
+
+:deep(.ProseMirror) {
+	outline: none;
+}
+
+:deep(.ProseMirror p) {
+	margin-bottom: 0.5rem;
+}
+
+:deep(.ProseMirror h2) {
+	font-size: 1.25em;
+	font-weight: 700;
+	margin-top: 1rem;
+	margin-bottom: 0.5rem;
+	line-height: 1.2;
+}
+
+:deep(.ProseMirror h3) {
+	font-size: 1.125em;
+	font-weight: 600;
+	margin-top: 1rem;
+	margin-bottom: 0.5rem;
+	line-height: 1.2;
+}
+
+:deep(.ProseMirror ul) {
+	list-style-type: disc;
+	padding-left: 1.5rem;
+	margin-top: 0.25rem;
+	margin-bottom: 0.25rem;
+}
+
+:deep(.ProseMirror ol) {
+	list-style-type: decimal;
+	padding-left: 1.5rem;
+	margin-top: 0.25rem;
+	margin-bottom: 0.25rem;
+}
+
+:deep(.ProseMirror blockquote) {
+	border-left: 3px solid #cbd5e1;
+	padding-left: 1rem;
+	margin-top: 0.5rem;
+	margin-bottom: 0.5rem;
+	font-style: italic;
+	color: #64748b;
+}
+
+.dark :deep(.ProseMirror blockquote) {
+	border-left-color: #475569;
+	color: #94a3b8;
+}
+
+:deep(.ProseMirror strong) { font-weight: 700; }
+:deep(.ProseMirror em) { font-style: italic; }
+:deep(.ProseMirror u) { text-decoration: underline; }
+:deep(.ProseMirror s) { text-decoration: line-through; }
 </style>
