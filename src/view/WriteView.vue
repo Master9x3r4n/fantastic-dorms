@@ -58,12 +58,19 @@ const form = ref({
 	tags: [],
 	certified: false
 });
+
+// Overall form validity
 const isFormValid = computed(() => {
-	return form.value.title !== '' &&
-		form.value.body !== '' &&
-		Object.values(form.value.rating).every(value => { return value !== 0; }) &&
-		form.value.certified === true;
+	return !isTitleEmpty.value &&
+			!isTitleOverLimit.value &&
+			form.value.body !== '' &&
+			!(editorRef.value?.isInvalid) &&
+			!(editorRef.value?.isEmpty) &&
+			!(editorRef.value?.isOverLimit) &&
+			Object.values(form.value.rating).every(value => value !== 0) &&
+			form.value.certified === true;
 });
+
 const resetForm = () => {
 	form.value.title = '';
 	form.value.body = '';
@@ -82,18 +89,41 @@ const overallRating = computed(() => {
 	return (sum / activeCount).toFixed(1);
 });
 
-/////// Methods ///////
+const editorRef = ref(null);
+
+// Title
+const TITLE_MAX = 100;
+const isTitleOverLimit = computed(() => form.value.title.length > TITLE_MAX);
+const isTitleEmpty = computed(() => form.value.title.trim() === '');
+const isTitleDirty = ref(false);
+
+// Tags
+const TAG_MAX_COUNT = 20;
+const TAG_MAX_LENGTH = 24;
+const tagError = ref('');
 
 const addTag = () => {
 	const tag = currentTag.value.trim();
-	if (tag && !form.value.tags.includes(tag)) {
+	tagError.value = '';
+
+	if (!tag) return;
+	if (tag.length > TAG_MAX_LENGTH) {
+		tagError.value = `Tags cannot exceed ${TAG_MAX_LENGTH} characters.`;
+		return;
+	}
+	if (form.value.tags.length >= TAG_MAX_COUNT) {
+		tagError.value = `You can only add up to ${TAG_MAX_COUNT} tags.`;
+		return;
+	}
+	if (!form.value.tags.includes(tag)) {
 		form.value.tags.push(tag);
 	}
 	currentTag.value = '';
 };
 
 const removeTag = (tagToRemove) => {
-	tags.value = tags.value.filter(tag => tag !== tagToRemove);
+	form.value.tags = form.value.tags.filter(tag => tag !== tagToRemove);
+	tagError.value = '';
 };
 
 const submitting = ref(false);
@@ -184,6 +214,8 @@ onBeforeUnmount(() => {
 		}
 	})
 })
+
+
 </script>
 
 <template>
@@ -240,23 +272,42 @@ onBeforeUnmount(() => {
 				<form @submit.prevent="submitReview" class="space-y-6">
 					<!-- Title -->
 					<div>
-						<label class="block text-sm font-medium text-slate-900 dark:text-white mb-1" for="title">Review Title <span class="text-red-500">*</span></label>
+						<label class="block text-sm font-medium text-slate-900 dark:text-white mb-1" for="title">
+							Review Title <span class="text-red-500">*</span>
+						</label>
 						<input
-							v-model="form.title"
-							type="text"
-							id="title"
-							placeholder="Enter title here"
-							class="w-full rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] px-3 py-2 text-sm text-slate-900 dark:text-white focus:border-[#355AFF] focus:outline-none focus:ring-1 focus:ring-[#355AFF] placeholder:text-slate-400 dark:placeholder:text-slate-500 shadow-sm transition-colors"
-							required
+								v-model="form.title"
+								@input="isTitleDirty = true"
+								type="text"
+								id="title"
+								placeholder="Enter title here"
+								:class="[
+    						  'w-full rounded-md border bg-white dark:bg-[#121422] px-3 py-2 text-sm text-slate-900 ' +
+    						   'dark:text-white focus:outline-none focus:ring-1 placeholder:text-slate-400 ' +
+    						    'dark:placeholder:text-slate-500 shadow-sm transition-colors',
+    						  isTitleDirty && (isTitleEmpty || isTitleOverLimit)
+    						    ? 'border-red-400 focus:border-red-400 focus:ring-red-200 dark:focus:ring-red-500/20'
+    						    : 'border-slate-200 dark:border-slate-700 focus:border-[#355AFF] focus:ring-[#355AFF]'
+    						]"
 						/>
-						<p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Make sure the title is relevant to your review.</p>
+						<div class="mt-1 flex justify-between items-center">
+							<p v-if="isTitleDirty && isTitleEmpty" class="text-xs text-red-500">Title cannot be empty.</p>
+							<p v-else-if="isTitleDirty && isTitleOverLimit" class="text-xs text-red-500">Title cannot exceed {{ TITLE_MAX }} characters.</p>
+							<p v-else class="text-xs text-slate-500 dark:text-slate-400">Make sure the title is relevant to your review.</p>
+							<span :class="['text-xs ml-2 shrink-0', isTitleOverLimit ? 'text-red-500 font-medium' : 'text-slate-400']">
+      					{{ form.title.length }}/{{ TITLE_MAX }}
+    					</span>
+						</div>
 					</div>
-					
 					<!-- Textarea Content -->
-					<TextEditor 
-						v-model="form.body"
-						placeholder="My experience with this place was..."
-						:max-length="1000"
+					<label class="block text-sm font-medium text-slate-900 dark:text-white mb-1" for="title">
+						Review Content <span class="text-red-500">*</span>
+					</label>
+					<TextEditor
+							ref="editorRef"
+							v-model="form.body"
+							placeholder="My experience with this place was..."
+							:max-length="1000"
 					/>
 
 					<!-- Photo Upload -->
@@ -267,37 +318,52 @@ onBeforeUnmount(() => {
 					
 					<!-- Tags -->
 					<div>
-						<label class="block text-sm font-medium text-slate-900 dark:text-white mb-1" for="tags">Tags</label>
-						<p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Make sure to add tags that support your review. As you type, similar tags will be suggested.</p>
+						<label class="block text-sm font-medium text-slate-900 dark:text-white mb-1" for="tags">
+							Tags
+							<span class="text-slate-400 font-normal">({{ form.tags.length }}/{{ TAG_MAX_COUNT }})</span>
+						</label>
+						<p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Make sure to add tags that support your review.</p>
 						<div class="flex gap-2 mb-3">
 							<div class="relative flex-1">
-								<span class="absolute inset-y-0 left-0 flex items-center pl-3">
-									<span class="material-symbols-outlined text-slate-400 text-[18px]!">search</span>
+      					<span class="absolute inset-y-0 left-0 flex items-center pl-3">
+        					<span class="material-symbols-outlined text-slate-400 text-[18px]!">search</span>
 								</span>
 								<input
-									v-model="currentTag"
-									@keydown.enter.prevent="addTag"
-									type="text"
-									id="tags"
-									placeholder="Tag your review"
-									class="w-full rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] pl-9 pr-3 py-2 text-sm text-slate-900 dark:text-white focus:border-[#355AFF] focus:outline-none focus:ring-1 focus:ring-[#355AFF] placeholder:text-slate-400 shadow-sm transition-colors"
+										v-model="currentTag"
+										@keydown.enter.prevent="addTag"
+										type="text"
+										id="tags"
+										placeholder="Tag your review"
+										:maxlength="TAG_MAX_LENGTH + 1"
+										class="w-full rounded-md border border-slate-200 dark:border-slate-700 bg-white
+										dark:bg-[#121422] pl-9 pr-3 py-2 text-sm text-slate-900 dark:text-white
+										focus:border-[#355AFF] focus:outline-none focus:ring-1 focus:ring-[#355AFF]
+										placeholder:text-slate-400 shadow-sm transition-colors"
 								/>
 							</div>
-							<button @click="addTag" type="button" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-md text-sm font-medium bg-white dark:bg-[#121422] text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm">
+							<button
+									@click="addTag"
+									type="button"
+									:disabled="form.tags.length >= TAG_MAX_COUNT"
+									class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-md text-sm font-medium
+									bg-white dark:bg-[#121422] text-slate-900 dark:text-white hover:bg-slate-50
+									dark:hover:bg-slate-800 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+							>
 								Add Tag
 							</button>
 						</div>
-
-						<!-- Added Tags Display -->
+						<p v-if="tagError" class="text-xs text-red-500 mb-2">{{ tagError }}</p>
 						<div v-if="form.tags.length > 0" class="flex flex-wrap gap-2 mb-2">
-  						<span v-for="tag in form.tags" :key="tag" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#355AFF]/10 text-[#355AFF] border border-[#355AFF]/20">
-							<span class="leading-none">{{ tag }}</span>
-							<button type="button" @click="removeTag(tag)" class="ml-1.5 flex items-center justify-center w-6 h-6 rounded-full hover:bg-[#355AFF]/20 hover:text-[#2b4bcc] transition-colors focus:outline-none">
-								<span class="material-symbols-outlined text-[14px]! leading-none">close</span>
-							</button>
-  						</span>
+    					<span v-for="tag in form.tags" :key="tag"
+										class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#355AFF]/10 text-[#355AFF] border border-[#355AFF]/20">
+      					<span class="leading-none">{{ tag }}</span>
+      					<button type="button" @click="removeTag(tag)"
+												class="ml-1.5 flex items-center justify-center w-6 h-6 rounded-full hover:bg-[#355AFF]/20 hover:text-[#2b4bcc] transition-colors focus:outline-none">
+        				<span class="material-symbols-outlined text-[14px]! leading-none">close</span>
+      					</button>
+    					</span>
 						</div>
-						<p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Note: press enter or click Add to separate tags</p>
+						<p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Note: press enter or click Add to separate tags. Max {{ TAG_MAX_LENGTH }} characters per tag.</p>
 					</div>
 
 					<!-- Certification -->
