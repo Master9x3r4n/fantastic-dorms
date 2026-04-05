@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue';
 import Divider from "@/components/divider/Divider.vue";
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
+import ProfileService from '@/services/ProfileService.js';
 
 
 const props = defineProps({
@@ -75,7 +76,7 @@ const removePhoto = () => {
 	}
 };
 
-const handleProfileSave = () => {
+const handleProfileSave = async () => {
 	// Validation check for bio length
 	if (isBioInvalid.value) {
 		alert(`Your bio is ${bioCharacterCount.value} characters long, which exceeds the 200 character limit. Please shorten it before saving.`);
@@ -136,7 +137,7 @@ const handleProfileSave = () => {
 				<!-- Username -->
 				
 				<div class="space-y-2">
-					<label class="text-sm font-semibold text-black dark:text-white">Last Name</label>
+					<label class="text-sm font-semibold text-black dark:text-white">Username</label>
 					<div class="relative">
 						<span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-sm">@</span>
 						<input
@@ -163,7 +164,7 @@ const handleProfileSave = () => {
 
 					<!-- Last Name -->
 					<div class="space-y-2">
-						<label class="text-sm font-semibold text-black dark:text-white">Username</label>
+						<label class="text-sm font-semibold text-black dark:text-white">Last Name</label>
 						<input
 								v-model="formData.lastName"
 								type="text"

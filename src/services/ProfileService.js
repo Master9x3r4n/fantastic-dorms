@@ -16,6 +16,10 @@ class ProfileService {
 	login(username) {
 		return http.post('/auth/login', username);
 	}
+
+	update(username, data) {
+		return http.patch(`/p/${username}`, data);
+	}
 }
 
 export default new ProfileService();
