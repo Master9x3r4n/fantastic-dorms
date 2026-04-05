@@ -49,11 +49,23 @@ onMounted(() => {
 	nextTick(() => updateScrollButtons());
 	carousel.addEventListener('scroll', updateScrollButtons, { passive: true });
 	window.addEventListener('resize', updateScrollButtons);
+
+	// Re-check buttons whenever slot content is added or removed
+	const observer = new MutationObserver(() => {
+		nextTick(() => updateScrollButtons());
+	});
+	observer.observe(carousel, { childList: true, subtree: true });
+
+	// Store for cleanup
+	carousel._observer = observer;
 });
 
 onUnmounted(() => {
 	const carousel = carouselContent.value;
-	if (carousel) carousel.removeEventListener('scroll', updateScrollButtons);
+	if (carousel) {
+		carousel.removeEventListener('scroll', updateScrollButtons);
+		carousel._observer?.disconnect();
+	}
 	window.removeEventListener('resize', updateScrollButtons);
 });
 </script>
