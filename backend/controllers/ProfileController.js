@@ -157,6 +157,14 @@ class ProfileController {
 		const password = req.body.password;
 		const rememberMe = req.body.rememberMe;
 
+		if (typeof username !== 'string' || typeof password !== 'string')
+		{
+			return res.status(400).send(
+			{ 
+				message: "oh nahhh" 
+			});
+		}I
+
 		try {
 			const profile = await Profile.findOne({ username: username });
 			if (profile) {
