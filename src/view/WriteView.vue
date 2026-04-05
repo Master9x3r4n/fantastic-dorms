@@ -210,7 +210,7 @@ onBeforeUnmount(() => {
 					<div class="mb-6 flex items-center">
 						<span class="text-sm text-slate-500 dark:text-slate-400 mr-2">You are creating a review for</span>
 						<span class="flex items-center font-semibold text-slate-900 dark:text-white">
-							<span v-if="listing.isVerified" class="material-symbols-outlined dark-filled text-[#355AFF] dark:text-white mr-1 text-[18px]">verified</span>
+							<span v-if="listing.isVerified" class="material-symbols-outlined dark-filled text-[#355AFF] dark:text-white mr-1 text-[18px]!">verified</span>
 							{{ listing.name }}
 						</span>
 					</div>

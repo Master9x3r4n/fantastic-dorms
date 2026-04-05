@@ -56,15 +56,17 @@ onMounted(async () => {
 			<!-- LEFT COLUMN: Content -->
 			<div class="w-full lg:w-2/3 flex flex-col gap-8">
 				<!-- Media -->
-				<div v-if="listing.media?.length" class="flex w-full">
-					<Carousel :count="1" buttonStyling="large">
+				<div v-if="listing.media?.length" class="w-full h-107.5">
+					<Carousel buttonStyling="large">
 						<template #content>
-							<MediaContainer
+							<div
 									v-for="(mediaSrc, index) in listing.media"
 									:key="index"
-									class="flex shrink-0 snap-start w-full object-cover"
-									:src="mediaSrc"
-							/>
+									class="h-full p-2"
+									style="flex: 0 0 100%"
+							>
+								<MediaContainer :src="mediaSrc" size="full" :objectFit="'cover'" />
+							</div>
 						</template>
 					</Carousel>
 				</div>
