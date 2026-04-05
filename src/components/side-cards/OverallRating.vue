@@ -2,9 +2,8 @@
 import { computed } from 'vue';
 
 const props = defineProps({
-	// holy JS is so bad sometimes something is an array, THE OTHER TIMES IT'S AN OBJECT>????
 	rating: {
-		type: [Object, Array],
+		type: Object,
 		default: () => ({
 			cleanliness: 0,
 			comfort: 0,
@@ -14,52 +13,27 @@ const props = defineProps({
 	}
 });
 
-// 1. Safely extract the rating object whether it was passed as an Array or Object
-const ratingData = computed(() => {
-	if (Array.isArray(props.rating) && props.rating.length > 0) {
-		return props.rating[0];
-	}
-	return props.rating || {};
-});
-
-// 2. Define exactly which categories we care about (ignoring _id, name, value, etc.)
 const validCategories = ['cleanliness', 'comfort', 'communication', 'location'];
 
-// 3. Calculate the overall rating average strictly from the 4 specific categories
 const overallRating = computed(() => {
-	let sum = 0;
-	let count = 0;
+	const sum = validCategories.reduce((acc, category) => {
+		return acc + Number(props.rating?.[category] ?? 0);
+	}, 0);
 
-	for (const category of validCategories) {
-		// Check if the category exists in the data to avoid NaN errors
-		if (ratingData.value[category] !== undefined && ratingData.value[category] !== null) {
-			sum += Number(ratingData.value[category]);
-			count++;
-		}
-	}
-
-	if (count === 0) return "0.0";
-	return (sum / count).toFixed(1);
+	return (sum / validCategories.length).toFixed(1);
 });
 
-// 4. Format ONLY the allowed categories into an iterable array for the template
 const formattedRatings = computed(() => {
-	return validCategories.map(category => {
-		// Fallback to 0 if the data is missing a specific category
-		const score = ratingData.value[category] !== undefined ? Number(ratingData.value[category]) : 0;
-
-		return {
-			// Capitalize the first letter (e.g., "cleanliness" -> "Cleanliness")
-			name: category.charAt(0).toUpperCase() + category.slice(1),
-			score: score.toFixed(1)
-		};
-	});
+	return validCategories.map(category => ({
+		name: category.charAt(0).toUpperCase() + category.slice(1),
+		score: Number(props.rating?.[category] ?? 0).toFixed(1)
+	}));
 });
 </script>
 
 <template>
 	<div class="bg-white dark:bg-[#121422] border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm p-6
-  w-full max-w-[420px] flex flex-col gap-5 transition-colors duration-200">
+  w-full max-w-105 flex flex-col gap-5 transition-colors duration-200">
 
 		<!-- Header Container -->
 		<div class="flex items-center justify-between">
