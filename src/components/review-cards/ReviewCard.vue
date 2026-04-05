@@ -138,7 +138,7 @@ const parsedBody = computed(() => {
 
 			<!-- Upvote -->
 			<div class="text-slate-500 dark:text-slate-400 flex items-center gap-2">
-				<ThumbsContainer :score="review.score"/>
+				<ThumbsContainer :reviewId="review._id" :score="review.score"/>
 			</div>
 		</div>
 

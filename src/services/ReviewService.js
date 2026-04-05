@@ -58,6 +58,12 @@ class ReviewService {
 	deleteAllFromUser(username) {
 		return http.delete(`/r?username=${username}`);
 	}
+
+
+	updateScore(id, direction) 
+	{
+		return http.patch(`/r/${id}/vote`, { direction: direction });
+	}
 }
 
 export default new ReviewService();

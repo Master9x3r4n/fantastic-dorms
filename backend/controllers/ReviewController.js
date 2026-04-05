@@ -149,6 +149,54 @@ class ReviewController {
 			});
 		}
 	}
+
+	// updates the score by receiving the direction
+	async updateScore(req, res) {
+		const id = req.params.id;
+		const direction = req.body.direction;
+
+		let incdec = 0;
+
+		// get number from direction
+		if (direction === 'up')
+		{
+			incdec = 1;
+		}
+		else if (direction === 'down')
+		{
+			incdec = -1;
+		}
+		else if (direction === 'downdown')
+		{
+			incdec = -2;
+		}
+		else if (direction === 'upup')
+		{
+			incdec = 2;
+		}
+
+		try {
+			const updatedReview = await Review.findByIdAndUpdate(id,
+				{ 
+					// add this amount to the amount in the db
+					$inc: { score: incdec } 
+				}, 
+				{ 
+					// give us the updated values from mongodb
+					returnDocument: 'after',
+					runValidators: true,
+				}
+			);
+
+			if (!updatedReview) {
+				return res.status(404).send({ message: "Review not found" });
+			}
+
+			res.status(200).send(updatedReview);
+		} catch (err) {
+			res.status(500).send({ message: err.message });
+		}
+	}
 }
 
 export default new ReviewController();

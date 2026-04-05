@@ -147,7 +147,7 @@ const rerouteTo = (reply) => {
 		<div class="flex w-full justify-between items-center">
 			<!-- Thumbs :D -->
 			<div class="flex items-center gap-3.5 text-slate-500 dark:text-slate-400 pt-1">
-				<ThumbsContainer :score="review.score"/>
+				<ThumbsContainer :reviewId="review._id" :score="review.score"/>
 			</div>
 
 			<!-- Reply Button -->

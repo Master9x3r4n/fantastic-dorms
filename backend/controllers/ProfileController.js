@@ -101,7 +101,6 @@ class ProfileController {
 					{ 
 						// give us the updated values from mongodb
 						returnDocument: 'after',
-
 						runValidators: true,
 					} 
 				);
