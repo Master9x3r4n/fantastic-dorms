@@ -4,7 +4,7 @@
 import { v2 as cloudinary } from 'cloudinary';
 import fs from 'fs';
 import Review from '../models/Review.js'; 
-const MAX_MEDIA_COUNT = 4;
+const MAX_MEDIA_COUNT = 10;
 
 class ReviewController {
 	// Finds all Review documents with query

@@ -22,7 +22,7 @@ const props = defineProps({
 		required: true
 	}
 });
-
+const showReview = ref(false);
 const profile = ref(null);
 const reviewCount = ref(0);
 
