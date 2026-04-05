@@ -77,6 +77,36 @@ const removePhoto = () => {
 };
 
 const handleProfileSave = async () => {
+	// still use old username for the PK
+	const oldUsername = props.userInfo.username;
+
+	// grab new username
+	const newUsername = formData.value.username;
+
+	// grab new first name
+	const newFirstName = formData.value.firstName;
+
+	// grab new first name
+	const newLastName = formData.value.lastName;
+
+	if (newUsername.length > 20)
+	{
+		alert(`Your new username ${ newUsername } is more than 20 characters long. Please shorten it before saving.`);
+		return;
+	}
+
+	if (newFirstName.length > 20)
+	{
+		alert(`Your new first name ${ newFirstName } is more than 20 characters long. Please shorten it before saving.`);
+		return;
+	}
+
+	if (newLastName.length > 20)
+	{
+		alert(`Your new last name ${ newLastName } is more than 20 characters long. Please shorten it before saving.`);
+		return;
+	}
+
 	// Validation check for bio length
 	if (isBioInvalid.value) {
 		alert(`Your bio is ${bioCharacterCount.value} characters long, which exceeds the 200 character limit. Please shorten it before saving.`);
@@ -89,11 +119,7 @@ const handleProfileSave = async () => {
 		newImageFile: newImageFile.value
 	});*/
 
-	// still use old username for the PK
-	const oldUsername = props.userInfo.username;
-
-	// grab new username
-	const newUsername = formData.value.username;
+	
 
 	let usernameExists = null;
 
@@ -124,8 +150,8 @@ const handleProfileSave = async () => {
 		const updatedProfile = {
 			username: newUsername,
 			name: {
-				firstName: formData.value.firstName,
-				lastName: formData.value.lastName,
+				firstName: newFirstName,
+				lastName: newLastName,
 			},
 			school: formData.value.school,
 			dorm: {
