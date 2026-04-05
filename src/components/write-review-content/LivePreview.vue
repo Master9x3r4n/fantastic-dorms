@@ -117,14 +117,14 @@ const parsedBody = computed(() => {
 
 /* Headings */
 .editor-output :deep(h2) {
-	font-size: 1.5em;
+	font-size: 1.25em;
 	font-weight: 700;
 	margin-top: 1rem;
 	margin-bottom: 0.5rem;
 	line-height: 1.2;
 }
 .editor-output :deep(h3) {
-	font-size: 1.25em;
+	font-size: 1.125em;
 	font-weight: 600;
 	margin-top: 1rem;
 	margin-bottom: 0.5rem;
