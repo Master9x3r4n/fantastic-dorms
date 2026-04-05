@@ -1,8 +1,9 @@
 <script setup>
-import { ref, computed } from 'vue';
+import {ref, computed, onMounted} from 'vue';
 import Divider from "@/components/divider/Divider.vue";
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
-
+import AutocompleteInput from "@/components/settings/AutocompleteInput.vue";
+import ListingService from "@/services/ListingService.js";
 
 const props = defineProps({
 	userInfo: {
@@ -19,6 +20,7 @@ const props = defineProps({
 		})
 	}
 });
+const listingNames = ref([]);
 
 const emit = defineEmits(['save']);
 
@@ -88,6 +90,15 @@ const handleProfileSave = () => {
 		newImageFile: newImageFile.value
 	});
 };
+
+onMounted(async () => {
+	try {
+		const res = await ListingService.findAll();
+		listingNames.value = res.data.map(l => l.name);
+	} catch (err) {
+		console.error('Failed to fetch listings:', err.message);
+	}
+});
 </script>
 
 <template>
@@ -190,12 +201,12 @@ const handleProfileSave = () => {
 					<div class="space-y-2">
 						<label class="text-sm font-semibold text-black dark:text-white">Current Home</label>
 						<div class="relative">
-							<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 dark:text-slate-500 text-lg!">apartment</span>
-							<input
+							<span class="absolute left-4 top-3.5 material-symbols-outlined text-slate-400 dark:text-slate-500 text-lg! z-10 pointer-events-none">apartment</span>
+							<AutocompleteInput
 									v-model="formData.home"
-									type="text"
+									:options="listingNames"
 									placeholder="Dorm or apartment name"
-									class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
+									class="pl-11"
 							/>
 						</div>
 					</div>

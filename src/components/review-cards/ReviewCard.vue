@@ -62,46 +62,46 @@ const parsedBody = computed(() => {
 	<div class="bg-white dark:bg-[#121422] border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm p-6 w-full transition-colors duration-200 flex flex-col gap-3">
 
 		<!-- Header Container -->
-		<div class="flex justify-between items-start mb-1">
+		<div class="flex justify-between items-start gap-4 mb-1">
 
-			<!-- Anonymous User State -->
-			<div v-if="review.isAnonymous" class="flex items-center gap-3 cursor-default">
-				<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
-					<span class="material-symbols-outlined text-slate-400 text-2xl">person_off</span>
-				</div>
-				<div>
-					<div class="font-bold text-slate-900 dark:text-white">
-						Anonymous
+			<!-- Left side: user info -->
+			<div class="min-w-0 flex-1">
+				<!-- Anonymous User State -->
+				<div v-if="review.isAnonymous" class="flex items-center gap-3 cursor-default">
+					<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center shrink-0">
+						<span class="material-symbols-outlined text-slate-400 text-2xl">person_off</span>
 					</div>
-					<div class="text-sm text-slate-500 dark:text-slate-400 italic">Reviewer</div>
+					<div class="min-w-0">
+						<div class="font-bold text-slate-900 dark:text-white truncate">Anonymous</div>
+						<div class="text-sm text-slate-500 dark:text-slate-400 italic">Reviewer</div>
+					</div>
 				</div>
-			</div>
 
-			<!-- Known User State -->
-			<RouterLink v-else-if="profile" :to="{name: 'profile', params: {id: review.username}}" class="hover:opacity-80 transition-opacity">
-				<div class="flex items-center gap-3">
-					<!-- Profile Icon -->
-					<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
-						<ProfileIcon :src="profile.picture" sizeClass="w-full h-full" iconSize="text-[24px]!"></ProfileIcon>
+				<!-- Known User State -->
+				<RouterLink v-else-if="profile" :to="{name: 'profile', params: {id: review.username}}" class="hover:opacity-80 transition-opacity">
+					<div class="flex items-center gap-3">
+						<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center shrink-0">
+							<ProfileIcon :src="profile.picture" sizeClass="w-full h-full" iconSize="text-[24px]!"></ProfileIcon>
+						</div>
+						<div class="min-w-0">
+							<h3 class="font-bold text-slate-900 dark:text-white truncate">{{ profile?.name.firstName + ' ' + profile?.name.lastName }}</h3>
+							<p class="text-sm text-slate-500 dark:text-slate-400 italic">{{ reviewCount }} Review{{ reviewCount === 1 ? '' : 's' }}</p>
+						</div>
 					</div>
+				</RouterLink>
+
+				<!-- Fallback -->
+				<div v-else class="flex items-center gap-3 opacity-50 cursor-wait">
+					<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center animate-pulse shrink-0"></div>
 					<div>
-						<h3 class="font-bold text-slate-900 dark:text-white">{{ profile?.name.firstName + ' ' + profile?.name.lastName }}</h3>
-						<p class="text-sm text-slate-500 dark:text-slate-400 italic">{{ reviewCount }} Review{{ reviewCount === 1 ? '' : 's' }}</p>
+						<div class="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded animate-pulse mb-2"></div>
+						<div class="h-3 w-16 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
 					</div>
-				</div>
-			</RouterLink>
-
-			<!-- Fallback if profile is still loading and not anonymous -->
-			<div v-else class="flex items-center gap-3 opacity-50 cursor-wait">
-				<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center animate-pulse"></div>
-				<div>
-					<div class="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded animate-pulse mb-2"></div>
-					<div class="h-3 w-16 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
 				</div>
 			</div>
 
 			<!-- Rating -->
-			<div class="flex items-center text-[#355AFF] text-2xl font-bold">
+			<div class="flex items-center text-[#355AFF] text-2xl font-bold shrink-0">
 				<span class="material-symbols-outlined text-[28px]! mr-1 filled">star</span>
 				{{ getOverallRating(review.rating) }}
 			</div>
