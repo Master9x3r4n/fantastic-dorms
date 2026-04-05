@@ -28,29 +28,51 @@ const hiddenAmenitiesCount = computed(() =>
 		Math.max(0, (props.listing.amenities?.length || 0) - maxAmenities)
 );
 
-const avgRating = computed(() => {
-	if (!props.listing.rating) return 0;
+// Dynamic Review Count State
+const reviews = ref([]);
+
+const fetchedReviewCount = computed(() => reviews.value.length);
+
+const aggregatedRating = computed(() => {
+	if (!reviews.value.length) return { cleanliness: 0, comfort: 0, communication: 0, location: 0 };
+
 	const categories = ['cleanliness', 'comfort', 'communication', 'location'];
-	const valid = categories.filter(c => typeof props.listing.rating[c] === 'number');
-	if (!valid.length) return 0;
-	const sum = valid.reduce((acc, c) => acc + props.listing.rating[c], 0);
-	return Number((sum / valid.length).toFixed(1));
+	const sums = { cleanliness: 0, comfort: 0, communication: 0, location: 0 };
+
+	reviews.value.forEach(review => {
+		categories.forEach(category => {
+			sums[category] += Number(review.rating?.[category] ?? 0);
+		});
+	});
+
+	const count = reviews.value.length;
+	return Object.fromEntries(
+			categories.map(cat => [cat, sums[cat] / count])
+	);
 });
 
-// Dynamic Review Count State
-const fetchedReviewCount = ref(0);
+const validCategories = ['cleanliness', 'comfort', 'communication', 'location'];
 
-// Fetch reviews for this specific listing to get the accurate count when the card mounts
+const overallRating = computed(() => {
+	// Guard against division by 0 if there are no reviews
+	if (reviews.value.length === 0) return 0;
+
+	const sum = validCategories.reduce((acc, category) => {
+		return acc + Number(aggregatedRating.value[category] ?? 0);
+	}, 0);
+	return Number((sum / validCategories.length).toFixed(1));
+});
+
+
 onMounted(async () => {
 	const targetId = props.listing.listingId;
 
-	// Only fetch if we don't already have a review count passed directly via props
 	if (targetId) {
 		try {
 			const res = await ReviewService.findAllFromListing(targetId);
-			fetchedReviewCount.value = res.data?.length || 0;
+			reviews.value = res.data;
 		} catch (err) {
-			console.error(`Failed to fetch review count for ${targetId}:`, err);
+			console.log(`Error retrieving reviews for ${targetId}: ${err.message}`);
 		}
 	}
 });
@@ -106,7 +128,7 @@ onMounted(async () => {
 			<!-- Rating -->
 			<div class="pt-3 mt-auto border-t border-slate-100 dark:border-slate-800/60">
 				<CardRating
-						:rating="avgRating"
+						:rating="overallRating"
 						:reviewCount="fetchedReviewCount"
 				/>
 			</div>

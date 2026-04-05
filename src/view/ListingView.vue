@@ -23,6 +23,24 @@ const displayedReviews = computed(() => {
 	return reviews.value.slice(0, 3);
 });
 
+const aggregatedRating = computed(() => {
+	if (!reviews.value.length) return { cleanliness: 0, comfort: 0, communication: 0, location: 0 };
+
+	const categories = ['cleanliness', 'comfort', 'communication', 'location'];
+	const sums = { cleanliness: 0, comfort: 0, communication: 0, location: 0 };
+
+	reviews.value.forEach(review => {
+		categories.forEach(category => {
+			sums[category] += Number(review.rating?.[category] ?? 0);
+		});
+	});
+
+	const count = reviews.value.length;
+	return Object.fromEntries(
+			categories.map(cat => [cat, sums[cat] / count])
+	);
+});
+
 onMounted(async () => {
 	// Get listing
 	ListingService.find(listingId)
@@ -76,7 +94,7 @@ onMounted(async () => {
 
 			<!-- RIGHT COLUMN: Sidebar -->
 			<div class="w-full lg:w-1/3 flex flex-col gap-8 lg:sticky lg:top-8 h-fit">
-				<OverallRating :rating="listing.rating" class="w-full shadow-sm"/>
+				<OverallRating :rating="aggregatedRating" class="w-full shadow-sm"/>
 
 				<div class="flex flex-col gap-6">
 					<div class="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-slate-700/60">
