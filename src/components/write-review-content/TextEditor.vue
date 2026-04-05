@@ -3,6 +3,7 @@ import { onBeforeUnmount, watch, computed, ref } from 'vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
+import Placeholder from '@tiptap/extension-placeholder'
 import { Markdown } from 'tiptap-markdown'
 
 const props = defineProps({
@@ -30,6 +31,9 @@ const editor = useEditor({
 		StarterKit,
 		Underline,
 		Markdown,
+		Placeholder.configure({
+			placeholder: props.placeholder,
+		}),
 	],
 	editorProps: {
 		attributes: {
@@ -117,3 +121,13 @@ onBeforeUnmount(() => {
 		</p>
 	</div>
 </template>
+
+<style scoped>
+:deep(.ProseMirror p.is-editor-empty:first-child::before) {
+	content: attr(data-placeholder);
+	float: left;
+	color: #94a3b8;
+	pointer-events: none;
+	height: 0;
+}
+</style>
