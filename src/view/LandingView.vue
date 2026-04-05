@@ -4,7 +4,7 @@ import SearchBar from '@/components/header/SearchBar.vue';
 import LandingCategory from '@/components/landing/LandingCategory.vue';
 import ListingService from '../services/ListingService.js';
 
-const listings = ref(null);
+const listings = ref([]);
 ListingService.findAll()
 	.then(res => {
 		listings.value = res.data;
