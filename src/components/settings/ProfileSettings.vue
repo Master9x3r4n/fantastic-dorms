@@ -84,10 +84,77 @@ const handleProfileSave = async () => {
 	}
 
 	// Emit the updated data to the parent component to handle the API call
-	emit('save', {
+	/*emit('save', {
 		formData: formData.value,
 		newImageFile: newImageFile.value
-	});
+	});*/
+
+	// still use old username for the PK
+	const oldUsername = props.userInfo.username;
+
+	// grab new username
+	const newUsername = formData.value.username;
+
+	let usernameExists = null;
+
+	if (oldUsername != newUsername)
+	{
+		try
+		{
+			// checking if username input is in database
+			usernameExists = await ProfileService.find(formData.value.username);
+		}
+		catch (error)
+		{
+			console.error(error);
+			usernameExists = null;
+		}
+	}
+	
+
+	// if its in the database
+	if (usernameExists)
+	{
+		// alert user that what they want is taken
+		alert(`Your new username ${newUsername} is already taken!`);
+		return;
+	}
+	else
+	{
+		const updatedProfile = {
+			username: newUsername,
+			name: {
+				firstName: formData.value.firstName,
+				lastName: formData.value.lastName,
+			},
+			school: formData.value.school,
+			dorm: {
+				name: formData.value.home,
+				since: Date.now(),
+			},
+			bio: formData.value.bio,
+		}
+
+		await ProfileService.update(oldUsername, updatedProfile)
+		.then(res => {
+			// updating data locally
+			formData.value = {
+				...res.data,
+				firstName: res.data.name?.firstName, // Pull from nested object
+				lastName: res.data.name?.lastName,   // Pull from nested object
+				home: res.data.dorm?.name
+			};
+
+			// telling parent to update
+			emit('save', res.data);
+
+			alert("Listing successfully updated!");
+		})
+		.catch(error => {
+			console.error(`${error}`)
+		});
+	}
+	
 };
 </script>
 

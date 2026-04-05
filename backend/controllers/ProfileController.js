@@ -93,10 +93,28 @@ class ProfileController {
 			if (profile) {
 				// Update profile picture, if there are changes
 
-				const newProfile = await Profile.updateOne({ username: username }, updates, {
-					useFindAndModify: true
-				});
-				res.status(200).send(newProfile);
+				// ProfileController.js
+
+				const newProfile = await Profile.findOneAndUpdate(
+					{ username: username }, 
+					updates, 
+					{ 
+						// give us the updated values from mongodb
+						returnDocument: 'after',
+
+						runValidators: true,
+					} 
+				);
+
+				// if the updated values were returned, send back to frontend
+				if (newProfile) 
+				{
+					res.status(200).send(newProfile);
+				} else 
+				{
+					res.status(404).send({ message: "User not found" });
+				}
+
 			} else {
 				res.status(404).send({
 					message: `Profile ${username} could not be found.`
