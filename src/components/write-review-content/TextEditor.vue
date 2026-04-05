@@ -81,7 +81,7 @@ onBeforeUnmount(() => {
       <span class="text-xs text-slate-500 dark:text-slate-400 transition-colors">
         {{ props.modelValue.length }}/{{ maxLength }} characters
       </span>
-			<span class="material-symbols-outlined text-slate-400 text-[16px] cursor-nwse-resize hover:text-slate-600 dark:hover:text-slate-300 pointer-events-none">open_in_full</span>
+			<!--<span class="material-symbols-outlined text-slate-400 text-[16px] cursor-nwse-resize hover:text-slate-600 dark:hover:text-slate-300 pointer-events-none">open_in_full</span>-->
 		</div>
 	</div>
 </template>
