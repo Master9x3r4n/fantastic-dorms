@@ -1,15 +1,16 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { marked } from 'marked';
-import Carousel from '@/components/carousel/Carousel.vue';
-import MediaContainer from '@/components/carousel/MediaContainer.vue';
+import Carousel from '../carousel/Carousel.vue';
+import MediaContainer from '../carousel/MediaContainer.vue';
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
-import ProfileService from '@/services/ProfileService.js';
+import ProfileService from '../../services/ProfileService.js';
+import ReviewService from '../../services/ReviewService.js';
 import ReviewTag from "@/components/write-review-content/ReviewTag.vue";
-import ThumbsContainer from '@/components/thumbs-buttons/ThumbsContainer.vue';
+import ThumbsContainer from '../thumbs-buttons/ThumbsContainer.vue';
 import OwnerReply from "@/components/side-cards/OwnerReply.vue";
-import BlueButton from '@/components/page-buttons/BlueButton.vue';
-import ReplyReview from '@/components/review-cards/ReplyReview.vue';
+import BlueButton from '../page-buttons/BlueButton.vue';
+import ReplyReview from './ReplyReview.vue';
 import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
@@ -21,9 +22,9 @@ const props = defineProps({
 		required: true
 	}
 });
-
-const profile = ref(null);
 const showReview = ref(false);
+const profile = ref(null);
+const reviewCount = ref(0);
 
 // only query for the profile data if the review is not anonymous
 if (!props.review.isAnonymous) {
@@ -35,6 +36,13 @@ if (!props.review.isAnonymous) {
 				console.log(`Error retrieving profile \'${props.review.username}\': ${error.message}`)
 			});
 }
+ReviewService.findAllByUser(props.review.username)
+		.then(res => {
+			reviewCount.value = res.data?.length || 0;
+		})
+		.catch(error => {
+			console.log(`Error retrieving reviews for user '${props.review.username}': ${error.message}`);
+		});
 
 const getOverallRating = (ratings) => {
 	let overall = 0;
@@ -99,7 +107,7 @@ const getDir = () => {
 						<div class="font-bold text-slate-900 dark:text-white">
 							{{ profile?.name?.firstName ? (profile.name.firstName + ' ' + profile.name.lastName) : review.username }}
 						</div>
-						<div class="text-sm text-slate-500 dark:text-slate-400 italic">- Reviews</div>
+						<div class="text-sm text-slate-500 dark:text-slate-400 italic">{{ reviewCount }} Review{{ reviewCount === 1 ? '' : 's' }}</div>
 					</div>
 				</div>
 			</RouterLink>
@@ -131,7 +139,7 @@ const getDir = () => {
 
 		<!-- Media Carousel -->
 		<div v-if="review.media && review.media.length > 0" class="h-[47%] flex w-full justify-center items-center">
-			<Carousel :count="4" buttonStyling="small circular" :buttonSpacing="4">
+			<Carousel buttonStyling="small circular" :buttonSpacing="4">
 				<template #content>
 					<template v-for="(url, index) in review.media" :key="index">
 						<div class="flex shrink-0 snap-start pl-2 pr-2">

@@ -1,6 +1,5 @@
 <script setup>
 import Divider from '../divider/Divider.vue';
-import Icon from '../icon/Icon.vue';
 import BlueButton from '../page-buttons/BlueButton.vue';
 import ProfileService from '@/services/ProfileService';
 import { ref, onMounted, watch, computed } from 'vue';
@@ -106,16 +105,16 @@ watch(() => props.listing.owner, checkOwnerVerification);
 
 		<!-- Owner Profile Section -->
 		<div class="flex items-center gap-4 bg-slate-50 dark:bg-slate-800/30 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50 w-fit pr-8">
-			<div class="w-14 h-14 rounded-full bg-gradient-to-br from-amber-100 to-amber-200 border-2 border-white dark:border-slate-700 shadow-sm flex items-center justify-center">
+			<div class="w-14 h-14 rounded-full bg-linear-to-br from-amber-100 to-amber-200 border-2 border-white dark:border-slate-700 shadow-sm flex items-center justify-center">
 				<span class="material-symbols-outlined text-amber-600 text-3xl">domain</span>
 			</div>
 			<div class="flex flex-col">
 				<h3 class="font-bold text-lg text-slate-900 dark:text-white leading-tight">
 					{{ listing.owner }}
 				</h3>
-				<div v-if="isVerified" class="flex items-center gap-1.5 text-[#355AFF] font-semibold text-sm mt-1">
-					<Icon name="verified" class="w-4 h-4" />
-					<span>Verified Host</span>
+				<div v-if="listing.isVerified" class="flex items-center gap-1.5 text-[#355AFF] font-semibold text-sm mt-1">
+					<span class="material-symbols-outlined dark-filled text-[#355AFF] mr-1 text-[18px]!">verified</span>
+					Verified Host
 				</div>
 			</div>
 		</div>

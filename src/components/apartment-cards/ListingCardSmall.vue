@@ -1,70 +1,145 @@
 <script setup>
-import { ref } from 'vue';
-import CardRating from '@/components/rating/CardRating.vue';  
+import { computed, ref, onMounted } from 'vue';
+import CardRating from '@/components/rating/CardRating.vue';
+import ReviewService from '@/services/ReviewService.js';
 
 const props = defineProps({
-    listing: {
-        type: Object,
-        default: {}
-    }
-})
+	listing: {
+		type: Object,
+		default: () => ({
+			name: "Apartment Name",
+			description: "A lovely apartment.",
+			media: [],
+			listingId: null,
+			_id: null,
+			amenities: [],
+			rating: null,
+		})
+	}
+});
 
-const reviewCount = ref(null);
-// do some magic
+const maxAmenities = 2;
 
+const displayedAmenities = computed(() =>
+		props.listing.amenities?.slice(0, maxAmenities) || []
+);
+
+const hiddenAmenitiesCount = computed(() =>
+		Math.max(0, (props.listing.amenities?.length || 0) - maxAmenities)
+);
+
+// Dynamic Review Count State
+const reviews = ref([]);
+
+const fetchedReviewCount = computed(() => reviews.value.length);
+
+const aggregatedRating = computed(() => {
+	if (!reviews.value.length) return { cleanliness: 0, comfort: 0, communication: 0, location: 0 };
+
+	const categories = ['cleanliness', 'comfort', 'communication', 'location'];
+	const sums = { cleanliness: 0, comfort: 0, communication: 0, location: 0 };
+
+	reviews.value.forEach(review => {
+		categories.forEach(category => {
+			sums[category] += Number(review.rating?.[category] ?? 0);
+		});
+	});
+
+	const count = reviews.value.length;
+	return Object.fromEntries(
+			categories.map(cat => [cat, sums[cat] / count])
+	);
+});
+
+const validCategories = ['cleanliness', 'comfort', 'communication', 'location'];
+
+const overallRating = computed(() => {
+	// Guard against division by 0 if there are no reviews
+	if (reviews.value.length === 0) return 0;
+
+	const sum = validCategories.reduce((acc, category) => {
+		return acc + Number(aggregatedRating.value[category] ?? 0);
+	}, 0);
+	return Number((sum / validCategories.length).toFixed(1));
+});
+
+
+onMounted(async () => {
+	const targetId = props.listing.listingId;
+
+	if (targetId) {
+		try {
+			const res = await ReviewService.findAllFromListing(targetId);
+			reviews.value = res.data;
+		} catch (err) {
+			console.log(`Error retrieving reviews for ${targetId}: ${err.message}`);
+		}
+	}
+});
 </script>
 
 <template>
-    <!-- <div class=
-        "h-86 w-110 rounded-[25px] 
-        p-0 shadow-2xl relative
-        bg-white flex flex-col items-center dark:bg-[#111111]"
-    > -->
-    <div class=
-        "h-86 w-110 rounded-[25px] p-0 relative
-        flex flex-col items-center bg-white dark:bg-[#111111] shadow-2xl"
-    >
-        <!-- Photo h-40%-->
-        <div class="w-full h-5/12 rounded-t-[25px] absolute left-0 right-0 top-0 bg-gradient">
-        <!-- <div class="w-full h-[30%] rounded-t-[25px] absolute left-0 right-0 top-0 bg-gradient"> -->
-            <img 
-                v-if="listing.media[0]"
-                :src="listing.media[0]"
-                class="w-full h-full rounded-t-[25px]"
-            >
-        </div>
+	<RouterLink
+			:to="{ name: 'listing', params: { id: listing.listingId || listing._id } }"
+			class="group flex flex-col w-full max-w-sm bg-white dark:bg-[#121422] border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
+	>
+		<!-- Image -->
+		<div class="w-full h-56 relative bg-linear-to-br from-[#517FFF] to-[#312AFF] shrink-0 overflow-hidden">
+			<img
+					v-if="listing.media?.[0]"
+					:src="listing.media[0]"
+					class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+					alt="Apartment Thumbnail"
+			/>
+			<div v-else class="absolute inset-0 flex items-center justify-center text-white/50">
+				<span class="material-symbols-outlined text-5xl">image</span>
+			</div>
+		</div>
 
-        <!-- Frame -->
-        <!-- <div class="absolute top-[45%] w-[90%] h-[60%] flex flex-col"> -->
-        <div class="absolute top-[45%] w-[90%] h-fit flex flex-col">
-            <!-- Upper Container -->
-            <div class="h-[50%] flex flex-col justify-between gap-4">
-                <!-- Apartment Name -->
-                <div>
-                    <h1 class="font-bold text-[32px] leading-10 dark:text-white hover:underline">   
-                        <RouterLink :to="{ name: 'listing', params: { id: listing.listingId } }">{{ listing.name }}</RouterLink>
-                    </h1>
-                </div>
+		<!-- Content -->
+		<div class="p-5 flex flex-col gap-3 flex-1">
+			<!-- Name -->
+			<h2 class="font-bold text-xl leading-tight text-slate-900 dark:text-white group-hover:text-[#355AFF] transition-colors line-clamp-1">
+				{{ listing.name }}
+			</h2>
 
-                <!-- Apartment Description -->
-                <div class="h-20 italic font-normal text-[20px] leading-6 dark:text-white overflow-hidden text-ellipsis">
-                    {{ listing.description }}
-                </div>
-            </div>
+			<!-- Description -->
+			<p class="italic text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
+				{{ listing.description }}
+			</p>
 
-            <!-- Lower Review Container -->
-            <div class="h-[50%] flex justify-end items-end gap-6">
-                <CardRating 
-                :rating="4" 
-                :reviewCount="reviewCount"/>
-            </div>
-       </div>
-    </div>
+			<!-- Amenity Flairs -->
+			<div v-if="displayedAmenities.length" class="flex flex-wrap items-center gap-1.5 mt-1">
+        <span
+						v-for="flair in displayedAmenities"
+						:key="flair"
+						class="px-2.5 py-1 bg-[#355AFF]/10 text-[#355AFF] dark:bg-[#355AFF]/20 dark:text-blue-300 border border-[#355AFF]/20 rounded-full text-xs font-medium whitespace-nowrap"
+				>
+          {{ flair }}
+        </span>
+				<span
+						v-if="hiddenAmenitiesCount > 0"
+						class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-full text-xs font-bold"
+				>
+          +{{ hiddenAmenitiesCount }}
+        </span>
+			</div>
+
+			<!-- Rating -->
+			<div class="pt-3 mt-auto border-t border-slate-100 dark:border-slate-800/60">
+				<CardRating
+						:rating="overallRating"
+						:reviewCount="fetchedReviewCount"
+				/>
+			</div>
+		</div>
+	</RouterLink>
 </template>
 
 <style scoped>
-.bg-gradient {
-    background: linear-gradient(99.9deg, #517FFF 1.35%, #312AFF 99.48%);
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+@reference "tailwindcss";
+
+.material-symbols-outlined {
+	font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 </style>
