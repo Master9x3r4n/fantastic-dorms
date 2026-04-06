@@ -60,9 +60,9 @@ class ReviewService {
 	}
 
 
-	updateScore(id, direction) 
+	updateScore(id, { userId: userId, direction: direction }) 
 	{
-		return http.patch(`/r/${id}/vote`, { direction: direction });
+		return http.patch(`/r/${id}/vote`, { userId: userId, direction: direction });
 	}
 }
 

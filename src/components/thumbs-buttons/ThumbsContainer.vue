@@ -1,7 +1,9 @@
 <script setup>
+import ProfileService from '@/services/ProfileService';
 import ThumbsButton from './ThumbsButton.vue';
 import ReviewService from '@/services/ReviewService';
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useAuthStore } from '@/auth';
 
 const props = defineProps({
     reviewId: String,
@@ -13,9 +15,12 @@ const props = defineProps({
 
 const selectedDir = ref("none");
 const currentScore = ref(props.score);
+const profile = ref(null);
 
 const updateToggle = async (id) => {
-    console.log("My Review ID is:", props.reviewId);
+    //console.log("My Review ID is:", props.reviewId);
+    if (!profile.value)
+        return
     
     let choice = '';
 
@@ -50,22 +55,32 @@ const updateToggle = async (id) => {
         choice = 'down';
     }
         
-
     try
     {
         // update the score in the db
-        const res = await ReviewService.updateScore(props.reviewId, choice);
-
-        // 
+        const res = await ReviewService.updateScore(props.reviewId, { userId: profile.value, direction: choice });
         currentScore.value = res.data.score;
     }
     catch (err)
     {
         console.error("ERR score update failed--> ", err);
     }
-    
 }
 //vote.value = (selectedDir.value === "up")? 1: (selectedDir.value === "down")? -1: 0;
+const auth = useAuthStore();
+onMounted(async () => {
+	if (!auth.user) {
+		try {
+			await auth.fetchCurrentUser();
+		} catch (e) {
+			console.log("User is not logged in.");
+		}
+	}
+
+	if (auth.user) {
+		profile.value = auth.user.username;
+	}
+});
 </script>
 
 <template>
