@@ -11,14 +11,38 @@ import ListingService from "../services/ListingService.js";
 import ReviewService from "../services/ReviewService.js";
 import LivePreview from "@/components/write-review-content/LivePreview.vue";
 import { useAuthStore } from '@/auth';
+import ProfileService from '@/services/ProfileService.js';
+
+const isVerified = ref(false);
 
 const props = defineProps({
 	id: { type: String, default: '' }
 })
 const listing = ref(null);
 ListingService.find(props.id)
-	.then(res => {
+	.then(async res => {
 		listing.value = res.data;
+
+		if (listing.value && listing.value.owner) 
+		{
+            try 
+			{
+                const owner = await ProfileService.find(listing.value.owner);
+
+				if (owner)
+				{
+					isVerified.value = true;
+				}
+				else
+				{
+					isVerified.value = false;
+				}
+                 
+            } catch (err) 
+			{
+                isVerified.value = false;
+            }
+        }
 	})
 	.catch(error => {
 		console.log(`Error retrieving listing: ${error.message}.`);
@@ -210,7 +234,7 @@ onBeforeUnmount(() => {
 					<div class="mb-6 flex items-center">
 						<span class="text-sm text-slate-500 dark:text-slate-400 mr-2">You are creating a review for</span>
 						<span class="flex items-center font-semibold text-slate-900 dark:text-white">
-							<span v-if="listing.isVerified" class="material-symbols-outlined dark-filled text-[#355AFF] dark:text-white mr-1 text-[18px]">verified</span>
+							<span v-if="isVerified" class="material-symbols-outlined dark-filled text-[#355AFF] dark:text-white mr-1 text-[18px]">verified</span>
 							{{ listing.name }}
 						</span>
 					</div>

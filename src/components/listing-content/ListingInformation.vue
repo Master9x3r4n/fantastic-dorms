@@ -2,7 +2,10 @@
 import Divider from '../divider/Divider.vue';
 import Icon from '../icon/Icon.vue';
 import BlueButton from '../page-buttons/BlueButton.vue';
+import ProfileService from '@/services/ProfileService';
+import { ref, onMounted, watch } from 'vue';
 
+const isVerified = ref(false);
 const props = defineProps({
 	listing: {
 		type: Object,
@@ -19,6 +22,36 @@ const props = defineProps({
 		})
 	}
 })
+
+const checkOwnerVerification = async () => {
+    if (!props.listing.owner) 
+	{
+		isVerified.value = false
+		return;
+	}
+
+    try {
+        
+        const owner = await ProfileService.find(props.listing.owner);
+        
+		if (owner)
+		{
+			isVerified.value = true;
+		}
+		else
+		{
+			isVerified.value = false;
+		}
+        
+    } catch (err) {
+        
+        isVerified.value = false;
+    }
+};
+
+// Call the check when the component mounts or when the listing prop changes
+onMounted(checkOwnerVerification);
+watch(() => props.listing.owner, checkOwnerVerification);
 </script>
 
 <template>
@@ -54,7 +87,7 @@ const props = defineProps({
 				<h3 class="font-bold text-lg text-slate-900 dark:text-white leading-tight">
 					{{ listing.owner }}
 				</h3>
-				<div class="flex items-center gap-1.5 text-[#355AFF] font-semibold text-sm mt-1">
+				<div v-if="isVerified" class="flex items-center gap-1.5 text-[#355AFF] font-semibold text-sm mt-1">
 					<Icon name="verified" class="w-4 h-4" />
 					<span>Verified Host</span>
 				</div>
