@@ -3,9 +3,14 @@ import Divider from '../divider/Divider.vue';
 import Icon from '../icon/Icon.vue';
 import BlueButton from '../page-buttons/BlueButton.vue';
 import ProfileService from '@/services/ProfileService';
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
+import { useAuthStore } from '@/auth'; 
 
 const isVerified = ref(false);
+
+// connect to the store
+const auth = useAuthStore();
+
 const props = defineProps({
 	listing: {
 		type: Object,
@@ -22,6 +27,18 @@ const props = defineProps({
 		})
 	}
 })
+
+// get current user from store
+const user = computed(() => {
+		return auth.user
+	}
+);
+
+// if user exists and username matches the owner, set to true
+const isOwner = computed(() => {
+    	return user.value && user.value.username === props.listing.owner;
+	}
+);
 
 const checkOwnerVerification = async () => {
     if (!props.listing.owner) 
@@ -50,7 +67,16 @@ const checkOwnerVerification = async () => {
 };
 
 // Call the check when the component mounts or when the listing prop changes
-onMounted(checkOwnerVerification);
+onMounted(async () => {
+    
+	// if auth.user still not there
+    if (!auth.user) 
+	{
+        await auth.fetchCurrentUser();
+    }
+    checkOwnerVerification();
+});
+
 watch(() => props.listing.owner, checkOwnerVerification);
 </script>
 
@@ -63,7 +89,7 @@ watch(() => props.listing.owner, checkOwnerVerification);
 				<h1 class="font-bold text-3xl md:text-4xl text-slate-900 dark:text-white tracking-tight">
 					{{ listing.name }}
 				</h1>
-				<RouterLink :to="{ name: 'listing-settings', params: {id: listing.listingId}}">
+				<RouterLink v-if="isOwner" :to="{ name: 'listing-settings', params: {id: listing.listingId}}">
 					<BlueButton class="flex items-center gap-2 px-4 py-2">
 						<span class="material-symbols-outlined text-white text-[18px]">edit_square</span>
 						<span class="font-medium text-[15px] text-white">Edit</span>
