@@ -54,6 +54,20 @@ const rerouteTo = (reply) => {
 	router.push({ name: 'reviews', params: { id: route.params.id }, hash: '#' + props.review._id });
 	//window.location.reload();
 }
+
+const getScore = () => {
+	return props.review.votes.upvotes.length-props.review.votes.downvotes.length
+}
+
+const getDir = () => {
+	const votes = props.review.votes;
+	if (votes.upvotes.indexOf(profile.username) > -1)
+		return "up"
+	else if (votes.downvotes.indexOf(profile.username) > -1)
+		return "down"
+	else
+		return "none"
+}
 </script>
 
 <template>
@@ -147,7 +161,7 @@ const rerouteTo = (reply) => {
 		<div class="flex w-full justify-between items-center">
 			<!-- Thumbs :D -->
 			<div class="flex items-center gap-3.5 text-slate-500 dark:text-slate-400 pt-1">
-				<ThumbsContainer :reviewId="review._id" :score="review.score"/>
+				<ThumbsContainer :reviewId="review._id" :score="getScore()" :dir="getDir()"/>
 			</div>
 
 			<!-- Reply Button -->

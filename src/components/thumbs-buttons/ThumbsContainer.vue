@@ -10,10 +10,14 @@ const props = defineProps({
     score: {
         type: Number,
         default: 0
+    },
+    dir: {
+        type: String,
+        default: "none"
     }
 });
 
-const selectedDir = ref("none");
+const selectedDir = ref(props.dir);
 const currentScore = ref(props.score);
 const profile = ref(null);
 
@@ -23,43 +27,50 @@ const updateToggle = async (id) => {
         return
     
     let choice = '';
+    let change = 0;
 
     if (id == 'up' && selectedDir.value === 'none')
     {
         selectedDir.value = 'up';
         choice = 'up'
+        change = 1
     }  
     else if (id == 'down' && selectedDir.value === 'none')
     {
         selectedDir.value = 'down';
         choice = 'down'
+        change = -1
     }
     else if (id == 'up' && selectedDir.value == 'down')
     {
         selectedDir.value = 'up';
         choice = 'upup'
+        change = 2
     }   
     else if (id == 'down' && selectedDir.value == 'up')
     {
         selectedDir.value = 'down';
         choice = 'downdown'
+        change = -2
     }    
     else if (id == 'down' && selectedDir.value == 'down')
     {
         selectedDir.value = 'none';
         choice = 'up';
+        change = 1
     }
     else if (id == 'up' && selectedDir.value == 'up')
     {
         selectedDir.value = 'none';
         choice = 'down';
+        change = -1
     }
         
     try
     {
         // update the score in the db
         const res = await ReviewService.updateScore(props.reviewId, { userId: profile.value, direction: choice });
-        currentScore.value = res.data.score;
+        currentScore.value = currentScore.value + change;
     }
     catch (err)
     {

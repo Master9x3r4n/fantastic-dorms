@@ -217,9 +217,9 @@ class ReviewController {
 			const updatedReview = await Review.findByIdAndUpdate(id,
 				{ 
 					// add this amount to the amount in the db
-					$inc: { score: 0 } ,
 					$set: { "votes.upvotes": upvotes,
-							"votes.downvotes": downvotes
+							"votes.downvotes": downvotes,
+							score: 0
 							 }
 				}, 
 				{ 
