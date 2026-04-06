@@ -10,7 +10,8 @@ const router = express.Router();
 router.get('/', ProfileController.findAll);
 router.get('/:username', ProfileController.find);
 router.post('/', ProfileController.create);
-router.put('/:username', requireAuth, ProfileController.update);
+router.patch('/:username/password', requireAuth, ProfileController.upadatePassword);
+router.patch('/:username', requireAuth, ProfileController.update);
 router.delete('/:username', requireAuth, ProfileController.delete);
 
 export default router;

@@ -2,6 +2,8 @@
 import {ref, computed, onMounted} from 'vue';
 import Divider from "@/components/divider/Divider.vue";
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
+import ProfileService from '@/services/ProfileService.js';
+
 import AutocompleteInput from "@/components/settings/AutocompleteInput.vue";
 import ListingService from "@/services/ListingService.js";
 
@@ -77,7 +79,37 @@ const removePhoto = () => {
 	}
 };
 
-const handleProfileSave = () => {
+const handleProfileSave = async () => {
+	// still use old username for the PK
+	const oldUsername = props.userInfo.username;
+
+	// grab new username
+	const newUsername = formData.value.username;
+
+	// grab new first name
+	const newFirstName = formData.value.firstName;
+
+	// grab new first name
+	const newLastName = formData.value.lastName;
+
+	if (newUsername.length > 20)
+	{
+		alert(`Your new username ${ newUsername } is more than 20 characters long. Please shorten it before saving.`);
+		return;
+	}
+
+	if (newFirstName.length > 20)
+	{
+		alert(`Your new first name ${ newFirstName } is more than 20 characters long. Please shorten it before saving.`);
+		return;
+	}
+
+	if (newLastName.length > 20)
+	{
+		alert(`Your new last name ${ newLastName } is more than 20 characters long. Please shorten it before saving.`);
+		return;
+	}
+
 	// Validation check for bio length
 	if (isBioInvalid.value) {
 		alert(`Your bio is ${bioCharacterCount.value} characters long, which exceeds the 200 character limit. Please shorten it before saving.`);
@@ -85,10 +117,73 @@ const handleProfileSave = () => {
 	}
 
 	// Emit the updated data to the parent component to handle the API call
-	emit('save', {
+	/*emit('save', {
 		formData: formData.value,
 		newImageFile: newImageFile.value
-	});
+	});*/
+
+	
+
+	let usernameExists = null;
+
+	if (oldUsername != newUsername)
+	{
+		try
+		{
+			// checking if username input is in database
+			usernameExists = await ProfileService.find(formData.value.username);
+		}
+		catch (error)
+		{
+			console.error(error);
+			usernameExists = null;
+		}
+	}
+	
+
+	// if its in the database
+	if (usernameExists)
+	{
+		// alert user that what they want is taken
+		alert(`Your new username ${newUsername} is already taken!`);
+		return;
+	}
+	else
+	{
+		const updatedProfile = {
+			username: newUsername,
+			name: {
+				firstName: newFirstName,
+				lastName: newLastName,
+			},
+			school: formData.value.school,
+			dorm: {
+				name: formData.value.home,
+				since: Date.now(),
+			},
+			bio: formData.value.bio,
+		}
+
+		await ProfileService.update(oldUsername, updatedProfile)
+		.then(res => {
+			// updating data locally
+			formData.value = {
+				...res.data,
+				firstName: res.data.name?.firstName, // Pull from nested object
+				lastName: res.data.name?.lastName,   // Pull from nested object
+				home: res.data.dorm?.name
+			};
+
+			// telling parent to update
+			emit('save', res.data);
+
+			alert("Listing successfully updated!");
+		})
+		.catch(error => {
+			console.error(`${error}`)
+		});
+	}
+	
 };
 
 onMounted(async () => {
@@ -147,7 +242,7 @@ onMounted(async () => {
 				<!-- Username -->
 				
 				<div class="space-y-2">
-					<label class="text-sm font-semibold text-black dark:text-white">Last Name</label>
+					<label class="text-sm font-semibold text-black dark:text-white">Username</label>
 					<div class="relative">
 						<span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-sm">@</span>
 						<input
@@ -174,7 +269,7 @@ onMounted(async () => {
 
 					<!-- Last Name -->
 					<div class="space-y-2">
-						<label class="text-sm font-semibold text-black dark:text-white">Username</label>
+						<label class="text-sm font-semibold text-black dark:text-white">Last Name</label>
 						<input
 								v-model="formData.lastName"
 								type="text"

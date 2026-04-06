@@ -7,6 +7,7 @@ import ProfileService from "../../services/ProfileService.js";
 import ReviewService from "../../services/ReviewService.js";
 import ThumbsContainer from '../thumbs-buttons/ThumbsContainer.vue';
 import OwnerReply from "@/components/side-cards/OwnerReply.vue";
+import ReviewService from '@/services/ReviewService';
 
 const props = defineProps({
 	review: {
@@ -19,16 +20,15 @@ const props = defineProps({
 	}
 })
 
-const review = props.review;
 const profile = ref(null);
 const reviewCount = ref(0);
 
-ProfileService.find(review.username)
+ProfileService.find(props.review.username)
 		.then(res => {
 			profile.value = res.data;
 		})
 		.catch(error => {
-			console.log(`Error occurred retrieving profile data of user ${review.username} for review: ${error.message}`);
+			console.log(`Error occurred retrieving profile data of user ${props.review.username} for review: ${error.message}`);
 		});
 
 ReviewService.findAllByUser(review.username)
@@ -56,6 +56,20 @@ const parsedBody = computed(() => {
 	const rawText = props.review?.content?.body || "";
 	return marked.parse(rawText);
 });
+
+const getScore = () => {
+	return props.review.votes.upvotes.length-props.review.votes.downvotes.length
+}
+
+const getDir = () => {
+	const votes = props.review.votes;
+	if (votes.upvotes.indexOf(profile.username) > -1)
+		return "up"
+	else if (votes.downvotes.indexOf(profile.username) > -1)
+		return "down"
+	else
+		return "none"
+}
 </script>
 
 <template>
@@ -146,7 +160,7 @@ const parsedBody = computed(() => {
 
 			<!-- Upvote -->
 			<div class="text-slate-500 dark:text-slate-400 flex items-center gap-2">
-				<ThumbsContainer :score="review.score"/>
+				<ThumbsContainer :reviewId="review._id" :score="getScore()" :dir="getDir()"/>
 			</div>
 		</div>
 

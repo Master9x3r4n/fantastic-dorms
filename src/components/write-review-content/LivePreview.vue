@@ -76,7 +76,7 @@ const parsedBody = computed(() => {
 				</div>
 
 				<div class="flex items-center gap-4 text-slate-500 dark:text-slate-400">
-					<ThumbsContainer :score="67"/>
+					<ThumbsContainer :score="4"/>
 				</div>
 			</div>
 		</div>
