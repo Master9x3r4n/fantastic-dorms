@@ -163,7 +163,7 @@ class ProfileController {
 			{ 
 				message: "oh nahhh" 
 			});
-		}I
+		}
 
 		try {
 			const profile = await Profile.findOne({ username: username });
@@ -199,6 +199,78 @@ class ProfileController {
 				message: err.message || `An error occurred while logging in with Profile ${username}.`
 			});
 		}
+	};
+
+	// handles updating of passwords in the backend cuz security
+	async upadatePassword(req, res)
+	{
+		const username = req.params.username;
+		const current = req.body.currentPassword;
+		const newP = req.body.newPassword;
+
+		if (typeof username !== 'string' || typeof current !== 'string' || typeof newP !== 'string')
+		{
+			return res.status(400).send(
+				{ 
+					message: "oh nahhh" 
+				}
+			);
+		}
+
+		try
+		{
+			let dbProfile = await Profile.findOne({ username: username });
+
+			if (dbProfile)
+			{
+				const salt = dbProfile.salt;
+				const dbSaltedHash = dbProfile.saltedPassword;
+
+				const currSaltedHash = PasswordsUtils.generateDigest(current + salt);
+
+				if (currSaltedHash !== dbSaltedHash)
+				{
+					return res.status(400).send(
+						{ 
+							message: 'Unauthorized access.'
+						}
+					);
+				}
+				else
+				{
+					dbProfile.saltedPassword = PasswordsUtils.generateDigest(newP + salt);
+
+					/*const newProfile = await Profile.findOneAndUpdate(
+						{ username: username }, 
+						dbProfile, 
+						{ runValidators: true,}, 
+					);*/
+					await Profile.updateOne(
+						{ username: username },
+						{ $set: { saltedPassword: dbProfile.saltedPassword } }
+					);
+
+					return res.status(200).send(
+						{ 
+							message: "Password updated successfully." 
+						}
+					)
+				}
+			}
+			else
+			{
+				res.status(404).send({
+					message: `Profile ${username} could not be found.`
+				});
+			}
+		}
+		catch (err)
+		{
+			res.status(500).send({
+				message: err.message || 'An error occurred while retrieving Profiles.'
+			});
+		}
+
 	};
 }
 
