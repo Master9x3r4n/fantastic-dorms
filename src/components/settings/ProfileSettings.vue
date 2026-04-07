@@ -176,8 +176,6 @@ const handleProfileSave = async () => {
 
 			// telling parent to update
 			emit('save', res.data);
-
-			alert("Listing successfully updated!");
 		})
 		.catch(error => {
 			console.error(`${error}`)

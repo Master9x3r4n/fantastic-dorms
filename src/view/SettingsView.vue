@@ -28,10 +28,7 @@ const showConfirm = ref(false);
 const auth = useAuthStore();
 const userInfo = ref(null);
 onMounted(async () => {
-    if (!auth.user) {
-		await auth.fetchCurrentUser();
-	}
-
+	await auth.fetchCurrentUser();
     if (auth.user){
 		userInfo.value = {
 			profileImg: auth.user.picture,
@@ -47,14 +44,16 @@ onMounted(async () => {
 
 // Handlers
 const handleProfileSave = ({ formData, newImageFile }) => {
-	//TODO: AFTER FINISHING THE BACKEND, REMOVE THE CONSOLE.LOGS
+	/*
 	console.log('Saving profile data...', formData);
 	if (newImageFile) {
 		console.log('New image ready to be uploaded to server:', newImageFile.name);
-	}
+	}*/
 	alert("Profile saved successfully!");
 
-	// save the stuff to backend
+	//reroute to profile
+	router.push({ name: 'profile', params: { id: userInfo.value.username }});
+
 };
 
 const handlePasswordUpdate = async () => {
@@ -97,8 +96,6 @@ const handlePasswordUpdate = async () => {
 	}
 	
 	console.log('Updating password...');
-	// update it in the backend
-	// also we should have encryption and password salting here so update ts when we have that lol
 };
 </script>
 

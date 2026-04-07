@@ -69,7 +69,11 @@
 			await ProfileService.login({ username: data.username, password: data.password });
 			await router.push('/');
 		} catch (err) {
-			console.error('An error occurred registering new Profile: ' + err.message);
+			const message = err.response?.data?.message 
+				|| err.response?.data?.errors?.[0]?.msg
+				|| 'Registration failed. Please try again.';
+			
+			errorMessage.value = message;  // Show specific error to user
 			hasError.value = true;
 		} finally {
 			processing.value = false;
@@ -148,8 +152,8 @@
 							<input
 								class="w-full px-4 py-3 rounded-lg border-2 text-slate-900 dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500 pr-10"
 								:class="isValidConfirm(inputs.fields?.confirm) ? 'border-slate-200 dark:border-slate-700 bg-transparent' : 'border-red-400 bg-red-100 dark:bg-red-600/10'"
-								id="password"
-								name="password"
+								id="confirm-password"
+								name="confirm-password"
 								placeholder="••••••••"
 								required
 								:type="showPassword ? 'text' : 'password'"
