@@ -4,7 +4,6 @@ import { marked } from 'marked';
 import MediaContainer from '../carousel/MediaContainer.vue';
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
 import ProfileService from "../../services/ProfileService.js";
-import ReviewService from "../../services/ReviewService.js";
 import ThumbsContainer from '../thumbs-buttons/ThumbsContainer.vue';
 import OwnerReply from "@/components/side-cards/OwnerReply.vue";
 import ReviewService from '@/services/ReviewService';
