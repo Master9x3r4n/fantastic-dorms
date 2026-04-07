@@ -186,7 +186,8 @@ const router = createRouter({
         else {
           // is there a better way xd
           const listing = await ListingService.find(from.params.id);
-          if (listing.ownerUsername === auth.user.username)
+          // if (listing.ownerUsername === auth.user.username)
+          if (listing.owner === auth.user.username)
             return next();
           else
             return next('/');

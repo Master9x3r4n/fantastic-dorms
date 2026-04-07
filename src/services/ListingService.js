@@ -17,7 +17,9 @@ class ListingService {
 	}
 
 	create(data) {
-		return http.post("/l", data);
+		return http.post("/l", data, {
+			headers: { 'Content-Type': 'multipart/form-data' }
+		});
 	}
 
 	update(id, data) {

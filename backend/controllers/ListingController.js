@@ -43,10 +43,7 @@ class ListingController {
 	// Creates a new Listing object
 	async create(req, res) {
 		// Create a Listing
-		const listing = new Listing({
-			listingId: req.body.listingId,
-			owner: req.body.owner
-		});
+		const listing = new Listing(JSON.parse(req.body.content));
 
 		// Save Listing in the database
 		listing.save()
@@ -54,9 +51,9 @@ class ListingController {
 			res.send(data);
 		})
 		.catch(err => {
+			console.error('An error occurred while creating new Listing: ' + err.message);
 			res.status(500).send({
-				message:
-				err.message || "An error occurred."
+				message: err.message || "An error occurred."
 			});
 		});
 	};
@@ -70,15 +67,17 @@ class ListingController {
 
 		try {
 			// Removing all 'deleted' images
-			for (const media of listing.deletedMedia) {
-				const publicId = extractPublicId(media);
-				const response = await cloudinary.uploader.destroy(publicId, {
-					resource_type: 'image',
-					invalidate: true
-				});
+			if (listing.deletedMedia.length > 0) {
+				for (const media of listing.deletedMedia) {
+					const publicId = extractPublicId(media);
+					const response = await cloudinary.uploader.destroy(publicId, {
+						resource_type: 'image',
+						invalidate: true
+					});
 
-				if (response.result !== 'ok') {
-					console.log(`Warning: Attempted to delete file with ID ${publicId}, but received result of '${response.result}'.`);
+					if (response.result !== 'ok') {
+						console.log(`Warning: Attempted to delete file with ID ${publicId}, but received result of '${response.result}'.`);
+					}
 				}
 			}
 			
@@ -121,30 +120,47 @@ class ListingController {
 				message: err.message || `An error occurred while updating Listing with ID \'${id}\.'`
 			});
 		}
-	};
+	}
 
 	// Delete a Listings with the specified listingId in the request
 	async delete(req, res) {
-		const listingId = req.params.listingId;
+		const user = req.session.user;
+		const listingId = req.params.id;
 
-		Listing.findOneAndDelete( {listingId: listingId} )
-			.then(data => {
-			if (!data) {
-				res.status(404).send({
-					message: `Cannot delete Listings with listingId=${listingId}. Maybe Listings was not found!`
-				});
-			} else {
-				res.send({
-					message: "Listings was deleted successfully!"
-				});
-			}
-			})
-			.catch(err => {
-				res.status(500).send({
-					message: "Could not delete Listings with listingId=" + listingId
-				});
+		if (!user.isAdmin) {
+			return res.status(401).send({
+				message: 'Unauthorized. Carlos! Shoo'
 			});
-	};
+		}
+
+		try {
+			const listing = await Listing.findOne({ listingId: listingId });
+			if (listing) {
+				// Delete files
+				if (listing.media && listing.media.length > 0) {
+					for (const media of listing.media) {
+						const publicId = extractPublicId(media);
+						const response = await cloudinary.uploader.destroy(publicId, {
+							resource_type: 'image',
+							invalidate: true
+						});
+
+						if (response.result !== 'ok') {
+							console.log(`Warning: Attempted to delete file with ID ${publicId}, but received result of '${response.result}'.`);
+						}
+					}
+				}
+				
+				const deletedListing = await Listing.deleteOne({ listingId: listingId });
+				res.status(204).send(deletedListing);
+			} else {
+				res.status(404).send({ message: 'Listing with ID ' + listingId + ' could not be found.' });
+			}
+		} catch (err) {
+			console.error('An error occurred while deleting Listing with ID ' + listingId + ': ' + err.message);
+			res.status(500).send({ message: err.message });
+		}
+	}
 }
 
 export default new ListingController();

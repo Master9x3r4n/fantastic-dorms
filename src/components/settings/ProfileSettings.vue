@@ -72,7 +72,8 @@ const handleFileUpload = (event) => {
 };
 
 const removePhoto = () => {
-	formData.value.profileImg = ogImageFile.value;
+	// formData.value.profileImg = ogImageFile.value;
+	formData.value.profileImg = '';
 	
 	newImageFile.value = null;
 	if (fileInputRef.value) {
@@ -190,7 +191,6 @@ const handleProfileSave = async () => {
 			console.error(`${error}`)
 		});
 	}
-	
 };
 
 onMounted(async () => {
