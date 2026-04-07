@@ -30,7 +30,7 @@ ProfileService.find(props.review.username)
 			console.log(`Error occurred retrieving profile data of user ${props.review.username} for review: ${error.message}`);
 		});
 
-ReviewService.findAllByUser(review.username)
+ReviewService.findAllByUser(props.review.username)
 		.then(res => {
 			reviewCount.value = res.data?.length || 0;
 		})

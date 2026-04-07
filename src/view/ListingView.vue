@@ -3,8 +3,6 @@ import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import ListingService from '../services/ListingService.js';
 import ReviewService from '../services/ReviewService.js';
-const route = useRoute();
-const router = useRouter();
 
 import Carousel from '@/components/carousel/Carousel.vue';
 import ListingInformation from '@/components/listing-content/ListingInformation.vue';
@@ -14,6 +12,8 @@ import ReviewCard from '@/components/review-cards/ReviewCard.vue';
 import Divider from '@/components/divider/Divider.vue';
 import BlueButton from "@/components/page-buttons/BlueButton.vue";
 
+const route = useRoute();
+const router = useRouter();
 const listingId = route.params.id;
 const listing = ref(null);
 const reviews = ref([]);
