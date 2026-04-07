@@ -69,7 +69,11 @@
 			await ProfileService.login({ username: data.username, password: data.password });
 			await router.push('/');
 		} catch (err) {
-			console.error('An error occurred registering new Profile: ' + err.message);
+			const message = err.response?.data?.message 
+				|| err.response?.data?.errors?.[0]?.msg
+				|| 'Registration failed. Please try again.';
+			
+			errorMessage.value = message;  // Show specific error to user
 			hasError.value = true;
 		} finally {
 			processing.value = false;
