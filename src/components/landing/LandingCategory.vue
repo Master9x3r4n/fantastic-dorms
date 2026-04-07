@@ -31,6 +31,7 @@ const filteredListings = computed(() => {
 		const searchString = `
             ${listing.name || ''}
             ${listing.description || ''}
+			${listing.owner || ''}
             ${listing.address || ''}
             ${(listing.amenities || []).join(' ')}
         `.toLowerCase();
