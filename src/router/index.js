@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import ListingService from '../services/ListingService.js';
 import AdminView from '../view/AdminView.vue'
 import LandingView from '../view/LandingView.vue'
 import PlaygroundView from '../view/PlaygroundView.vue'
@@ -177,12 +178,18 @@ const router = createRouter({
       beforeEnter: async (to, from, next) => {
         const auth = useAuthStore();
         if (!auth.user)
-          await auth.fetchCurrentUser();
+          await auth.fetchCurrntUser();
 
         if (!auth.user)
           return next('/login');
-        else
-          return next();
+        else {
+          // is there a better way xd
+          const listing = await ListingService.find(from.params.id);
+          if (listing.ownerUsername === auth.user.username)
+            return next();
+          else
+            return next('/');
+        }e
       }
     }
   ],
