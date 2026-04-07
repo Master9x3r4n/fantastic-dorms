@@ -21,7 +21,11 @@ const ReviewSchema = new mongoose.Schema({
 	score: { type: Number, default: 0 },
 	media: [String],
 	tags: [String],
-	createdAt: { type: Date, default: Date.now }
+	createdAt: { type: Date, default: Date.now },
+	votes: {
+		upvotes: [String],
+		downvotes: [String],
+	},
 });
 
 const model = mongoose.model('Review', ReviewSchema, 'reviews');

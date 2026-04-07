@@ -40,29 +40,35 @@ const fetchSearchResults = async () => {
 		// Map listings to the format expected by ListingCardLarge
 		searchResults.value = await Promise.all(listings.map(async (listing) => {
 
-			// Calculate average rating from the rating object
-			let avgRating = 0;
-			if (listing.rating) {
-				const validCategories = ['cleanliness', 'comfort', 'communication', 'location'];
-				let sum = 0;
-				let count = 0;
-
-				for (const category of validCategories) {
-					if (typeof listing.rating[category] === 'number') {
-						sum += listing.rating[category];
-						count++;
-					}
-				}
-				if (count > 0) avgRating = sum / count;
-			}
-
-			// Fetch reviews for this specific listing to get the review count
-			let reviewCount = 0;
+			// Fetch reviews for this specific listing to get the review count and calculate aggregated rating
+			let reviews = [];
 			try {
 				const reviewsRes = await ReviewService.findAllFromListing(listing.listingId);
-				reviewCount = reviewsRes.data?.length || 0;
+				reviews = reviewsRes.data || [];
 			} catch (err) {
 				console.error(`Failed to fetch reviews for ${listing.listingId}:`, err);
+			}
+
+			// Calculate aggregated average rating directly from the reviews
+			let avgRating = 0;
+			if (reviews.length > 0) {
+				const categories = ['cleanliness', 'comfort', 'communication', 'location'];
+				const sums = { cleanliness: 0, comfort: 0, communication: 0, location: 0 };
+
+				// Sum up all categories across all reviews
+				reviews.forEach(review => {
+					categories.forEach(category => {
+						sums[category] += Number(review.rating?.[category] ?? 0);
+					});
+				});
+
+				// Calculate the average for each category, then get the overall average
+				const count = reviews.length;
+				const sumOfAverages = categories.reduce((acc, category) => {
+					return acc + (sums[category] / count);
+				}, 0);
+
+				avgRating = sumOfAverages / categories.length;
 			}
 
 			return {
@@ -70,7 +76,7 @@ const fetchSearchResults = async () => {
 				description: listing.description,
 				ratingData: {
 					rating: Number(avgRating.toFixed(1)),
-					reviewCount: reviewCount
+					reviewCount: reviews.length
 				},
 				imageSrc: listing.media && listing.media.length > 0 ? listing.media[0] : "",
 				routerLink: `/listing/${listing.listingId}`,

@@ -1,102 +1,102 @@
 <script setup>
-	import { ref, onMounted } from 'vue';
-	import { useRouter } from "vue-router";
-	import Divider from "@/components/divider/Divider.vue";
-	import PasswordToggleButton from "@/components/page-buttons/PasswordToggleButton.vue";
-	import ProfileSettingsSection from "@/components/settings/ProfileSettings.vue"
-	import { useAuthStore } from "@/auth";
-	import ProfileService from '@/services/ProfileService';
+import { ref, onMounted } from 'vue';
+import { useRouter } from "vue-router";
+import Divider from "@/components/divider/Divider.vue";
+import PasswordToggleButton from "@/components/page-buttons/PasswordToggleButton.vue";
+import ProfileSettingsSection from "@/components/settings/ProfileSettings.vue"
+import { useAuthStore } from "@/auth";
+import ProfileService from '@/services/ProfileService';
 
-	// Previous Page button
-	const router = useRouter();
+// Previous Page button
+const router = useRouter();
 
-	const goBack = () => {
-		router.back();
-	};
+const goBack = () => {
+	router.back();
+};
 
-	// Security State
-	const currentPassword = ref('');
-	const newPassword = ref('');
-	const confirmPassword = ref('');
+// Security State
+const currentPassword = ref('');
+const newPassword = ref('');
+const confirmPassword = ref('');
 
-	// Show Password Toggle States
-	const showCurrent = ref(false);
-	const showNew = ref(false);
-	const showConfirm = ref(false);
+// Show Password Toggle States
+const showCurrent = ref(false);
+const showNew = ref(false);
+const showConfirm = ref(false);
 
-	// Retrieve current user data
-	const auth = useAuthStore();
-	const userInfo = ref(null);
-	onMounted(async () => {
-		if (!auth.user) {
-			await auth.fetchCurrentUser();
+// Retrieve current user data
+const auth = useAuthStore();
+const userInfo = ref(null);
+onMounted(async () => {
+    if (!auth.user) {
+		await auth.fetchCurrentUser();
+	}
+
+    if (auth.user){
+		userInfo.value = {
+			profileImg: auth.user.picture,
+			firstName: auth.user.name.firstName,
+			lastName: auth.user.name.lastName,
+			username: auth.user.username,
+			school: auth.user.school.name,
+			home: auth.user.dorm.name,
+			bio: auth.user.bio
 		}
+	}
+})
 
-		if (auth.user) {
-			userInfo.value = {
-				profileImg: auth.user.picture,
-				firstName: auth.user.name.firstName,
-				lastName: auth.user.name.lastName,
-				username: auth.user.username,
-				school: auth.user.school.name,
-				home: auth.user.dorm.name,
-				bio: auth.user.bio
+// Handlers
+const handleProfileSave = ({ formData, newImageFile }) => {
+	//TODO: AFTER FINISHING THE BACKEND, REMOVE THE CONSOLE.LOGS
+	console.log('Saving profile data...', formData);
+	if (newImageFile) {
+		console.log('New image ready to be uploaded to server:', newImageFile.name);
+	}
+	alert("Profile saved successfully!");
+
+	// save the stuff to backend
+};
+
+const handlePasswordUpdate = async () => {
+	if (newPassword.value !== confirmPassword.value) {
+		alert("New passwords don't match!");
+		return;
+	}
+
+    const username = userInfo.value?.username;
+
+    if (!username) {
+        alert("User not found. Please log in again.");
+        return;
+    }
+
+	try
+	{
+		await ProfileService.updatePassword(
+			username,
+			{
+				currentPassword: currentPassword.value,
+				newPassword: newPassword.value,
 			}
-		}
-	})
+		);
 
-	// Handlers
-	const handleProfileSave = ({ formData, newImageFile }) => {
-		//TODO: AFTER FINISHING THE BACKEND, REMOVE THE CONSOLE.LOGS
-		console.log('Saving profile data...', formData);
-		if (newImageFile) {
-			console.log('New image ready to be uploaded to server:', newImageFile.name);
-		}
-		alert("Profile saved successfully!");
-
-		// save the stuff to backend
-	};
-
-	const handlePasswordUpdate = async () => {
-		if (newPassword.value !== confirmPassword.value) {
-			alert("New passwords don't match!");
-			return;
-		}
-
-			const username = userInfo.value?.username;
-
-			if (!username) {
-					alert("User not found. Please log in again.");
-					return;
-			}
-
-		try
-		{
-			await ProfileService.updatePassword(
-				username,
-				{
-					currentPassword: currentPassword.value,
-					newPassword: newPassword.value,
-				}
-			);
-
-			alert("Password updated successfully!");
-			currentPassword.value = '';
-			newPassword.value = '';
-			confirmPassword.value = '';
-		}
-		catch (err)
-		{
-			console.error(`${err}`);
-			const errorMessage = err.response?.data?.message || "An error occurred";
-			
-				alert(errorMessage);
-		}
-		
-		console.log('Updating password...');
-		// update it in the backend
-		// also we should have encryption and password salting here so update ts when we have that lol
-	};
+		alert("Password updated successfully!");
+		currentPassword.value = '';
+		newPassword.value = '';
+		confirmPassword.value = '';
+	}
+	catch (err)
+	{
+		console.error(`${err}`);
+		const errorMessage = err.response?.data?.message || "An error occurred";
+    
+		alert(errorMessage);
+	}
+	
+	console.log('Updating password...');
+	// update it in the backend
+	// also we should have encryption and password salting here so update ts when we have that lol
+};
 </script>
 
 <template>

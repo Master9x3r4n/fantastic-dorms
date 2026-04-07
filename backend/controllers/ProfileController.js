@@ -4,6 +4,7 @@
 import Profile from '../models/Profile.js';
 import PasswordsUtils from '../passwords.js';
 import { v2 as cloudinary } from 'cloudinary';
+import { passwordUpdateSchema } from '../passwordValidator.js';
 
 class ProfileController {
 	// Retrieves all profiles from the database
@@ -161,17 +162,20 @@ class ProfileController {
 		{
 			return res.status(400).send(
 			{ 
-				message: "oh nahhh" 
+				message: "oh yes" 
 			});
 		}
 
 		try {
 			const profile = await Profile.findOne({ username: username });
 			if (profile) {
-				const salt = profile.salt;
+				
 				const hash = profile.saltedPassword;
-				const newHash = PasswordsUtils.generateDigest(password + salt);
-				if (hash === newHash) {
+
+				const isMatch = await PasswordsUtils.verifyUser(hash, password);
+
+				if (isMatch) {
+
 					// create user session
 					req.session.user = {
 						id: profile._id,
@@ -205,56 +209,54 @@ class ProfileController {
 	async upadatePassword(req, res)
 	{
 		const username = req.params.username;
-		const current = req.body.currentPassword;
-		const newP = req.body.newPassword;
+		const result = passwordUpdateSchema.safeParse(req.body);
 
-		if (typeof username !== 'string' || typeof current !== 'string' || typeof newP !== 'string')
+		if (!result.success) 
 		{
-			return res.status(400).send(
-				{ 
-					message: "oh nahhh" 
-				}
-			);
+			return res.status(400).json({ 
+				errors: result.error.flatten().fieldErrors 
+			});
 		}
+
+		const currentPassword = result.data.currentPassword;
+		const newPassword = result.data.newPassword;
+		
+		// if (typeof username !== 'string' || typeof current !== 'string' || typeof newP !== 'string')
+		// if (typeof currentPassword !== 'string' || typeof newPassword !== 'string')
+		// {
+		// 	return res.status(400).send(
+		// 		{ 
+		// 			message: "What are YOU trying to do??? o_O" 
+		// 		}
+		// 	);
+		// }
 
 		try
 		{
-			let dbProfile = await Profile.findOne({ username: username });
-
+			const dbProfile = await Profile.findOne({ username: username });
 			if (dbProfile)
 			{
-				const salt = dbProfile.salt;
 				const dbSaltedHash = dbProfile.saltedPassword;
-
-				const currSaltedHash = PasswordsUtils.generateDigest(current + salt);
-
-				if (currSaltedHash !== dbSaltedHash)
+				const isMatch = await PasswordsUtils.verifyUser(dbSaltedHash, currentPassword)
+				// if database info not the same as input for current
+				if (!isMatch)
 				{
-					return res.status(400).send(
-						{ 
-							message: 'Unauthorized access.'
-						}
-					);
+					return res.status(401).send({ 
+						message: 'Unauthorized access.'
+					});
 				}
 				else
 				{
-					dbProfile.saltedPassword = PasswordsUtils.generateDigest(newP + salt);
+					dbProfile.saltedPassword = await PasswordsUtils.generateDigest(newPassword);
 
-					/*const newProfile = await Profile.findOneAndUpdate(
-						{ username: username }, 
-						dbProfile, 
-						{ runValidators: true,}, 
-					);*/
 					await Profile.updateOne(
 						{ username: username },
 						{ $set: { saltedPassword: dbProfile.saltedPassword } }
 					);
 
-					return res.status(200).send(
-						{ 
-							message: "Password updated successfully." 
-						}
-					)
+					return res.status(200).send({ 
+						message: "Password updated successfully." 
+					})
 				}
 			}
 			else

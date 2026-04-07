@@ -150,32 +150,73 @@ class ReviewController {
 	async updateScore(req, res) {
 		const id = req.params.id;
 		const direction = req.body.direction;
+		const userId = req.body.userId;
+		let upvotes = [];
+		let downvotes = [];
 
-		let incdec = 0;
-
-		// get number from direction
-		if (direction === 'up')
-		{
-			incdec = 1;
-		}
-		else if (direction === 'down')
-		{
-			incdec = -1;
-		}
-		else if (direction === 'downdown')
-		{
-			incdec = -2;
-		}
-		else if (direction === 'upup')
-		{
-			incdec = 2;
-		}
-
+		//Get current upvotes and downvotes arrays
 		try {
+			const review = await Review.findById(id);
+
+			if (!review) {
+				return res.status(404).send({ message: "Review not found" });
+			}
+			
+			upvotes = review.votes.upvotes;
+			downvotes = review.votes.downvotes;
+
+			let incdec = 0;
+			// get number from direction
+			if (direction === 'up') {
+				if (!upvotes.includes(userId)) {
+					const index = downvotes.indexOf(userId);
+					//remove username from downvotes
+					if (index > -1)
+						downvotes.splice(index, 1);
+					//add username to upvotes
+					else
+						upvotes.push(userId);
+				}
+			}
+			else if (direction === 'down') {
+				if (!downvotes.includes(userId)) {
+					const index = upvotes.indexOf(userId);
+					//remove username from upvotes
+					if (index > -1)
+						upvotes.splice(index, 1);
+					//add username to downvotes
+					else
+						downvotes.push(userId);
+				}
+			}
+			else if (direction === 'downdown') {
+				//remove username from upvotes
+				const index = upvotes.indexOf(userId);
+				if (index > -1)
+					upvotes.splice(index, 1);
+
+				//add username to downvotes
+				if (!downvotes.includes(userId))
+					downvotes.push(userId)
+			}
+			else if (direction === 'upup') {
+				//remove username from downvotes
+				const index = downvotes.indexOf(userId);
+				if (index > -1)
+					downvotes.splice(index, 1);
+
+				//add username to upvotes
+				if (!upvotes.includes(userId))
+					upvotes.push(userId)
+			}
+
 			const updatedReview = await Review.findByIdAndUpdate(id,
 				{ 
 					// add this amount to the amount in the db
-					$inc: { score: incdec } 
+					$set: { "votes.upvotes": upvotes,
+							"votes.downvotes": downvotes,
+							score: 0
+							 }
 				}, 
 				{ 
 					// give us the updated values from mongodb
