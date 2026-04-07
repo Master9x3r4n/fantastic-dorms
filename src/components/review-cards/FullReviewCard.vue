@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { marked } from 'marked';
 import { useAuthStore } from '@/auth';
 import Carousel from '../carousel/Carousel.vue';
@@ -14,8 +14,10 @@ import BlueButton from '../page-buttons/BlueButton.vue';
 import ReplyReview from './ReplyReview.vue';
 import { useRoute, useRouter } from 'vue-router'
 
-const route = useRoute()
-const router = useRouter()
+const route = useRoute();
+const router = useRouter();
+const auth = useAuthStore();
+const user = ref(null);
 
 const props = defineProps({
 	review: {
@@ -23,13 +25,19 @@ const props = defineProps({
 		required: true
 	},
 	isOwner: {
-        type: Boolean,
-        default: false
-    }
+		type: Boolean,
+		default: false
+	}
 });
 const showReview = ref(false);
 const profile = ref(null);
 const reviewCount = ref(0);
+
+onMounted(async () => {
+	if (!auth.user)
+		await auth.fetchCurrentUser();
+	user.value = auth.user;
+});
 
 // only query for the profile data if the review is not anonymous
 if (!props.review.isAnonymous) {
@@ -72,16 +80,31 @@ const getScore = () => {
 	if (!props.review.votes) return 0;
 	return (props.review.votes.upvotes?.length ?? 0) - (props.review.votes.downvotes?.length ?? 0);
 };
-const auth = useAuthStore();
 
 const getDir = () => {
-	const username = auth.user?.username;
+	const username = user.value?.username;
 	if (!username || !props.review.votes) return 'none';
 
 	if (props.review.votes.upvotes?.includes(username)) return 'up';
 	if (props.review.votes.downvotes?.includes(username)) return 'down';
 	return 'none';
 };
+
+const deleting = ref(false);
+const deleteReview = async () => {
+	if (deleting.value) return;
+	deleting.value = true;
+	if (window.confirm('Are you sure you want to delete this review? There\'s no going back.')) {
+		try {
+			await ReviewService.delete(props.review._id);
+			window.location.reload();
+		} catch (err) {
+			// console.error('An error occurred: ' + err.message);
+			window.alert('An error occurred while deleting your review. Please try again later.');
+			deleting.value = false;
+		}
+	}
+}
 </script>
 
 <template>
@@ -187,6 +210,19 @@ const getDir = () => {
 				<span v-if="!review.content.reply">Add Reply</span>
 				<span v-else>Edit Reply</span>
 			</BlueButton>
+
+			<!-- Delete -->
+			<span v-if="auth.user?.username === review.username" class="material-symbols-outlined">
+				<div class="text-red-400 dark:text-red-500 disabled:text-slate-400 disabled:dark:text-slate-600">
+					<button 
+						@click="deleteReview"
+						class="cursor-pointer"
+						:disabled="deleting"
+					>
+						delete
+					</button>
+				</div>
+			</span>
 		</div>
 
 	</div>

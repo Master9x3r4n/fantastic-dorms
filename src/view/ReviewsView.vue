@@ -12,70 +12,66 @@ const route = useRoute();
 const listingId = route.params.id;
 
 const reviews = ref([]);
-const auth = useAuthStore();
+// const auth = useAuthStore();
 
 const listingOwnerUsername = ref('');
 
 // get current user from store
-const user = computed(() => {
-		return auth.user
-	}
-);
+// const user = computed(() => {
+// 		return auth.user
+// });
 
-const isOwner = computed(() => {
-		return user.value && user.value.username === listingOwnerUsername.value;
-	}
-);
+// const isOwner = computed(() => {
+// 	if (!user) return false;
+// 	return user.value && user.value.username === listingOwnerUsername.value;
+// });
 
 onMounted(async () => {
-
 	// make sure to get current user
-	if (!auth.user) {
-        await auth.fetchCurrentUser();
-    }
-
+	// if (!auth.user) {
+	// 	await auth.fetchCurrentUser();
+	// }
 
 	if (listingId) {
-
 		// find listing owner based on listinId
-        ListingService.find(listingId)
-            .then(res => {
-                listingOwnerUsername.value = res.data.owner;
-				console.log(res);
-            }
-		)
-            .catch(err => console.error("Error fetching listing:", err)
-		);
+		ListingService.find(listingId)
+		.then(res => {
+			listingOwnerUsername.value = res.data.owner;
+			console.log(res);
+		})
+		.catch(err => {
+			console.error("Error fetching listing:", err)
+		});
 
 		// Fetch all reviews specific to this listing
 		ReviewService.findAllFromListing(listingId)
-				.then(async (res) => {
-					reviews.value = res.data;
+		.then(async (res) => {
+			reviews.value = res.data;
 
-					// Wait, they don't love me like I love you...
-					await nextTick();
+			// Wait, they don't love me like I love you...
+			await nextTick();
 
-					// If there's a hash in the URL (e.g., #12345), find that element and scroll to it
-					if (route.hash) {
-						// Escape the hash if it starts with a number (CSS selector requirement for ObjectIds)
-						const safeHash = CSS.escape(route.hash.substring(1));
-						const targetElement = document.querySelector(`#${safeHash}`);
+			// If there's a hash in the URL (e.g., #12345), find that element and scroll to it
+			if (route.hash) {
+				// Escape the hash if it starts with a number (CSS selector requirement for ObjectIds)
+				const safeHash = CSS.escape(route.hash.substring(1));
+				const targetElement = document.querySelector(`#${safeHash}`);
 
-						if (targetElement) {
-							// We use setTimeout just to ensure any CSS transitions finish first
-							setTimeout(() => {
-								targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+				if (targetElement) {
+					// We use setTimeout just to ensure any CSS transitions finish first
+					setTimeout(() => {
+						targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-								// Add a brief highlight effect to the target card
-								targetElement.classList.add('ring-2', 'ring-[#355AFF]', 'rounded-xl', 'transition-all', 'duration-500');
-								setTimeout(() => targetElement.classList.remove('ring-2', 'ring-[#355AFF]', 'rounded-xl'), 2000);
-							}, 100);
-						}
-					}
-				})
-				.catch(err => {
-					console.error(`Error retrieving reviews for listing ${listingId}: ${err.message}`);
-				});
+						// Add a brief highlight effect to the target card
+						targetElement.classList.add('ring-2', 'ring-[#355AFF]', 'rounded-xl', 'transition-all', 'duration-500');
+						setTimeout(() => targetElement.classList.remove('ring-2', 'ring-[#355AFF]', 'rounded-xl'), 2000);
+					}, 100);
+				}
+			}
+		})
+		.catch(err => {
+			console.error(`Error retrieving reviews for listing ${listingId}: ${err.message}`);
+		});
 	}
 });
 </script>

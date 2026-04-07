@@ -23,26 +23,20 @@ ListingService.find(props.id)
 	.then(async res => {
 		listing.value = res.data;
 
-		if (listing.value && listing.value.owner) 
-		{
-            try 
-			{
-                const owner = await ProfileService.find(listing.value.owner);
+		if (listing.value && listing.value.owner) {
+			try {
+				const owner = await ProfileService.find(listing.value.owner);
 
-				if (owner)
-				{
+				if (owner) {
 					isVerified.value = true;
-				}
-				else
-				{
+				} 
+				else {
 					isVerified.value = false;
-				}
-                 
-            } catch (err) 
-			{
-                isVerified.value = false;
-            }
-        }
+				}        
+			} catch (err) {
+				isVerified.value = false;
+			}
+		}
 	})
 	.catch(error => {
 		console.log(`Error retrieving listing: ${error.message}.`);
@@ -238,8 +232,6 @@ onBeforeUnmount(() => {
 		}
 	})
 })
-
-
 </script>
 
 <template>
