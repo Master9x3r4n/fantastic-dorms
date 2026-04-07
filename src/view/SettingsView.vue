@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from "vue-router";
 import Divider from "@/components/divider/Divider.vue";
 import PasswordToggleButton from "@/components/page-buttons/PasswordToggleButton.vue";
-import ProfileSettingsSection from "@/components/settings/ProfileSettings.vue"
+import ProfileSettings from "@/components/settings/ProfileSettings.vue"
 import { useAuthStore } from "@/auth";
 import ProfileService from '@/services/ProfileService';
 
@@ -116,7 +116,7 @@ const handlePasswordUpdate = async () => {
 				</button>
 
 				<!--Profile Settings Section -->
-				<ProfileSettingsSection
+				<ProfileSettings
 						v-if="userInfo"
 						:userInfo="userInfo"
 						@save="handleProfileSave"
