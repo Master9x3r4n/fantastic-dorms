@@ -12,25 +12,25 @@ const route = useRoute();
 const listingId = route.params.id;
 
 const reviews = ref([]);
-// const auth = useAuthStore();
+const auth = useAuthStore();
 
 const listingOwnerUsername = ref('');
 
 // get current user from store
-// const user = computed(() => {
-// 		return auth.user
-// });
+const user = computed(() => {
+		return auth.user
+});
 
-// const isOwner = computed(() => {
-// 	if (!user) return false;
-// 	return user.value && user.value.username === listingOwnerUsername.value;
-// });
+const isOwner = computed(() => {
+	if (!user) return false;
+	return user.value && user.value.username === listingOwnerUsername.value;
+});
 
 onMounted(async () => {
 	// make sure to get current user
-	// if (!auth.user) {
-	// 	await auth.fetchCurrentUser();
-	// }
+	if (!auth.user) {
+		await auth.fetchCurrentUser();
+	}
 
 	if (listingId) {
 		// find listing owner based on listinId

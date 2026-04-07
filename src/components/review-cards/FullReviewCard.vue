@@ -203,27 +203,29 @@ const deleteReview = async () => {
 			</div>
 
 			<!-- Reply Button -->
-			<BlueButton
-					v-if="!showReview && isOwner"
-					@click="showReview = !showReview"
-					class="font-medium text-[15px] text-white"
-			>
-				<span v-if="!review.content.reply">Add Reply</span>
-				<span v-else>Edit Reply</span>
-			</BlueButton>
+			<div class="flex flex-row items-center gap-2">
+				<BlueButton
+						v-if="!showReview && isOwner"
+						@click="showReview = !showReview"
+						class="font-medium text-[15px] text-white"
+				>
+					<span v-if="!review.content.reply">Add Reply</span>
+					<span v-else>Edit Reply</span>
+				</BlueButton>
 
-			<!-- Delete -->
-			<span v-if="auth.user?.username === review.username" class="material-symbols-outlined">
-				<div class="text-red-400 dark:text-red-500 disabled:text-slate-400 disabled:dark:text-slate-600">
-					<button 
-						@click="deleteReview"
-						class="cursor-pointer"
-						:disabled="deleting"
-					>
-						delete
-					</button>
-				</div>
-			</span>
+				<!-- Delete -->
+				<span v-if="auth.user?.username === review.username" class="material-symbols-outlined">
+					<div class="text-red-400 dark:text-red-500 disabled:text-slate-400 disabled:dark:text-slate-600">
+						<button 
+							@click="deleteReview"
+							class="cursor-pointer"
+							:disabled="deleting"
+						>
+							delete
+						</button>
+					</div>
+				</span>
+			</div>
 		</div>
 
 	</div>
