@@ -1,8 +1,7 @@
 <script setup>
-import ProfileService from '@/services/ProfileService';
 import ThumbsButton from './ThumbsButton.vue';
 import ReviewService from '@/services/ReviewService';
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useAuthStore } from '@/auth';
 
 const props = defineProps({
@@ -22,60 +21,48 @@ const currentScore = ref(props.score);
 const profile = ref(null);
 
 const updateToggle = async (id) => {
-    //console.log("My Review ID is:", props.reviewId);
-    if (!profile.value)
-        return
-    
-    let choice = '';
-    let change = 0;
+	//console.log("My Review ID is:", props.reviewId);
+	if (!profile.value)
+		return
 
-    if (id == 'up' && selectedDir.value === 'none')
-    {
-        selectedDir.value = 'up';
-        choice = 'up'
-        change = 1
-    }  
-    else if (id == 'down' && selectedDir.value === 'none')
-    {
-        selectedDir.value = 'down';
-        choice = 'down'
-        change = -1
-    }
-    else if (id == 'up' && selectedDir.value == 'down')
-    {
-        selectedDir.value = 'up';
-        choice = 'upup'
-        change = 2
-    }   
-    else if (id == 'down' && selectedDir.value == 'up')
-    {
-        selectedDir.value = 'down';
-        choice = 'downdown'
-        change = -2
-    }    
-    else if (id == 'down' && selectedDir.value == 'down')
-    {
-        selectedDir.value = 'none';
-        choice = 'up';
-        change = 1
-    }
-    else if (id == 'up' && selectedDir.value == 'up')
-    {
-        selectedDir.value = 'none';
-        choice = 'down';
-        change = -1
-    }
-        
-    try
-    {
-        // update the score in the db
-        const res = await ReviewService.updateScore(props.reviewId, { userId: profile.value, direction: choice });
-        currentScore.value = currentScore.value + change;
-    }
-    catch (err)
-    {
-        console.error("ERR score update failed--> ", err);
-    }
+	let choice = '';
+	if (id === 'up' && selectedDir.value === 'none')
+	{
+		choice = 'up'
+	}
+	else if (id === 'down' && selectedDir.value === 'none')
+	{
+		choice = 'down'
+	}
+	else if (id === 'up' && selectedDir.value === 'down') {
+		choice = 'up';  // backend already handles pulling opposite
+	}
+	else if (id === 'down' && selectedDir.value === 'up') {
+		choice = 'down';
+	}
+	else if (id === 'down' && selectedDir.value === 'down') {
+		choice = 'removedown';
+	}
+	else if (id === 'up' && selectedDir.value === 'up') {
+		choice = 'removeup';
+	}
+	const prevDir = selectedDir.value;
+	const prevScore = currentScore.value;
+
+	// apply optimistic update to dir before the request
+	selectedDir.value = choice === 'removeup' || choice === 'removedown' ? 'none'
+			: choice === 'up' ? 'up'
+					: 'down';
+
+	try {
+		const res = await ReviewService.updateScore(props.reviewId, { userId: profile.value, direction: choice });
+		const updatedVotes = res.data.votes;
+		currentScore.value = updatedVotes.upvotes.length - updatedVotes.downvotes.length;
+	} catch (err) {
+		selectedDir.value = prevDir;
+		currentScore.value = prevScore;
+		console.error("ERR score update failed--> ", err);
+	}
 }
 //vote.value = (selectedDir.value === "up")? 1: (selectedDir.value === "down")? -1: 0;
 const auth = useAuthStore();
@@ -97,11 +84,11 @@ onMounted(async () => {
 <template>
     <ThumbsButton 
     direction="up" 
-    :toggled="selectedDir == 'up'"
+    :toggled="selectedDir === 'up'"
     @handleClick="updateToggle"/>
         <div class="text-sm font-medium">{{ currentScore }}</div>
     <ThumbsButton 
     direction="down" 
-    :toggled="selectedDir == 'down'"
+    :toggled="selectedDir === 'down'"
     @handleClick="updateToggle"/>
 </template>
