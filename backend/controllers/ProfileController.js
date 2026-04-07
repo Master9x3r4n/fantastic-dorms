@@ -63,12 +63,13 @@ class ProfileController {
 					message: `Profile ${username} already exists.`
 				});
 			} else {
-				const salt = PasswordsUtils.generateSalt();
-				const digest = PasswordsUtils.generateDigest(password + salt);
+				// const salt = PasswordsUtils.generateSalt();
+				// const digest = PasswordsUtils.generateDigest(password + salt);
+				const salted = await PasswordsUtils.generateDigest(password);
 				const profile = new Profile({
 					username: username,
-					salt: salt,
-					saltedPassword: digest
+					// salt: salt,
+					saltedPassword: salted
 				});
 
 				// console.log('Creating new profile:');
@@ -255,16 +256,6 @@ class ProfileController {
 
 		const currentPassword = result.data.currentPassword;
 		const newPassword = result.data.newPassword;
-		
-		// if (typeof username !== 'string' || typeof current !== 'string' || typeof newP !== 'string')
-		// if (typeof currentPassword !== 'string' || typeof newPassword !== 'string')
-		// {
-		// 	return res.status(400).send(
-		// 		{ 
-		// 			message: "What are YOU trying to do??? o_O" 
-		// 		}
-		// 	);
-		// }
 
 		try
 		{
