@@ -522,84 +522,22 @@ const resetProfileForm = () => {
                 <div class="my-4 dark:text-gray-200">
                     <!-- Content -->
                     <div v-if="selectedProfile">
-                        <p class="font-bold border-b text-2xl pb-2 mb-1">Update Profile</p>
+                        <p class="font-bold border-b text-2xl pb-2 mb-1">Selected Profile</p>
                         <p><span class="font-semibold">Username: </span>{{ selectedProfile.username }}</p>
                         <p><span class="font-semibold">Name: </span>{{ selectedProfile.name }}</p>
                         <p><span class="font-semibold">Bio: </span>{{ selectedProfile.bio }}</p>
                         <p><span class="font-semibold">School: </span>{{ selectedProfile.school }}</p>
                         <p><span class="font-semibold">Dorm: </span>{{ selectedProfile.dorm }}</p>
                     </div>
-                    <div v-else>
+                    <!-- <div v-else>
                         <p class="font-bold text-2xl pb-2 mb-1">Add New Profile</p>
-                    </div>
-
-                    <!-- Input forms for add/edit -->
-                    <div class="border-t pt-2 mt-2 mb-1">
-                    <form 
-                    ref = "profileFormRef"
-                    class="flex w-full" 
-                    @submit.prevent="submitProfileForm">
-                        <!-- Left pane -->
-                        <div class="w-full">
-                            <!-- Username -->
-                            <FormInput formLabel="Username*"
-                            v-if="!selectedProfile"
-                            v-model="profileForm.username"/>
-
-                            <!-- Full Name -->
-                            <div>
-                                <!-- First -->
-                                <FormInput formLabel="First name"
-                                v-model="profileForm.name.firstName"/>
-                                
-                                <!-- Last -->
-                                <FormInput formLabel="Last name"
-                                v-model="profileForm.name.lastName"/>
-                            </div>
-
-                            <!-- Bio -->
-                            <FormInput formLabel="Bio"
-                            v-model="profileForm.bio"
-                            formType="textarea"/>
-                        </div>
-
-                        <!-- Right pane -->
-                        <div class="w-full">
-                            <!-- School Info -->
-                            <div>
-                                <!-- Name -->
-                                <FormInput formLabel="School Name"
-                                v-model="profileForm.school.name"/>
-                                
-                                <!-- Since -->
-                                <FormInput formLabel="School Since"
-                                v-model="profileForm.school.since"
-                                formType="date"/>
-                            </div>
-
-                            <!-- Dorm Info -->
-                            <div>
-                                <!-- Name -->
-                                <FormInput formLabel="Dorm Name"
-                                v-model="profileForm.dorm.name"/>
-                                
-                                <!-- Since -->
-                                <FormInput formLabel="Dorm Since"
-                                v-model="profileForm.dorm.since"
-                                formType="date"/>
-                            </div>
-                        </div>
-                    </form>
-                    </div>
-
+                    </div> -->
                     <!-- Form Buttons -->
                     <EditButtons
+                    :show="false"
                     :add-mode="!selectedProfile"
                     @submit="triggerSubmitProfileForm"
-                    @add="addProfile()"
-                    @update="updateProfile()"
                     @unselect="unselectProfile()"
-                    @delete="deleteProfile()"
                     />
                 </div>
             </div>
