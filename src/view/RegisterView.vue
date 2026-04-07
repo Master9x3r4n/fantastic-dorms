@@ -218,7 +218,7 @@
 					<!-- Login Link -->
 					<p class="text-center text-slate-600 dark:text-slate-400 text-sm transition-colors">
 						Already have an account?
-						<RouterLink to="/login">
+						<RouterLink to="/settings">
 							<a class="text-[#355AFF] hover:underline font-semibold" href="#">Login</a>
 						</RouterLink>
 					</p>
