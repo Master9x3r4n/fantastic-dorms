@@ -42,18 +42,11 @@ onMounted(async () => {
 	}
 })
 
-// Handlers
-const handleProfileSave = ({ formData, newImageFile }) => {
-	/*
-	console.log('Saving profile data...', formData);
-	if (newImageFile) {
-		console.log('New image ready to be uploaded to server:', newImageFile.name);
-	}*/
+// front end update for profile saving
+const handleProfileSave = async (updatedData) => {
+	await auth.fetchCurrentUser();
 	alert("Profile saved successfully!");
-
-	//reroute to profile
-	router.push({ name: 'profile', params: { id: userInfo.value.username }});
-
+	await router.push({name: 'profile', params: {id: updatedData.username}});
 };
 
 const handlePasswordUpdate = async () => {
