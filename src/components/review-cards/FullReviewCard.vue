@@ -104,6 +104,7 @@ const deleteReview = async () => {
 			deleting.value = false;
 		}
 	}
+	deleting.value = false;
 }
 </script>
 

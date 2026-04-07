@@ -119,11 +119,19 @@ class ReviewController {
 	// Deletes Review document with ID
 	// Returns: Object { deletedCount: x }
 	async delete(req, res) {
+		if (!req.session.user) {
+			return res.status(401).send({ message: 'Not logged in.' });
+		}
 		const id = req.params.id;
 
 		try {
 			const review = await Review.findById(id);
 			if (review) {
+				// Check if user === review's user
+				if (req.session.user.username !== review.username) {
+					return res.status(401).send({ message: 'Unauthorized access.' });
+				}
+				
 				// Delete all images on Cloudinary server
 				for (const media of review.media) {
 					const publicId = extractPublicId(media);
