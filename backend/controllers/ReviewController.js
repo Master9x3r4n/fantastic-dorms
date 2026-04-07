@@ -126,7 +126,7 @@ class ReviewController {
 			const review = await Review.findById(id);
 			if (review) {
 				// Delete all images on Cloudinary server
-				for (publicId in review.media) {
+				for (const publicId in review.media) {
 					const response = await cloudinary.uploader.destroy(publicId, {
 						resource_type: 'image'
 					});
