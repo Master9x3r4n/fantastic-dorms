@@ -19,7 +19,11 @@ const props = defineProps({
 	review: {
 		type: Object,
 		required: true
-	}
+	},
+	isOwner: {
+        type: Boolean,
+        default: false
+    }
 });
 
 const profile = ref(null);
@@ -152,7 +156,7 @@ const rerouteTo = (reply) => {
 
 			<!-- Reply Button -->
 			<BlueButton
-					v-if="!showReview"
+					v-if="!showReview && isOwner"
 					@click="showReview = !showReview"
 					class="font-medium text-[15px] text-white"
 			>
