@@ -1,37 +1,13 @@
 // reference:
 // https://www.bezkoder.com/node-express-mongodb-crud-rest-api/
 
+import { v2 as cloudinary } from 'cloudinary';
+import { extractPublicId } from 'cloudinary-build-url';
+import fs from 'fs';
 import Listing from '../models/Listing.js'; 
+import Review from '../models/Review.js'; 
 
 class ListingController {
-	// Create and Save a new Listings
-	async create(req, res) {
-		// Validate request
-		if (!req.body.owner) {
-			res.status(400).send({ message: "Owner has to exist!" });
-			return;
-		}
-
-		// Create a Listings
-		const listing = new Listing({
-			listingId: req.body.listingId,
-			owner: req.body.owner
-		});
-
-		// Save Listings in the database
-		listing
-			.save()
-			.then(data => {
-			res.send(data);
-			})
-			.catch(err => {
-			res.status(500).send({
-				message:
-				err.message || "An error occurred."
-			});
-			});
-	};
-
 	async findAll(req, res) {
 		let condition = {};
 		if (req.query.name) condition['name'] = { $regex: new RegExp(req.query.name), $options: "i" };
@@ -64,46 +40,84 @@ class ListingController {
 			});
 	};
 
-	// Update a Listings by the listingId in the request
-	async update(req, res) {
-		if (!req.body) {
-			return res.status(400).send({
-			message: "Data to update can not be empty!"
+	// Creates a new Listing object
+	async create(req, res) {
+		// Create a Listing
+		const listing = new Listing({
+			listingId: req.body.listingId,
+			owner: req.body.owner
+		});
+
+		// Save Listing in the database
+		listing.save()
+		.then(data => {
+			res.send(data);
+		})
+		.catch(err => {
+			res.status(500).send({
+				message:
+				err.message || "An error occurred."
 			});
-		}
+		});
+	};
 
-		const listingId = req.params.id;
-		const fieldName = req.body;
-		const newVal = req.params.newVal;
-		const updates = req.body;
+	// Updates Listing object with ID
+	async update(req, res) {
+		const id = req.params.id;
+		const listing = JSON.parse(req.body.content);
+		const rawMedia = req.files;
+		const uploadedMedia = [];
 
-		// const updatedListing = await Listing.findOneAndUpdate( {listingId: listingId}, { fieldName: updates}, { useFindAndModify: false })
-		// 	.then(data => {
-		// 	if (!data) {
-		// 		res.status(404).send({
-		// 		message: `Cannot update Listings with listingId=${listingId}. Maybe Listings was not found!`
-		// 		});
-		// 	} else {
-		// 		res.send({ message: "Listings was updated successfully." });
-		// 	}
-		// 	})
-		// 	.catch(err => {
-		// 	res.status(500).send({
-		// 		message: "Error updating Listings with listingid=" + listingId + err
-		// 	});
-		// });
 		try {
-			const data = await Listing.findOneAndUpdate( {listingId: listingId}, updates, { useFindAndModify: false });
-			if (!data) {
+			// Removing all 'deleted' images
+			for (const media of listing.deletedMedia) {
+				const publicId = extractPublicId(media);
+				const response = await cloudinary.uploader.destroy(publicId, {
+					resource_type: 'image',
+					invalidate: true
+				});
+
+				if (response.result !== 'ok') {
+					console.log(`Warning: Attempted to delete file with ID ${publicId}, but received result of '${response.result}'.`);
+				}
+			}
+			
+			// Uploading the new images
+			let count = 0;
+			for (const media of rawMedia) {
+				const json = await cloudinary.uploader.upload(media.path, {
+					resource_type: 'image',
+					public_id: `${id}-${count}`,
+					folder: 'listingMedia',
+					invalidate: true,
+				});
+
+				uploadedMedia.push(`https://res.cloudinary.com/fantasticdorms/image/upload/${json.public_id}`);
+				if (fs.existsSync(media.path)) {
+					fs.unlinkSync(media.path);
+				}
+
+				count++;
+			}
+			listing.media.push(...uploadedMedia);
+			
+			const response = await Listing.findOneAndUpdate({ listingId: id }, listing, {
+				useFindAndModify: false
+			});
+
+			if (!response) {
 				res.status(404).send({
-				message: `Cannot update Listings with listingId=${listingId}. Maybe Listings was not found!`
+					message: `Listing with ID \'${id}\' could not be found.`
 				});
 			} else {
-				res.send({ message: "Listings was updated successfully." });
+				res.send({
+					message: `Listing with ID \'${id}\' was updated successfully.`
+				});
 			}
 		} catch (err) {
+			console.error(`An error occurred while updating Listing with ID \'${id}\': ${err.message}`);
 			res.status(500).send({
-				message: "Error updating Listings with listingid=" + listingId + err
+				message: err.message || `An error occurred while updating Listing with ID \'${id}\.'`
 			});
 		}
 	};
@@ -129,55 +143,6 @@ class ListingController {
 					message: "Could not delete Listings with listingId=" + listingId
 				});
 			});
-	};
-
-	// Delete all Listings from the database.
-	async deleteAll(req, res) {
-		Listing.deleteMany({})
-			.then(data => {
-				res.send({
-					message: `${data.deletedCount} Listings were deleted successfully!`
-				});
-			})
-			.catch(err => {
-			res.status(500).send({
-				message:
-					err.message || "Some error occurred while removing all Listings."
-				});
-			});
-	};
-
-	// Update fields nested in Listing
-	async updateNested(req, res) {
-		const listingId = req.body.listingId;
-
-		// find listing in question 
-		const listing = Listing.findOne( {listingId: listingId} );
-
-		const path = req.body.path;
-		const newVal = req.body.newVal;
-
-		// update nested field
-		listing.set(path, newVal);
-
-		// save it to database
-		listing
-		.save()
-		.then(data => 
-					{
-					res.send(data);
-					})
-					.catch(err => {
-					res.status(500).send({
-						message:
-						err.message || "Some error occurred while updating the Listing."
-					});
-				});
-	}
-
-	// Find all published Listings
-	async findAllPublished(req, res) {
-	
 	};
 }
 

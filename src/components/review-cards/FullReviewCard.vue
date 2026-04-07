@@ -21,7 +21,11 @@ const props = defineProps({
 	review: {
 		type: Object,
 		required: true
-	}
+	},
+	isOwner: {
+        type: Boolean,
+        default: false
+    }
 });
 const showReview = ref(false);
 const profile = ref(null);
@@ -176,7 +180,7 @@ const getDir = () => {
 
 			<!-- Reply Button -->
 			<BlueButton
-					v-if="!showReview"
+					v-if="!showReview && isOwner"
 					@click="showReview = !showReview"
 					class="font-medium text-[15px] text-white"
 			>

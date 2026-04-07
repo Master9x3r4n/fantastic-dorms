@@ -165,9 +165,95 @@ const deleteListing = () => {
     }
 }
 
-const submitListingForm = () => {
-    console.log('Submitted Listing Form: ' + listingForm)
-}
+/*const submitListingForm = async () => {
+
+    // make sure theres a listing id
+    if (!selectedListing.value && !listingForm.listingId) 
+    {
+        alert('Fill in required field: Listing Id');
+        return;
+    }
+
+    let checkListing = null;
+
+    try 
+    {
+        const response = await ListingService.find(listingForm.listingId);
+        checkListing = response.data;
+        console.log(checkListing);
+    } 
+    catch (err) 
+    {
+        console.log("Listing does not exist yet.");
+    }
+
+    try
+    {
+        // if its there we update
+        if (checkListing)
+        {
+            // plug in to update
+            await ListingService.update(listingForm.listingId, { ...listingForm, });
+
+            alert('Listing updated successfully.');
+        }
+
+        // if its not there
+        else
+        {
+            // add it to the db
+            await ListingService.create(listingForm);
+
+            alert('Listing added successfully.');
+        }
+    }
+    catch (err)
+    {
+        console.error(`ERROR --> ${ err }`);
+    }
+}*/
+
+const submitListingForm = async () => {
+    // 1. Determine which ID to use
+    // If we have a selectedListing, use its ID; otherwise use the form input
+    const currentId = selectedListing.value ? selectedListing.value.listingId : listingForm.listingId;
+
+    if (!currentId) {
+        alert('Fill in required field: Listing Id');
+        return;
+    }
+
+    let checkListing = null;
+
+    // 2. Check if the listing exists in the DB
+    try {
+        const response = await ListingService.find(currentId);
+        checkListing = response.data;
+        console.log(checkListing);
+    } catch (err) {
+        console.log("Listing does not exist yet.");
+    }
+
+    try {
+        if (checkListing) {
+            // 3. Update existing listing
+            // We pass currentId to ensure the URL is /api/l/miros-house
+            const test = await ListingService.update(currentId, { ...listingForm });
+            console.log(test);
+            alert('Listing updated successfully.');
+        } else {
+            // 4. Create new listing
+            await ListingService.create(listingForm);
+            alert('Listing added successfully.');
+        }
+        
+        // Reset and refresh data
+        resetListingForm();
+        // You should add a function call here to re-fetch listings from the server
+    } catch (err) {
+        console.error(`ERROR --> ${err}`);
+    }
+};
 
 const triggerSubmitListingForm = () => {
     listingFormRef.value.requestSubmit()

@@ -1,11 +1,10 @@
 <script setup>
-import {ref, computed, onMounted} from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import Divider from "@/components/divider/Divider.vue";
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
-import ProfileService from '@/services/ProfileService.js';
-
 import AutocompleteInput from "@/components/settings/AutocompleteInput.vue";
 import ListingService from "@/services/ListingService.js";
+import ProfileService from '@/services/ProfileService.js';
 
 const props = defineProps({
 	userInfo: {
@@ -31,6 +30,7 @@ const ogImageFile = ref(props.userInfo.profileImg);
 const formData = ref({ ...props.userInfo });
 const newImageFile = ref(null);
 const fileInputRef = ref(null);
+const deletedMedia = ref(null);
 
 // Computed
 const bioCharacterCount = computed(() => formData.value.bio?.length || 0);
@@ -73,6 +73,7 @@ const handleFileUpload = (event) => {
 
 const removePhoto = () => {
 	formData.value.profileImg = ogImageFile.value;
+	
 	newImageFile.value = null;
 	if (fileInputRef.value) {
 		fileInputRef.value.value = ''; // Reset the hidden input
@@ -116,14 +117,6 @@ const handleProfileSave = async () => {
 		return;
 	}
 
-	// Emit the updated data to the parent component to handle the API call
-	/*emit('save', {
-		formData: formData.value,
-		newImageFile: newImageFile.value
-	});*/
-
-	
-
 	let usernameExists = null;
 
 	if (oldUsername !== newUsername)
@@ -139,7 +132,6 @@ const handleProfileSave = async () => {
 			usernameExists = null;
 		}
 	}
-	
 
 	// if it's in the database
 	if (usernameExists)
@@ -155,7 +147,12 @@ const handleProfileSave = async () => {
 				firstName: newFirstName,
 				lastName: newLastName,
 			},
-			school: formData.value.school,
+			picture: formData.value.profileImg,
+			// school: formData.value.school,
+			school: {
+				name: formData.value.school,
+				since: Date.now()
+			},
 			dorm: {
 				name: formData.value.home,
 				since: Date.now(),
@@ -163,13 +160,26 @@ const handleProfileSave = async () => {
 			bio: formData.value.bio,
 		}
 
-		await ProfileService.update(oldUsername, updatedProfile)
+		const data = new FormData();
+		data.append('content', JSON.stringify({
+			...updatedProfile,
+			deletedMedia: deletedMedia.value
+		}));
+		data.append('newMedia', newImageFile.value);
+
+		console.log(updatedProfile);
+		// console.log(newImageFile.value);
+		// console.log(data.get('newMedia'));
+
+		// await ProfileService.update(oldUsername, updatedProfile)
+		await ProfileService.update(oldUsername, data)
 		.then(res => {
 			// updating data locally
 			formData.value = {
 				...res.data,
 				firstName: res.data.name?.firstName, // Pull from nested object
 				lastName: res.data.name?.lastName,   // Pull from nested object
+				school: res.data.school?.name,
 				home: res.data.dorm?.name
 			};
 

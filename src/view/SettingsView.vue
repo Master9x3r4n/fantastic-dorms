@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from "vue-router";
 import Divider from "@/components/divider/Divider.vue";
 import PasswordToggleButton from "@/components/page-buttons/PasswordToggleButton.vue";
-import ProfileSettings from "@/components/settings/ProfileSettings.vue"
+import ProfileSettingsSection from "@/components/settings/ProfileSettings.vue"
 import { useAuthStore } from "@/auth";
 import ProfileService from '@/services/ProfileService';
 
@@ -29,7 +29,8 @@ const auth = useAuthStore();
 const userInfo = ref(null);
 onMounted(async () => {
 	await auth.fetchCurrentUser();
-    if (auth.user){
+
+  if (auth.user){
 		userInfo.value = {
 			profileImg: auth.user.picture,
 			firstName: auth.user.name.firstName,
@@ -42,11 +43,14 @@ onMounted(async () => {
 	}
 })
 
-// front end update for profile saving
-const handleProfileSave = async (updatedData) => {
+// Handlers
+const handleProfileSave = async () => {
 	await auth.fetchCurrentUser();
 	alert("Profile saved successfully!");
-	await router.push({name: 'profile', params: {id: updatedData.username}});
+	await router.push({
+		name: 'profile',
+		params: { id: auth.user.username }
+	});
 };
 
 const handlePasswordUpdate = async () => {
@@ -72,23 +76,22 @@ const handlePasswordUpdate = async () => {
 			}
 		);
 
-        alert("Password updated successfully!");
-        
-        // empty the text boxes for security ✨
-        currentPassword.value = '';
-        newPassword.value = '';
-        confirmPassword.value = '';
-
+		alert("Password updated successfully!");
+		currentPassword.value = '';
+		newPassword.value = '';
+		confirmPassword.value = '';
 	}
 	catch (err)
 	{
 		console.error(`${err}`);
 		const errorMessage = err.response?.data?.message || "An error occurred";
     
-    	alert(errorMessage);
+		alert(errorMessage);
 	}
 	
 	console.log('Updating password...');
+	// update it in the backend
+	// also we should have encryption and password salting here so update ts when we have that lol
 };
 </script>
 
@@ -106,7 +109,7 @@ const handlePasswordUpdate = async () => {
 				</button>
 
 				<!--Profile Settings Section -->
-				<ProfileSettings
+				<ProfileSettingsSection
 						v-if="userInfo"
 						:userInfo="userInfo"
 						@save="handleProfileSave"

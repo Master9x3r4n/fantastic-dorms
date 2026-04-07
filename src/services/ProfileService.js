@@ -22,7 +22,9 @@ class ProfileService {
 	}
 	
 	update(username, data) {
-		return http.patch(`/p/${username}`, data);
+		return http.patch(`/p/${username}`, data, {
+			headers: { 'Content-Type': 'multipart/form-data' }
+		});
 	}
 }
 
