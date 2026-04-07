@@ -4,6 +4,7 @@ import BlueButton from '../page-buttons/BlueButton.vue';
 import ProfileService from '@/services/ProfileService';
 import { ref, onMounted, watch, computed } from 'vue';
 import { useAuthStore } from '@/auth'; 
+import { RouterLink } from 'vue-router';
 
 const isVerified = ref(false);
 
@@ -110,9 +111,12 @@ watch(() => props.listing.owner, checkOwnerVerification);
 			</div>
 			<div class="flex flex-col">
 				<h3 class="font-bold text-lg text-slate-900 dark:text-white leading-tight">
-					{{ listing.owner }}
+					<RouterLink v-if="isVerified" :to="{name:'profile', params: {id: listing.owner}}">
+						{{ listing.owner }}
+					</RouterLink>
+					<span v-else> {{ listing.owner }} </span>
 				</h3>
-				<div v-if="listing.isVerified" class="flex items-center gap-1.5 text-[#355AFF] font-semibold text-sm mt-1">
+				<div v-if="isVerified" class="flex items-center gap-1.5 text-[#355AFF] font-semibold text-sm mt-1">
 					<span class="material-symbols-outlined dark-filled text-[#355AFF] mr-1 text-[18px]!">verified</span>
 					Verified Host
 				</div>

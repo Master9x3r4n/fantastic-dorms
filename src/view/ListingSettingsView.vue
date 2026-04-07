@@ -137,11 +137,6 @@ const handleSave = () => {
 						<h2 class="text-2xl font-bold">Edit Listing</h2>
 						<p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Update your property details, amenities, and media.</p>
 						<span>@{{ route.params.id }}</span>
-
-						<!-- TODO: THIS -->
-						<p class="strong text-red-500">
-							NOTE: THIS ROUTE SHOULDN'T BE ACCESSIBLE BY NON-OWNERS, PLEASE FIX THAT
-						</p>
 					</div>
 					<Divider />
 
