@@ -18,7 +18,7 @@ const scrollStart = ref(true);
 const scrollEnd = ref(false);
 
 const getFirstItem = () =>
-		carouselContent.value?.querySelector(':scope > * > *');
+		carouselContent.value?.querySelector(':scope > *');
 
 const scroll = (direction) => {
 	const carousel = carouselContent.value;
