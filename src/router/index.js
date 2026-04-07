@@ -179,14 +179,14 @@ const router = createRouter({
       beforeEnter: async (to, from, next) => {
         const auth = useAuthStore();
         if (!auth.user)
-          await auth.fetchCurrntUser();
+          await auth.fetchCurrentUser();
 
         if (!auth.user)
           return next('/login');
         else {
           // is there a better way xd
           const listing = await ListingService.find(from.params.id);
-          if (listing.ownerUsername === auth.user.username)
+          if (listing.data.owner === auth.user.username)
             return next();
           else
             return next('/');
