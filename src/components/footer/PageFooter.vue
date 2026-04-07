@@ -20,7 +20,7 @@ import { RouterLink } from 'vue-router';
 
 		<!-- Trademark -->
 		<div class="text-[14px] leading-4 text-center text-slate-500 dark:text-slate-400">
-			© 2025 Fantastic Dorms. All rights reserved. • <RouterLink to="/about-us">About Us</RouterLink>
+			© 2026 Fantastic Dorms. All rights reserved. • <RouterLink to="/about-us">About Us</RouterLink>
 		</div>
 	</footer>
 </template>
