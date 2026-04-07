@@ -168,10 +168,13 @@ class ProfileController {
 		try {
 			const profile = await Profile.findOne({ username: username });
 			if (profile) {
-				const salt = profile.salt;
+				
 				const hash = profile.saltedPassword;
-				const newHash = PasswordsUtils.generateDigest(password + salt);
-				if (hash === newHash) {
+
+				const isMatch = await PasswordsUtils.verifyUser(hash, password);
+
+				if (isMatch) {
+
 					// create user session
 					req.session.user = {
 						id: profile._id,
@@ -223,12 +226,11 @@ class ProfileController {
 
 			if (dbProfile)
 			{
-				const salt = dbProfile.salt;
 				const dbSaltedHash = dbProfile.saltedPassword;
 
-				const currSaltedHash = PasswordsUtils.generateDigest(current + salt);
-
-				if (currSaltedHash !== dbSaltedHash)
+				let isMatch = await PasswordsUtils.verifyUser(dbSaltedHash, current)
+				// if database info not the same as input for current
+				if (!isMatch)
 				{
 					return res.status(400).send(
 						{ 
@@ -238,13 +240,8 @@ class ProfileController {
 				}
 				else
 				{
-					dbProfile.saltedPassword = PasswordsUtils.generateDigest(newP + salt);
+					dbProfile.saltedPassword = await PasswordsUtils.generateDigest(newP);
 
-					/*const newProfile = await Profile.findOneAndUpdate(
-						{ username: username }, 
-						dbProfile, 
-						{ runValidators: true,}, 
-					);*/
 					await Profile.updateOne(
 						{ username: username },
 						{ $set: { saltedPassword: dbProfile.saltedPassword } }
