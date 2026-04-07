@@ -21,7 +21,9 @@ class ListingService {
 	}
 
 	update(id, data) {
-		return http.put(`/l/${id}`, data);
+		return http.patch(`/l/${id}`, data, {
+			headers: { 'Content-Type': 'multipart/form-data' }
+		});
 	}
 
 	delete(id) {

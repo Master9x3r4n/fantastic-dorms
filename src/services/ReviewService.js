@@ -40,8 +40,6 @@ class ReviewService {
 	}
 
 	create(data) {
-		// console.log(data[0] instanceof File);
-		// console.log('LOCKDOWN BABY');
 		return http.post(`/r`, data, {
 			headers: { 'Content-Type': 'multipart/form-data' }
 		});
@@ -57,6 +55,12 @@ class ReviewService {
 
 	deleteAllFromUser(username) {
 		return http.delete(`/r?username=${username}`);
+	}
+
+
+	updateScore(id, { userId: userId, direction: direction }) 
+	{
+		return http.patch(`/r/${id}/vote`, { userId: userId, direction: direction });
 	}
 }
 

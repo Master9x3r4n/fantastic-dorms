@@ -1,11 +1,13 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { marked } from 'marked';
+import { useAuthStore } from '@/auth';
 import MediaContainer from '../carousel/MediaContainer.vue';
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
 import ProfileService from "../../services/ProfileService.js";
 import ThumbsContainer from '../thumbs-buttons/ThumbsContainer.vue';
 import OwnerReply from "@/components/side-cards/OwnerReply.vue";
+import ReviewService from '@/services/ReviewService';
 
 const props = defineProps({
 	review: {
@@ -18,72 +20,104 @@ const props = defineProps({
 	}
 })
 
-const review = props.review;
 const profile = ref(null);
+const reviewCount = ref(0);
 
-// Only fetch profile data if the review is not anonymous
-if (!review.isAnonymous) {
-	ProfileService.find(review.username)
-			.then(res => {
-				profile.value = res.data;
-			})
-			.catch(error => {
-				console.log(`Error occurred retrieving profile data of user ${review.username} for review ${props.id}: ${error.message}`);
-			});
-}
+ProfileService.find(props.review.username)
+		.then(res => {
+			profile.value = res.data;
+		})
+		.catch(error => {
+			console.log(`Error occurred retrieving profile data of user ${props.review.username} for review: ${error.message}`);
+		});
+
+ReviewService.findAllByUser(props.review.username)
+		.then(res => {
+			reviewCount.value = res.data?.length || 0;
+		})
+		.catch(error => {
+			console.log(`Error retrieving reviews for user ${review.username}: ${error.message}`);
+		});
 
 const getOverallRating = (ratings) => {
+	const validCategories = ['cleanliness', 'comfort', 'communication', 'location'];
 	let overall = 0;
-	for (let p in ratings) {
-		overall += ratings[p];
+	let count = 0;
+	for (const category of validCategories) {
+		if (ratings && typeof ratings[category] === 'number') {
+			overall += ratings[category];
+			count++;
+		}
 	}
-	return (overall/4).toFixed(1);
+	return count > 0 ? (overall / count).toFixed(1) : "0.0";
 }
 
-// Parse the Markdown body
 const parsedBody = computed(() => {
 	const rawText = props.review?.content?.body || "";
 	return marked.parse(rawText);
 });
+
+const getScore = () => {
+	if (!props.review.votes) return 0;
+	return (props.review.votes.upvotes?.length ?? 0) - (props.review.votes.downvotes?.length ?? 0);
+};
+
+const auth = useAuthStore();
+
+const getDir = () => {
+	const username = auth.user?.username;
+	if (!username || !props.review.votes) return 'none';
+
+	if (props.review.votes.upvotes?.includes(username)) return 'up';
+	if (props.review.votes.downvotes?.includes(username)) return 'down';
+	return 'none';
+};
 </script>
 
 <template>
 	<div class="bg-white dark:bg-[#121422] border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm p-6 w-full transition-colors duration-200 flex flex-col gap-3">
 
 		<!-- Header Container -->
-		<div class="flex justify-between items-start mb-1">
+		<div class="flex justify-between items-start gap-4 mb-1">
 
-			<!-- Anonymous User State -->
-			<div v-if="review.isAnonymous" class="flex items-center gap-3 cursor-default">
-				<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
-					<span class="material-symbols-outlined text-slate-400 text-2xl">person_off</span>
-				</div>
-				<div>
-					<div class="font-bold text-slate-900 dark:text-white">
-						Anonymous
+			<!-- Left side: user info -->
+			<div class="min-w-0 flex-1">
+				<!-- Anonymous User State -->
+				<div v-if="review.isAnonymous" class="flex items-center gap-3 cursor-default">
+					<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center shrink-0">
+						<span class="material-symbols-outlined text-slate-400 text-2xl">person_off</span>
 					</div>
-					<div class="text-sm text-slate-500 dark:text-slate-400 italic">Reviewer</div>
+					<div class="min-w-0">
+						<div class="font-bold text-slate-900 dark:text-white truncate">Anonymous</div>
+						<div class="text-sm text-slate-500 dark:text-slate-400 italic">Reviewer</div>
+					</div>
+				</div>
+
+				<!-- Known User State -->
+				<RouterLink v-else-if="profile" :to="{name: 'profile', params: {id: review.username}}" class="hover:opacity-80 transition-opacity">
+					<div class="flex items-center gap-3">
+						<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center shrink-0">
+							<ProfileIcon :src="profile.picture" sizeClass="w-full h-full" iconSize="text-[24px]!"></ProfileIcon>
+						</div>
+						<div class="min-w-0">
+							<h3 class="font-bold text-slate-900 dark:text-white truncate">{{ profile?.name.firstName + ' ' + profile?.name.lastName }}</h3>
+							<p class="text-sm text-slate-500 dark:text-slate-400 italic">{{ reviewCount }} Review{{ reviewCount === 1 ? '' : 's' }}</p>
+						</div>
+					</div>
+				</RouterLink>
+
+				<!-- Fallback -->
+				<div v-else class="flex items-center gap-3 opacity-50 cursor-wait">
+					<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center animate-pulse shrink-0"></div>
+					<div>
+						<div class="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded animate-pulse mb-2"></div>
+						<div class="h-3 w-16 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
+					</div>
 				</div>
 			</div>
 
-			<!-- Known User State -->
-			<RouterLink v-else-if="profile" :to="{name: 'profile', params: {id: review.username}}" class="hover:opacity-80 transition-opacity">
-				<div class="flex items-center gap-3">
-					<!-- Profile Icon -->
-					<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
-						<ProfileIcon :src="profile.picture" sizeClass="w-full h-full" iconSize="text-[24px]!"></ProfileIcon>
-					</div>
-
-					<!-- Name -->
-					<div>
-						<h3 class="font-bold text-slate-900 dark:text-white">{{ profile?.name.firstName + ' ' + profile?.name.lastName }}</h3>
-						<p class="text-sm text-slate-500 dark:text-slate-400 italic">- Reviews</p>
-					</div>
-				</div>
-			</RouterLink>
-
 			<!-- Rating -->
-			<div class="flex items-center text-[#355AFF] text-2xl font-bold">
+			<div class="flex items-center text-[#355AFF] text-2xl font-bold shrink-0">
 				<span class="material-symbols-outlined text-[28px]! mr-1 filled">star</span>
 				{{ getOverallRating(review.rating) }}
 			</div>
@@ -128,7 +162,7 @@ const parsedBody = computed(() => {
 
 			<!-- Upvote -->
 			<div class="text-slate-500 dark:text-slate-400 flex items-center gap-2">
-				<ThumbsContainer :score="review.score"/>
+				<ThumbsContainer :reviewId="review._id" :score="getScore()" :dir="getDir()"/>
 			</div>
 		</div>
 

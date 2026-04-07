@@ -16,6 +16,16 @@ class ProfileService {
 	login(username) {
 		return http.post('/auth/login', username);
 	}
+
+	updatePassword(username, data) {
+		return http.patch(`/p/${username}/password`, data);
+	}
+	
+	update(username, data) {
+		return http.patch(`/p/${username}`, data, {
+			headers: { 'Content-Type': 'multipart/form-data' }
+		});
+	}
 }
 
 export default new ProfileService();

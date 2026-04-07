@@ -15,12 +15,15 @@ const ListingSchema = new mongoose.Schema({
 	],
 	media: [String],
 	location: { type: String, default: '' },
-	rating: [
-		{
-			name: { type: String, default: '' },
-			value: { type: Number, default: 0 }
-		}
-	],
+	rating: {
+		type: {
+			cleanliness: { type: Number, default: 0 },
+			comfort: { type: Number, default: 0 },
+			communication: { type: Number, default: 0 },
+			location: { type: Number, default: 0 }
+		},
+		_id: false // <-- Add this to prevent Mongoose from injecting the ObjectId
+	},
 	createdAt: { type: Date, default: Date.now },
 	isVerified: { type: Boolean, default: false }
 });

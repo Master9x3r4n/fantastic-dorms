@@ -1,7 +1,15 @@
 <script setup>
 import Divider from '../divider/Divider.vue';
-import Icon from '../icon/Icon.vue';
 import BlueButton from '../page-buttons/BlueButton.vue';
+import ProfileService from '@/services/ProfileService';
+import { ref, onMounted, watch, computed } from 'vue';
+import { useAuthStore } from '@/auth'; 
+import { RouterLink } from 'vue-router';
+
+const isVerified = ref(false);
+
+// connect to the store
+const auth = useAuthStore();
 
 const props = defineProps({
 	listing: {
@@ -9,6 +17,7 @@ const props = defineProps({
 		required: true,
 		// Provide a fallback structure for safety
 		default: () => ({
+			listingId: '',
 			name: '',
 			address: '',
 			description: '',
@@ -18,6 +27,57 @@ const props = defineProps({
 		})
 	}
 })
+
+// get current user from store
+const user = computed(() => {
+		return auth.user
+	}
+);
+
+// if user exists and username matches the owner, set to true
+const isOwner = computed(() => {
+    	return user.value && user.value.username === props.listing.owner;
+	}
+);
+
+const checkOwnerVerification = async () => {
+    if (!props.listing.owner) 
+	{
+		isVerified.value = false
+		return;
+	}
+
+    try {
+        
+        const owner = await ProfileService.find(props.listing.owner);
+        
+		if (owner)
+		{
+			isVerified.value = true;
+		}
+		else
+		{
+			isVerified.value = false;
+		}
+        
+    } catch (err) {
+        
+        isVerified.value = false;
+    }
+};
+
+// Call the check when the component mounts or when the listing prop changes
+onMounted(async () => {
+    
+	// if auth.user still not there
+    if (!auth.user) 
+	{
+        await auth.fetchCurrentUser();
+    }
+    checkOwnerVerification();
+});
+
+watch(() => props.listing.owner, checkOwnerVerification);
 </script>
 
 <template>
@@ -29,7 +89,7 @@ const props = defineProps({
 				<h1 class="font-bold text-3xl md:text-4xl text-slate-900 dark:text-white tracking-tight">
 					{{ listing.name }}
 				</h1>
-				<RouterLink :to="{ name: 'listing-settings' }">
+				<RouterLink v-if="isOwner" :to="{ name: 'listing-settings', params: {id: listing.listingId}}">
 					<BlueButton class="flex items-center gap-2 px-4 py-2">
 						<span class="material-symbols-outlined text-white text-[18px]">edit_square</span>
 						<span class="font-medium text-[15px] text-white">Edit</span>
@@ -46,16 +106,19 @@ const props = defineProps({
 
 		<!-- Owner Profile Section -->
 		<div class="flex items-center gap-4 bg-slate-50 dark:bg-slate-800/30 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50 w-fit pr-8">
-			<div class="w-14 h-14 rounded-full bg-gradient-to-br from-amber-100 to-amber-200 border-2 border-white dark:border-slate-700 shadow-sm flex items-center justify-center">
+			<div class="w-14 h-14 rounded-full bg-linear-to-br from-amber-100 to-amber-200 border-2 border-white dark:border-slate-700 shadow-sm flex items-center justify-center">
 				<span class="material-symbols-outlined text-amber-600 text-3xl">domain</span>
 			</div>
 			<div class="flex flex-col">
 				<h3 class="font-bold text-lg text-slate-900 dark:text-white leading-tight">
-					{{ listing.owner }}
+					<RouterLink v-if="isVerified" :to="{name:'profile', params: {id: listing.owner}}">
+						{{ listing.owner }}
+					</RouterLink>
+					<span v-else> {{ listing.owner }} </span>
 				</h3>
-				<div class="flex items-center gap-1.5 text-[#355AFF] font-semibold text-sm mt-1">
-					<Icon name="verified" class="w-4 h-4" />
-					<span>Verified Host</span>
+				<div v-if="isVerified" class="flex items-center gap-1.5 text-[#355AFF] font-semibold text-sm mt-1">
+					<span class="material-symbols-outlined dark-filled text-[#355AFF] mr-1 text-[18px]!">verified</span>
+					Verified Host
 				</div>
 			</div>
 		</div>

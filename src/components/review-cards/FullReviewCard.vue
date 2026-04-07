@@ -1,25 +1,35 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { marked } from 'marked';
+import { useAuthStore } from '@/auth';
 import Carousel from '../carousel/Carousel.vue';
 import MediaContainer from '../carousel/MediaContainer.vue';
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
 import ProfileService from '../../services/ProfileService.js';
+import ReviewService from '../../services/ReviewService.js';
 import ReviewTag from "@/components/write-review-content/ReviewTag.vue";
 import ThumbsContainer from '../thumbs-buttons/ThumbsContainer.vue';
 import OwnerReply from "@/components/side-cards/OwnerReply.vue";
 import BlueButton from '../page-buttons/BlueButton.vue';
 import ReplyReview from './ReplyReview.vue';
+import { useRoute, useRouter } from 'vue-router'
+
+const route = useRoute()
+const router = useRouter()
 
 const props = defineProps({
 	review: {
 		type: Object,
 		required: true
-	}
+	},
+	isOwner: {
+        type: Boolean,
+        default: false
+    }
 });
-
-const profile = ref(null);
 const showReview = ref(false);
+const profile = ref(null);
+const reviewCount = ref(0);
 
 // only query for the profile data if the review is not anonymous
 if (!props.review.isAnonymous) {
@@ -31,6 +41,13 @@ if (!props.review.isAnonymous) {
 				console.log(`Error retrieving profile \'${props.review.username}\': ${error.message}`)
 			});
 }
+ReviewService.findAllByUser(props.review.username)
+		.then(res => {
+			reviewCount.value = res.data?.length || 0;
+		})
+		.catch(error => {
+			console.log(`Error retrieving reviews for user '${props.review.username}': ${error.message}`);
+		});
 
 const getOverallRating = (ratings) => {
 	let overall = 0;
@@ -44,6 +61,27 @@ const parsedBody = computed(() => {
 	const rawText = props.review?.content?.body || "I have stayed at this apartment for a while, and let me say, it is as the name says...";
 	return marked.parse(rawText);
 });
+
+const rerouteTo = (reply) => {
+	props.review.content.reply = reply;
+	router.push({ name: 'reviews', params: { id: route.params.id }, hash: '#' + props.review._id });
+	//window.location.reload();
+}
+
+const getScore = () => {
+	if (!props.review.votes) return 0;
+	return (props.review.votes.upvotes?.length ?? 0) - (props.review.votes.downvotes?.length ?? 0);
+};
+const auth = useAuthStore();
+
+const getDir = () => {
+	const username = auth.user?.username;
+	if (!username || !props.review.votes) return 'none';
+
+	if (props.review.votes.upvotes?.includes(username)) return 'up';
+	if (props.review.votes.downvotes?.includes(username)) return 'down';
+	return 'none';
+};
 </script>
 
 <template>
@@ -75,7 +113,7 @@ const parsedBody = computed(() => {
 						<div class="font-bold text-slate-900 dark:text-white">
 							{{ profile?.name?.firstName ? (profile.name.firstName + ' ' + profile.name.lastName) : review.username }}
 						</div>
-						<div class="text-sm text-slate-500 dark:text-slate-400 italic">- Reviews</div>
+						<div class="text-sm text-slate-500 dark:text-slate-400 italic">{{ reviewCount }} Review{{ reviewCount === 1 ? '' : 's' }}</div>
 					</div>
 				</div>
 			</RouterLink>
@@ -107,7 +145,7 @@ const parsedBody = computed(() => {
 
 		<!-- Media Carousel -->
 		<div v-if="review.media && review.media.length > 0" class="h-[47%] flex w-full justify-center items-center">
-			<Carousel :count="4" buttonStyling="small circular" :buttonSpacing="4">
+			<Carousel buttonStyling="small circular" :buttonSpacing="4">
 				<template #content>
 					<template v-for="(url, index) in review.media" :key="index">
 						<div class="flex shrink-0 snap-start pl-2 pr-2">
@@ -118,32 +156,38 @@ const parsedBody = computed(() => {
 			</Carousel>
 		</div>
 
-		<!-- Owner Reply Component -->
+		<!-- Owner Reply Component (Hidden while editing) -->
 		<OwnerReply
-				v-if="review.content.reply"
+				v-if="review.content.reply && !showReview"
 				:replyText="review.content.reply"
 				:truncate="false"
+		/>
+
+		<!-- Owner Reply Field (Pre-filled with existing reply) -->
+		<ReplyReview
+				v-if="showReview"
+				:reviewId="review._id"
+				:initialReply="review.content.reply || ''"
+				@closeReview="showReview = false"
+				@rerouteLink="rerouteTo"
 		/>
 
 		<div class="flex w-full justify-between items-center">
 			<!-- Thumbs :D -->
 			<div class="flex items-center gap-3.5 text-slate-500 dark:text-slate-400 pt-1">
-				<ThumbsContainer :score="review.score"/>
+				<ThumbsContainer :reviewId="review._id" :score="getScore()" :dir="getDir()"/>
 			</div>
 
 			<!-- Reply Button -->
-			<BlueButton 
-			@click="showReview = !showReview"
-			class="font-medium text-[15px] text-white">
-				<template v-if="!showReview">
-					<span v-if="!review.content.reply">Reply</span>
-					<span v-else>Edit Reply</span>
-				</template>
-				<span v-else>Cancel</span>
+			<BlueButton
+					v-if="!showReview && isOwner"
+					@click="showReview = !showReview"
+					class="font-medium text-[15px] text-white"
+			>
+				<span v-if="!review.content.reply">Add Reply</span>
+				<span v-else>Edit Reply</span>
 			</BlueButton>
 		</div>
-
-		<ReplyReview v-if="showReview"/>
 
 	</div>
 </template>

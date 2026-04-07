@@ -1,8 +1,11 @@
 <script setup>
 import { ref } from 'vue';
 
+const MAX_FILE_SIZE_MB = 5;
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+const MAX_PHOTOS = 10;
+
 const props = defineProps({
-	// Allows the parent to use v-model
 	modelValue: {
 		type: Array,
 		default: () => []
@@ -13,43 +16,63 @@ const emit = defineEmits(['update:modelValue']);
 
 const fileInput = ref(null);
 const isDragging = ref(false);
+const sizeErrors = ref([]);
 
-// Opens the native file browser
 const triggerFileInput = () => {
 	fileInput.value.click();
 };
 
-// Process files from either drag-and-drop or click
 const processFiles = (files) => {
 	const fileArray = Array.from(files);
-
-	// Optional: Filter to ensure only images are added
 	const imageFiles = fileArray.filter(file => file.type.startsWith('image/'));
 
-	// Combine existing files with the new ones and emit to parent
-	emit('update:modelValue', [...props.modelValue, ...imageFiles]);
+	const valid = [];
+	const errors = [];
+
+	const remaining = MAX_PHOTOS - props.modelValue.length;
+
+	if (remaining <= 0) {
+		sizeErrors.value = [`You can only upload up to ${MAX_PHOTOS} photos.`];
+		return;
+	}
+
+	imageFiles.forEach(file => {
+		if (file.size > MAX_FILE_SIZE_BYTES) {
+			errors.push(`"${file.name}" exceeds the ${MAX_FILE_SIZE_MB}MB size limit.`);
+		} else {
+			valid.push(file);
+		}
+	});
+
+	// Trim to whatever slots are left
+	const trimmed = valid.slice(0, remaining);
+	if (valid.length > remaining) {
+		errors.push(`Only ${remaining} photo${remaining === 1 ? '' : 's'} could be added — the ${MAX_PHOTOS} photo limit has been reached.`);
+	}
+
+	sizeErrors.value = errors;
+
+	if (trimmed.length > 0) {
+		emit('update:modelValue', [...props.modelValue, ...trimmed]);
+	}
 };
 
-// Handle file input change
 const handleFileSelect = (event) => {
 	processFiles(event.target.files);
-	event.target.value = ''; // Reset input so the same file can be selected again if removed
+	event.target.value = '';
 };
 
-// Handle drag and drop
 const handleDrop = (event) => {
 	isDragging.value = false;
 	processFiles(event.dataTransfer.files);
 };
 
-// Remove a specific file
 const removeFile = (index) => {
 	const newFiles = [...props.modelValue];
 	newFiles.splice(index, 1);
 	emit('update:modelValue', newFiles);
 };
 
-// Helper function to format file sizes nicely (e.g., 2.5 MB)
 const formatSize = (bytes) => {
 	if (bytes === 0) return '0 Bytes';
 	const k = 1024;
@@ -61,23 +84,26 @@ const formatSize = (bytes) => {
 
 <template>
 	<div>
-		<label class="block text-sm font-medium text-slate-900 dark:text-white mb-1">Add Photos</label>
+		<label class="block text-sm font-medium text-slate-900 dark:text-white mb-1">
+			Add Photos
+			<span class="text-slate-400 font-normal">({{ modelValue.length }}/{{ MAX_PHOTOS }})</span>
+		</label>
 
-		<!-- Drag & Drop Zone -->
 		<div
-				@click="triggerFileInput"
+				@click="modelValue.length < MAX_PHOTOS ? triggerFileInput() : null"
 				@dragover.prevent="isDragging = true"
 				@dragenter.prevent="isDragging = true"
 				@dragleave.prevent="isDragging = false"
 				@drop.prevent="handleDrop"
 				:class="[
-        'border-2 border-dashed rounded-md p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-colors',
-        isDragging
-          ? 'border-[#355AFF] bg-[#355AFF]/5'
-          : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 bg-white dark:bg-[#121422]'
-      ]"
+						'border-2 border-dashed rounded-md p-6 flex flex-col items-center justify-center text-center transition-colors',
+    				modelValue.length >= MAX_PHOTOS
+      			? 'border-slate-200 dark:border-slate-700 opacity-50 cursor-not-allowed bg-white dark:bg-[#121422]'
+      			: isDragging
+        		? 'border-[#355AFF] bg-[#355AFF]/5 cursor-pointer'
+        		: 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 bg-white dark:bg-[#121422] cursor-pointer'
+        		]"
 		>
-			<!-- Hidden File Input -->
 			<input
 					type="file"
 					ref="fileInput"
@@ -94,10 +120,22 @@ const formatSize = (bytes) => {
         cloud_upload
       </span>
 			<p class="text-sm font-medium text-slate-900 dark:text-white">
-				Click to upload or drag and drop
+				{{ modelValue.length >= MAX_PHOTOS ? 'Photo limit reached' : 'Click to upload or drag and drop' }}
 			</p>
 			<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-				SVG, PNG, JPG or GIF
+				SVG, PNG, JPG or GIF — max {{ MAX_FILE_SIZE_MB }}MB per file
+			</p>
+		</div>
+
+		<!-- Size Errors -->
+		<div v-if="sizeErrors.length > 0" class="mt-2 space-y-1">
+			<p
+					v-for="(error, index) in sizeErrors"
+					:key="index"
+					class="text-xs text-red-500 flex items-center gap-1"
+			>
+				<span class="material-symbols-outlined text-[14px]!">error</span>
+				{{ error }}
 			</p>
 		</div>
 
@@ -125,9 +163,5 @@ const formatSize = (bytes) => {
 				</button>
 			</div>
 		</div>
-
 	</div>
 </template>
-
-<style>
-</style>

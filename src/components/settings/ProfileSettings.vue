@@ -1,8 +1,10 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import Divider from "@/components/divider/Divider.vue";
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
-
+import AutocompleteInput from "@/components/settings/AutocompleteInput.vue";
+import ListingService from "@/services/ListingService.js";
+import ProfileService from '@/services/ProfileService.js';
 
 const props = defineProps({
 	userInfo: {
@@ -19,6 +21,7 @@ const props = defineProps({
 		})
 	}
 });
+const listingNames = ref([]);
 
 const emit = defineEmits(['save']);
 
@@ -27,6 +30,7 @@ const ogImageFile = ref(props.userInfo.profileImg);
 const formData = ref({ ...props.userInfo });
 const newImageFile = ref(null);
 const fileInputRef = ref(null);
+const deletedMedia = ref(null);
 
 // Computed
 const bioCharacterCount = computed(() => formData.value.bio?.length || 0);
@@ -69,25 +73,134 @@ const handleFileUpload = (event) => {
 
 const removePhoto = () => {
 	formData.value.profileImg = ogImageFile.value;
+	
 	newImageFile.value = null;
 	if (fileInputRef.value) {
 		fileInputRef.value.value = ''; // Reset the hidden input
 	}
 };
 
-const handleProfileSave = () => {
+const handleProfileSave = async () => {
+	// still use old username for the PK
+	const oldUsername = props.userInfo.username;
+
+	// grab new username
+	const newUsername = formData.value.username;
+
+	// grab new first name
+	const newFirstName = formData.value.firstName;
+
+	// grab new first name
+	const newLastName = formData.value.lastName;
+
+	if (newUsername.length > 20)
+	{
+		alert(`Your new username ${ newUsername } is more than 20 characters long. Please shorten it before saving.`);
+		return;
+	}
+
+	if (newFirstName.length > 20)
+	{
+		alert(`Your new first name ${ newFirstName } is more than 20 characters long. Please shorten it before saving.`);
+		return;
+	}
+
+	if (newLastName.length > 20)
+	{
+		alert(`Your new last name ${ newLastName } is more than 20 characters long. Please shorten it before saving.`);
+		return;
+	}
+
 	// Validation check for bio length
 	if (isBioInvalid.value) {
 		alert(`Your bio is ${bioCharacterCount.value} characters long, which exceeds the 200 character limit. Please shorten it before saving.`);
 		return;
 	}
 
-	// Emit the updated data to the parent component to handle the API call
-	emit('save', {
-		formData: formData.value,
-		newImageFile: newImageFile.value
-	});
+	let usernameExists = null;
+
+	if (oldUsername !== newUsername)
+	{
+		try
+		{
+			// checking if username input is in database
+			usernameExists = await ProfileService.find(formData.value.username);
+		}
+		catch (error)
+		{
+			console.error(error);
+			usernameExists = null;
+		}
+	}
+
+	// if it's in the database
+	if (usernameExists)
+	{
+		// alert user that what they want is taken
+		alert(`Your new username ${newUsername} is already taken!`);
+	}
+	else
+	{
+		const updatedProfile = {
+			username: newUsername,
+			name: {
+				firstName: newFirstName,
+				lastName: newLastName,
+			},
+			picture: formData.value.profileImg,
+			// school: formData.value.school,
+			school: {
+				name: formData.value.school,
+				since: Date.now()
+			},
+			dorm: {
+				name: formData.value.home,
+				since: Date.now(),
+			},
+			bio: formData.value.bio,
+		}
+
+		const data = new FormData();
+		data.append('content', JSON.stringify({
+			...updatedProfile,
+			deletedMedia: deletedMedia.value
+		}));
+		data.append('newMedia', newImageFile.value);
+
+		console.log(updatedProfile);
+		// console.log(newImageFile.value);
+		// console.log(data.get('newMedia'));
+
+		// await ProfileService.update(oldUsername, updatedProfile)
+		await ProfileService.update(oldUsername, data)
+		.then(res => {
+			// updating data locally
+			formData.value = {
+				...res.data,
+				firstName: res.data.name?.firstName, // Pull from nested object
+				lastName: res.data.name?.lastName,   // Pull from nested object
+				school: res.data.school?.name,
+				home: res.data.dorm?.name
+			};
+
+			// telling parent to update
+			emit('save', res.data);
+		})
+		.catch(error => {
+			console.error(`${error}`)
+		});
+	}
+	
 };
+
+onMounted(async () => {
+	try {
+		const res = await ListingService.findAll();
+		listingNames.value = res.data.map(l => l.name);
+	} catch (err) {
+		console.error('Failed to fetch listings:', err.message);
+	}
+});
 </script>
 
 <template>
@@ -136,7 +249,7 @@ const handleProfileSave = () => {
 				<!-- Username -->
 				
 				<div class="space-y-2">
-					<label class="text-sm font-semibold text-black dark:text-white">Last Name</label>
+					<label class="text-sm font-semibold text-black dark:text-white">Username</label>
 					<div class="relative">
 						<span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-sm">@</span>
 						<input
@@ -163,7 +276,7 @@ const handleProfileSave = () => {
 
 					<!-- Last Name -->
 					<div class="space-y-2">
-						<label class="text-sm font-semibold text-black dark:text-white">Username</label>
+						<label class="text-sm font-semibold text-black dark:text-white">Last Name</label>
 						<input
 								v-model="formData.lastName"
 								type="text"
@@ -190,12 +303,12 @@ const handleProfileSave = () => {
 					<div class="space-y-2">
 						<label class="text-sm font-semibold text-black dark:text-white">Current Home</label>
 						<div class="relative">
-							<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 dark:text-slate-500 text-lg!">apartment</span>
-							<input
+							<span class="absolute left-4 top-3.5 material-symbols-outlined text-slate-400 dark:text-slate-500 text-lg! z-10 pointer-events-none">apartment</span>
+							<AutocompleteInput
 									v-model="formData.home"
-									type="text"
+									:options="listingNames"
 									placeholder="Dorm or apartment name"
-									class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
+									class="pl-11"
 							/>
 						</div>
 					</div>

@@ -3,8 +3,6 @@ import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import ListingService from '../services/ListingService.js';
 import ReviewService from '../services/ReviewService.js';
-const route = useRoute();
-const router = useRouter();
 
 import Carousel from '@/components/carousel/Carousel.vue';
 import ListingInformation from '@/components/listing-content/ListingInformation.vue';
@@ -14,6 +12,8 @@ import ReviewCard from '@/components/review-cards/ReviewCard.vue';
 import Divider from '@/components/divider/Divider.vue';
 import BlueButton from "@/components/page-buttons/BlueButton.vue";
 
+const route = useRoute();
+const router = useRouter();
 const listingId = route.params.id;
 const listing = ref(null);
 const reviews = ref([]);
@@ -23,28 +23,46 @@ const displayedReviews = computed(() => {
 	return reviews.value.slice(0, 3);
 });
 
+const aggregatedRating = computed(() => {
+	if (!reviews.value.length) return { cleanliness: 0, comfort: 0, communication: 0, location: 0 };
+
+	const categories = ['cleanliness', 'comfort', 'communication', 'location'];
+	const sums = { cleanliness: 0, comfort: 0, communication: 0, location: 0 };
+
+	reviews.value.forEach(review => {
+		categories.forEach(category => {
+			sums[category] += Number(review.rating?.[category] ?? 0);
+		});
+	});
+
+	const count = reviews.value.length;
+	return Object.fromEntries(
+			categories.map(cat => [cat, sums[cat] / count])
+	);
+});
+
 onMounted(async () => {
 	// Get listing
 	ListingService.find(listingId)
-			.then(res => {
-				listing.value = res.data;
-			})
-			.catch(err => {
-				if (err.status === 404) {
-					return router.push('/');
-				}
-				console.log(`Error retrieving listing: ${err.message}`);
-			});
-
-		// Get reviews
-		ReviewService.findAllFromListing(listingId)
-		.then(res => {
-			reviews.value = res.data;
-		})
-		.catch(err => {
-			console.log(`Error retrieving reviews: ${err.message}`);
-		});
+	.then(res => {
+		listing.value = res.data;
+	})
+	.catch(err => {
+		if (err.status === 404) {
+			return router.push('/');
+		}
+		console.log(`Error retrieving listing: ${err.message}`);
 	});
+
+	// Get reviews
+	ReviewService.findAllFromListing(listingId)
+	.then(res => {
+		reviews.value = res.data;
+	})
+	.catch(err => {
+		console.log(`Error retrieving reviews: ${err.message}`);
+	});
+});
 </script>
 
 <template>
@@ -56,15 +74,17 @@ onMounted(async () => {
 			<!-- LEFT COLUMN: Content -->
 			<div class="w-full lg:w-2/3 flex flex-col gap-8">
 				<!-- Media -->
-				<div v-if="listing.media?.length" class="flex w-full">
-					<Carousel :count="1" buttonStyling="large">
+				<div v-if="listing.media?.length" class="w-full h-107.5">
+					<Carousel buttonStyling="large">
 						<template #content>
-							<MediaContainer
-									v-for="(mediaSrc, index) in listing.media"
-									:key="index"
-									class="flex shrink-0 snap-start w-full object-cover"
-									:src="mediaSrc"
-							/>
+							<div
+								v-for="(mediaSrc, index) in listing.media"
+								:key="index"
+								class="h-full p-2"
+								style="flex: 0 0 100%"
+							>
+								<MediaContainer :src="mediaSrc" size="full" :objectFit="'cover'" />
+							</div>
 						</template>
 					</Carousel>
 				</div>
@@ -74,7 +94,7 @@ onMounted(async () => {
 
 			<!-- RIGHT COLUMN: Sidebar -->
 			<div class="w-full lg:w-1/3 flex flex-col gap-8 lg:sticky lg:top-8 h-fit">
-				<OverallRating :rating="listing.rating" class="w-full shadow-sm"/>
+				<OverallRating :rating="aggregatedRating" class="w-full shadow-sm"/>
 
 				<div class="flex flex-col gap-6">
 					<div class="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-slate-700/60">

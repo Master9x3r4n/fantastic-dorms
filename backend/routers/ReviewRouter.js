@@ -6,12 +6,16 @@ import express from 'express';
 import multer from 'multer';
 import ReviewController from '../controllers/ReviewController.js';
 const router = express.Router();
-const upload = multer({ dest: 'buffer/' });
+const upload = multer({
+	dest: 'buffer/',
+	limits: { fieldSize: 10 * 1024 * 1024 }
+});
 
 router.get('/', ReviewController.findAll);
 router.get('/:id', ReviewController.find);
-router.post('/', upload.array('media', 4), ReviewController.create);
-router.patch('/', ReviewController.update);
+router.post('/', upload.array('media', 10), ReviewController.create);
+router.patch('/:id', ReviewController.update);
 router.delete('/:id', ReviewController.delete);
+router.patch('/:id/vote', ReviewController.updateScore);
 
 export default router;

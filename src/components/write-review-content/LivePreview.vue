@@ -59,7 +59,7 @@ const parsedBody = computed(() => {
 				<ReviewTag :tags="tags" />
 
 				<div v-if="mediaUrls.length > 0" class="my-6 h-[47%] flex w-full justify-center items-center">
-					<Carousel :count="4" buttonStyling="small circular" :buttonSpacing="4">
+					<Carousel buttonStyling="small circular" :buttonSpacing="4">
 						<template #content>
 							<template v-for="(url, index) in mediaUrls" :key="index">
 								<div class="flex shrink-0 snap-start pl-2 pr-2">
@@ -76,7 +76,7 @@ const parsedBody = computed(() => {
 				</div>
 
 				<div class="flex items-center gap-4 text-slate-500 dark:text-slate-400">
-					<ThumbsContainer :score="67"/>
+					<ThumbsContainer :score="4"/>
 				</div>
 			</div>
 		</div>
@@ -117,14 +117,14 @@ const parsedBody = computed(() => {
 
 /* Headings */
 .editor-output :deep(h2) {
-	font-size: 1.5em;
+	font-size: 1.25em;
 	font-weight: 700;
 	margin-top: 1rem;
 	margin-bottom: 0.5rem;
 	line-height: 1.2;
 }
 .editor-output :deep(h3) {
-	font-size: 1.25em;
+	font-size: 1.125em;
 	font-weight: 600;
 	margin-top: 1rem;
 	margin-bottom: 0.5rem;

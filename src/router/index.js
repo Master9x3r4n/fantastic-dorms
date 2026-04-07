@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import ListingService from '../services/ListingService.js';
 import AdminView from '../view/AdminView.vue'
 import LandingView from '../view/LandingView.vue'
 import PlaygroundView from '../view/PlaygroundView.vue'
@@ -13,6 +14,7 @@ import SettingsView from "@/view/SettingsView.vue";
 import AccountCreationView from "@/view/AccountCreationView.vue";
 import ListingSettingsView from "@/view/ListingSettingsView.vue";
 import { useAuthStore } from '@/auth';
+import AboutView from '@/view/AboutView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -42,9 +44,9 @@ const router = createRouter({
         if (!auth.user)
           await auth.fetchCurrentUser();
 
-        // if (!auth.user)
-        //   return next('/login');
-        // else
+        if (!auth.user)
+          return next('/login');
+        else
           return next();
       }
     },
@@ -58,6 +60,16 @@ const router = createRouter({
       //   if (user && from.path !== '/register')
       //     return next('/');
       // }
+      beforeEnter: async (to, from, next) => {
+        const auth = useAuthStore();
+        if (!auth.user)
+          await auth.fetchCurrentUser();
+
+        if (auth.user)
+          return next('/');
+        else
+          return next();
+      }
     },
     {
       path: "/register",
@@ -156,6 +168,10 @@ const router = createRouter({
     },
     {
       path: "/listing-settings",
+      redirect: "/"
+    },
+    {
+      path: "/listing-settings/:id",
       name: "listing-settings",
       component: ListingSettingsView,
       meta: { search: false, loggedIn: true },
@@ -167,10 +183,22 @@ const router = createRouter({
 
         if (!auth.user)
           return next('/login');
-        else
-          return next();
+        else {
+          // is there a better way xd
+          const listing = await ListingService.find(from.params.id);
+          if (listing.data.owner === auth.user.username)
+            return next();
+          else
+            return next('/');
+        }e
       }
-    }
+    },
+    {
+      path: "/about-us",
+      name: "about-us",
+      component: AboutView,
+      meta: { search: true, loggedIn: true },
+    },
   ],
 })
 

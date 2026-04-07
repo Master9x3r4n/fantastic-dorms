@@ -1,81 +1,117 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import ProfileSummary from "@/components/profile/ProfileSummary.vue";
 import ReviewPreview from "@/components/profile/ReviewPreview.vue";
 import PageButtons from "@/components/page-buttons/PageButtons.vue";
 import Divider from "@/components/divider/Divider.vue";
 import BlueButton from "@/components/page-buttons/BlueButton.vue";
-import ProfileService from "../services/ProfileService.js";
-import ReviewService from "../services/ReviewService.js";
-import ListingService from "../services/ListingService.js";
+import ProfileService from "@/services/ProfileService.js";
+import ReviewService from "@/services/ReviewService.js";
+import ListingService from "@/services/ListingService.js";
 import { useAuthStore } from '@/auth';
 
 const props = defineProps({
 	id: { type: String }
 });
 
-const user = ref(null);
-ProfileService.find(props.id)
-		.then(res => {
-			user.value = res.data;
-		})
-		.catch(error => {
-			console.error(`Error retrieving profile: ${error.message}.`);
-		});
-
-const reviewsRaw = ref(null);
-const reviews = ref([]);
-ReviewService.findAllByUser(props.id)
-		.then(res => {
-			reviewsRaw.value = res.data;
-
-			// For each review, pull the listing
-			for (let i = 0; i < reviewsRaw.value.length; i++) {
-				const review = reviewsRaw.value[i];
-				ListingService.find(review.listingId)
-						.then(res => {
-							if (res.data) {
-								reviews.value.push({
-									data: review,
-									listing: res.data
-								})
-							} else {
-								console.error(`Listing ${review.listingId} could not be found for review.`);
-							}
-						})
-						.catch(error => {
-							console.error(`Error retrieving listing for review: ${error.message}.`);
-						});
-			}
-		})
-		.catch(error => {
-			console.error(`Error retrieving profile: ${error.message}.`);
-		});
-
-const getOverallRating = (ratings) => {
-	let overall = 0;
-	for (let p in ratings) {
-		overall += ratings[p];
-	}
-	return (overall/4).toFixed(1);
-}
-
-// Get current username
-const username = ref(null);
+const router = useRouter();
 const auth = useAuthStore();
+
+const user = ref(null);
+const reviewsRaw = ref([]);
+const reviews = ref([]);
+const username = ref(null);
+const isLoading = ref(true);
+
+// 1. Abstracted the fetch logic into a function so we can control WHEN it runs
+const fetchProfileData = async (targetId) => {
+	isLoading.value = true;
+	try {
+		// Fetch Profile
+		const profileRes = await ProfileService.find(targetId);
+		user.value = profileRes.data;
+
+		// Fetch Reviews
+		const reviewsRes = await ReviewService.findAllByUser(targetId);
+		reviewsRaw.value = reviewsRes.data;
+
+		// Fetch Listings for each review
+		reviews.value = []; // Reset reviews array
+		for (let i = 0; i < reviewsRaw.value.length; i++) {
+			const review = reviewsRaw.value[i];
+			try {
+				const listingRes = await ListingService.find(review.listingId);
+				if (listingRes.data) {
+					reviews.value.push({
+						data: review,
+						listing: listingRes.data
+					});
+				}
+			} catch (err) {
+				console.error(`Listing ${review.listingId} could not be found.`);
+			}
+		}
+	} catch (error) {
+		console.error(`Error retrieving profile: ${error.message}.`);
+	} finally {
+		isLoading.value = false;
+	}
+};
+
 onMounted(async () => {
+	// 2. Ensure auth is loaded before attempting to fetch
 	if (!auth.user) {
-		await auth.fetchCurrentUser();
+		try {
+			await auth.fetchCurrentUser();
+		} catch (e) {
+			// Expected if completely logged out
+			console.log("User is not logged in.");
+		}
 	}
 
-	if (auth.user)
+	if (auth.user) {
 		username.value = auth.user.username;
-})
+	}
+
+	// 3. Fallback logic: If no ID in URL (e.g. `/profile`), use logged in user's ID
+	const targetId = props.id || username.value;
+
+	if (targetId) {
+		await fetchProfileData(targetId);
+	} else {
+		// If neither exists, redirect to login because they can't view a profile page
+		isLoading.value = false;
+		await router.push('/login');
+	}
+});
+
+// Refetch if URL parameter changes dynamically
+watch(() => props.id, (newId) => {
+	const targetId = newId || username.value;
+	if (targetId) fetchProfileData(targetId);
+});
+
+// 4. Sturdy rating calculation to avoid NaN
+const getOverallRating = (ratings) => {
+	if (!ratings) return "0.0";
+	const validCategories = ['cleanliness', 'comfort', 'communication', 'location'];
+	let sum = 0;
+	let count = 0;
+	for (const category of validCategories) {
+		if (typeof ratings[category] === 'number') {
+			sum += ratings[category];
+			count++;
+		}
+	}
+	return count > 0 ? (sum / count).toFixed(1) : "0.0";
+}
 
 // --- FILTER LOGIC ---
 const filteredReviews = computed(() => {
+	const targetId = props.id || username.value;
 	// If the current logged-in user is viewing their own profile, show all reviews
-	if (username.value === props.id) {
+	if (username.value === targetId) {
 		return reviews.value;
 	}
 	// Otherwise, filter out anonymous reviews
@@ -100,12 +136,11 @@ const paginatedReviews = computed(() => {
 
 const changePage = (page) => {
 	currentPage.value = page;
-	// window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 </script>
 
 <template>
-	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 font-['Inter']" v-if="user">
+	<div v-if="user" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 font-['Inter']">
 
 		<!-- Top Profile Summary Card -->
 		<div class="bg-white dark:bg-[#121422] border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm p-6 md:p-8 mb-8 transition-colors duration-200">
@@ -130,7 +165,7 @@ const changePage = (page) => {
 						Biography
 					</h2>
 					<!-- Edit Button -->
-					<RouterLink to="/settings" v-if="username === props.id">
+					<RouterLink to="/settings" v-if="username === (props.id || username)">
 						<BlueButton class="px-3 py-1.5">
 							<span class="material-symbols-outlined text-[16px] text-white">edit_square</span>
 							<span class="text-sm font-medium text-white">Edit</span>
@@ -230,6 +265,16 @@ const changePage = (page) => {
 			</div>
 
 		</div>
+	</div>
+
+	<!-- Fallback Error State -->
+	<div v-else class="flex flex-col items-center justify-center min-h-[60vh]">
+		<span class="material-symbols-outlined text-6xl text-slate-300 mb-4">error_outline</span>
+		<h2 class="text-2xl font-bold text-slate-900 dark:text-white">Profile Not Found</h2>
+		<p class="text-slate-500 dark:text-slate-400 mt-2">We couldn't locate this user's profile.</p>
+		<RouterLink to="/">
+			<BlueButton class="mt-6 px-6 py-2 text-white">Return Home</BlueButton>
+		</RouterLink>
 	</div>
 </template>
 

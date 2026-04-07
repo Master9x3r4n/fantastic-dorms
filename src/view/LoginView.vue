@@ -141,11 +141,11 @@
                 </label>
               </div>
               
-              <div class="text-sm">
+              <!-- <div class="text-sm">
                 <a href="#" class="font-medium text-[#355AFF] hover:text-[#2a48cc] transition-colors">
                   Forgot password?
                 </a>
-              </div>
+              </div> -->
             </div>
           </div>
 

@@ -3,8 +3,8 @@
 
 import { v2 as cloudinary } from 'cloudinary';
 import fs from 'fs';
-import Review from '../models/Review.js'; 
-const MAX_MEDIA_COUNT = 4;
+import Review from '../models/Review.js';
+// const MAX_MEDIA_COUNT = 10;
 
 class ReviewController {
 	// Finds all Review documents with query
@@ -63,20 +63,17 @@ class ReviewController {
 		try {
 			let count = 0;
 			for (const media of rawMedia) {
-				// console.log('--- #' + count);
-				// console.log(media);
-				if (count >= MAX_MEDIA_COUNT)
-					break;
-
-				// const json = await cloudinary.uploader.upload(media.buffer, {
 				const json = await cloudinary.uploader.upload(media.path, {
 					resource_type: 'image',
 					public_id: `${review._id}-${count}`,
-					folder: 'reviewMedia'
+					folder: 'reviewMedia',
+					invalidate: true,
 				})
+
 				// Rebuild with this URL:
 				// https://res.cloudinary.com/fantasticdorms/image/upload/reviewMedia/<public_id>.png
-				uploadedMedia.push(`https://res.cloudinary.com/fantasticdorms/image/upload/${json.public_id}`);
+				// uploadedMedia.push(`https://res.cloudinary.com/fantasticdorms/image/upload/${json.public_id}`);
+				uploadedMedia.push(json.secure_url);
 				if (fs.existsSync(media.path)) {
 					fs.unlinkSync(media.path);
 				}
@@ -126,7 +123,7 @@ class ReviewController {
 			const review = await Review.findById(id);
 			if (review) {
 				// Delete all images on Cloudinary server
-				for (publicId in review.media) {
+				for (const publicId in review.media) {
 					const response = await cloudinary.uploader.destroy(publicId, {
 						resource_type: 'image'
 					});
@@ -147,6 +144,58 @@ class ReviewController {
 			res.status(500).send({
 				message: err.message || `An error occurred while deleting Review ${id}.`
 			});
+		}
+	}
+
+	// updates the score by receiving the direction
+	async updateScore(req, res) {
+		const id = req.params.id;
+		const direction = req.body.direction;
+		const userId = req.body.userId;
+
+		try {
+			const review = await Review.findById(id);
+			if (!review) return res.status(404).send({ message: "Review not found" });
+
+			let upvotes = [...review.votes.upvotes];
+			let downvotes = [...review.votes.downvotes];
+
+			if (direction === 'up') {
+				// Remove from downvotes AND add to upvotes
+				downvotes = downvotes.filter(u => u !== userId);
+				if (!upvotes.includes(userId)) upvotes.push(userId);
+			}
+			else if (direction === 'down') {
+				// Remove from upvotes AND add to downvotes
+				upvotes = upvotes.filter(u => u !== userId);
+				if (!downvotes.includes(userId)) downvotes.push(userId);
+			}
+			else if (direction === 'removeup') {
+				upvotes = upvotes.filter(u => u !== userId);
+			}
+			else if (direction === 'removedown') {
+				downvotes = downvotes.filter(u => u !== userId);
+			}
+
+			const score = upvotes.length - downvotes.length;
+
+			const updatedReview = await Review.findByIdAndUpdate(
+				id,
+				{
+					$set: {
+						'votes.upvotes': upvotes,
+						'votes.downvotes': downvotes,
+						score: score
+					}
+				},
+				{ returnDocument: 'after', runValidators: true }
+			);
+
+			if (!updatedReview) return res.status(404).send({ message: "Review not found" });
+
+			res.status(200).send(updatedReview);
+		} catch (err) {
+			res.status(500).send({ message: err.message });
 		}
 	}
 }
