@@ -259,7 +259,15 @@ onBeforeUnmount(() => {
 				<h1 class="text-3xl font-bold mb-2 text-slate-900 dark:text-white">Write a Review</h1>
 				<p class="text-sm text-slate-500 dark:text-slate-400 mb-6">
 					<!-- Yes I know we don't have community guidelines, heck we don't even have a terms and conditions -->
-					In creating a review, make sure that your review does not violate our <a class="text-[#355AFF] hover:underline">Community Guidelines</a>.
+					In creating a review, make sure that your review does not violate 
+					<a 
+					href = "https://www.merriam-webster.com/dictionary/common%20sense"
+					target = _blank
+					class="text-[#355AFF] hover:underline">Community Sense</a> and
+					<a 
+					href = "https://www.merriam-webster.com/dictionary/common%20courtesy"
+					target = _blank
+					class="text-[#355AFF] hover:underline">Community Courtesy</a>.
 				</p>
 
 				<div v-if="listing">
