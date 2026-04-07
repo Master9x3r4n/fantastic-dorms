@@ -11,7 +11,10 @@ const props = defineProps({
 		type: Object,
 		required: true,
 		default: () => ({
-			profileImg: 'https://i.pinimg.com/736x/f3/b1/f8/f3b1f8c618080a7d0af8f0dc1b7c90ae.jpg',
+			profileImg: {
+				url: 'https://i.pinimg.com/736x/f3/b1/f8/f3b1f8c618080a7d0af8f0dc1b7c90ae.jpg',
+				exists: false
+			},
 			firstName: 'Aya',
 			lastName: 'Oosawa',
 			username: 'ayasjpg',
@@ -26,8 +29,12 @@ const listingNames = ref([]);
 const emit = defineEmits(['save']);
 
 // Local Form State
-const ogImageFile = ref(props.userInfo.profileImg);
+// const ogImageFile = ref(props.userInfo.profileImg);
 const formData = ref({ ...props.userInfo });
+formData.value.profileImg = {
+	url: formData.value.profileImg,
+	exists: true
+}
 const newImageFile = ref(null);
 const fileInputRef = ref(null);
 const deletedMedia = ref(null);
@@ -66,13 +73,23 @@ const handleFileUpload = (event) => {
 	// Create a local preview
 	const reader = new FileReader();
 	reader.onload = (e) => {
-		formData.value.profileImg = e.target.result;
+		formData.value.profileImg = {
+			url: e.target.result,
+			exists: false
+		};
 	};
 	reader.readAsDataURL(file);
 };
 
 const removePhoto = () => {
-	formData.value.profileImg = ogImageFile.value;
+	// formData.value.profileImg = ogImageFile.value;
+	if (formData.value.profileImg.exists) {
+		deletedMedia.value = formData.value.profileImg.url;
+	}
+	formData.value.profileImg = {
+		url: '',
+		exists: false
+	};
 	
 	newImageFile.value = null;
 	if (fileInputRef.value) {
@@ -83,13 +100,10 @@ const removePhoto = () => {
 const handleProfileSave = async () => {
 	// still use old username for the PK
 	const oldUsername = props.userInfo.username;
-
 	// grab new username
 	const newUsername = formData.value.username;
-
 	// grab new first name
 	const newFirstName = formData.value.firstName;
-
 	// grab new first name
 	const newLastName = formData.value.lastName;
 
@@ -147,7 +161,7 @@ const handleProfileSave = async () => {
 				firstName: newFirstName,
 				lastName: newLastName,
 			},
-			picture: formData.value.profileImg,
+			picture: formData.value.profileImg.url,
 			// school: formData.value.school,
 			school: {
 				name: formData.value.school,
@@ -190,7 +204,6 @@ const handleProfileSave = async () => {
 			console.error(`${error}`)
 		});
 	}
-	
 };
 
 onMounted(async () => {
@@ -215,7 +228,7 @@ onMounted(async () => {
 			<!-- Profile Picture Section -->
 			<div class="flex flex-col sm:flex-row items-center gap-6 pb-8">
 				<div class="relative group">
-					<ProfileIcon :src="formData.profileImg" alt="Profile Picture" sizeClass="w-24 h-24" />
+					<ProfileIcon :src="formData.profileImg.url" alt="Profile Picture" sizeClass="w-24 h-24" />
 				</div>
 				<div class="text-center sm:text-left">
 					<h3 class="font-bold text-black dark:text-white text-lg">Your Profile Picture</h3>

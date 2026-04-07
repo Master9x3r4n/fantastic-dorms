@@ -137,6 +137,10 @@ const paginatedReviews = computed(() => {
 const changePage = (page) => {
 	currentPage.value = page;
 };
+
+const goToListing = () => {
+	router.push('/');
+}
 </script>
 
 <template>
@@ -203,9 +207,14 @@ const changePage = (page) => {
 						</div>
 						<div class="flex flex-col">
 							<span class="text-sm font-medium text-slate-500 dark:text-slate-400">Home</span>
-							<a class="font-semibold text-slate-900 dark:text-white hover:text-[#355AFF] dark:hover:text-[#355AFF] underline transition-colors cursor-pointer">
+							<p class="font-semibold text-slate-900 dark:text-white transition-colors">
+							<!-- <a 
+								class="font-semibold text-slate-900 dark:text-white hover:text-[#355AFF] dark:hover:text-[#355AFF] underline transition-colors cursor-pointer"
+								@click="goToListing"
+							> -->
 								{{ user.dorm?.name }}
-							</a>
+							<!-- </a> -->
+							</p>
 						</div>
 					</div>
 

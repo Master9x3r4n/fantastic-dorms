@@ -6,7 +6,6 @@ import express from 'express';
 import multer from 'multer';
 import ReviewController from '../controllers/ReviewController.js';
 import requireAuth from '../middleware/requireAuth.js';
-
 const router = express.Router();
 const upload = multer({
 	dest: 'buffer/',

@@ -190,7 +190,7 @@ const router = createRouter({
             return next();
           else
             return next('/');
-        }e
+        }
       }
     },
     {

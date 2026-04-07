@@ -13,8 +13,8 @@ const upload = multer({
 
 router.get("/", ListingController.findAll);
 router.get("/:id", ListingController.find);
-router.post("/",  upload.array('newMedia', 5), ListingController.create);
-router.patch("/:id", requireAuth,  upload.any(), ListingController.update);
-router.delete("/:id",  requireAuth, ListingController.delete);
+router.post("/", upload.array('newMedia', 5), ListingController.create);
+router.patch("/:id", requireAuth, upload.array('newMedia', 5), ListingController.update);
+router.delete("/:id", requireAuth, ListingController.delete);
 
 export default router;
