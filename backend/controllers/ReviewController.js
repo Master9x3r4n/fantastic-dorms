@@ -3,8 +3,8 @@
 
 import { v2 as cloudinary } from 'cloudinary';
 import fs from 'fs';
-import Review from '../models/Review.js'; 
-const MAX_MEDIA_COUNT = 10;
+import Review from '../models/Review.js';
+// const MAX_MEDIA_COUNT = 10;
 
 class ReviewController {
 	// Finds all Review documents with query
@@ -63,17 +63,13 @@ class ReviewController {
 		try {
 			let count = 0;
 			for (const media of rawMedia) {
-				// console.log('--- #' + count);
-				// console.log(media);
-				if (count >= MAX_MEDIA_COUNT)
-					break;
-
-				// const json = await cloudinary.uploader.upload(media.buffer, {
 				const json = await cloudinary.uploader.upload(media.path, {
 					resource_type: 'image',
 					public_id: `${review._id}-${count}`,
-					folder: 'reviewMedia'
+					folder: 'reviewMedia',
+					invalidate: true,
 				})
+
 				// Rebuild with this URL:
 				// https://res.cloudinary.com/fantasticdorms/image/upload/reviewMedia/<public_id>.png
 				uploadedMedia.push(`https://res.cloudinary.com/fantasticdorms/image/upload/${json.public_id}`);

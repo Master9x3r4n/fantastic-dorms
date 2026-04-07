@@ -26,25 +26,25 @@ const displayedReviews = computed(() => {
 onMounted(async () => {
 	// Get listing
 	ListingService.find(listingId)
-			.then(res => {
-				listing.value = res.data;
-			})
-			.catch(err => {
-				if (err.status === 404) {
-					return router.push('/');
-				}
-				console.log(`Error retrieving listing: ${err.message}`);
-			});
-
-		// Get reviews
-		ReviewService.findAllFromListing(listingId)
-		.then(res => {
-			reviews.value = res.data;
-		})
-		.catch(err => {
-			console.log(`Error retrieving reviews: ${err.message}`);
-		});
+	.then(res => {
+		listing.value = res.data;
+	})
+	.catch(err => {
+		if (err.status === 404) {
+			return router.push('/');
+		}
+		console.log(`Error retrieving listing: ${err.message}`);
 	});
+
+	// Get reviews
+	ReviewService.findAllFromListing(listingId)
+	.then(res => {
+		reviews.value = res.data;
+	})
+	.catch(err => {
+		console.log(`Error retrieving reviews: ${err.message}`);
+	});
+});
 </script>
 
 <template>
@@ -60,10 +60,10 @@ onMounted(async () => {
 					<Carousel buttonStyling="large">
 						<template #content>
 							<div
-									v-for="(mediaSrc, index) in listing.media"
-									:key="index"
-									class="h-full p-2"
-									style="flex: 0 0 100%"
+								v-for="(mediaSrc, index) in listing.media"
+								:key="index"
+								class="h-full p-2"
+								style="flex: 0 0 100%"
 							>
 								<MediaContainer :src="mediaSrc" size="full" :objectFit="'cover'" />
 							</div>
