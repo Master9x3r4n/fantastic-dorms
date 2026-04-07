@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const ListingSchema = new mongoose.Schema({
 	listingId: { type: String, required: true },
-	ownerUsername: { type: String, required: true },
+	owner: { type: String, required: true },
 	name: { type: String, default: '' },
 	address: { type: String, default: '' },
 	description: { type: String, default: '' },

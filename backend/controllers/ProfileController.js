@@ -216,6 +216,7 @@ class ProfileController {
 					req.session.user = {
 						id: profile._id,
 						username: profile.username,
+						isAdmin: profile.isAdmin
 					}
 
 					req.session.cookie.maxAge = 60 * 60 * 1000; // 1 hour

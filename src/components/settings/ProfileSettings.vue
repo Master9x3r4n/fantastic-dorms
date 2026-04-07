@@ -204,7 +204,6 @@ const handleProfileSave = async () => {
 			console.error(`${error}`)
 		});
 	}
-	
 };
 
 onMounted(async () => {
