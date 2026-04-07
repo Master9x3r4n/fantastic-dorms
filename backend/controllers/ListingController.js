@@ -66,7 +66,7 @@ class ListingController {
 		const id = req.params.id;
 		const listing = JSON.parse(req.body.content);
 		const rawMedia = req.files;
-		const uploadedMedia = [];
+		const uploadedMedia = [];		
 
 		try {
 			// Removing all 'deleted' images

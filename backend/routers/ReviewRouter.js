@@ -5,6 +5,8 @@
 import express from 'express';
 import multer from 'multer';
 import ReviewController from '../controllers/ReviewController.js';
+import requireAuth from '../middleware/requireAuth.js';
+
 const router = express.Router();
 const upload = multer({
 	dest: 'buffer/',
@@ -14,8 +16,8 @@ const upload = multer({
 router.get('/', ReviewController.findAll);
 router.get('/:id', ReviewController.find);
 router.post('/', upload.array('media', 10), ReviewController.create);
-router.patch('/:id', ReviewController.update);
-router.delete('/:id', ReviewController.delete);
-router.patch('/:id/vote', ReviewController.updateScore);
+router.patch('/:id', requireAuth, ReviewController.update);
+router.delete('/:id', requireAuth, ReviewController.delete);
+router.patch('/:id/vote', requireAuth, ReviewController.updateScore);
 
 export default router;

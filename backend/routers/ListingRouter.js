@@ -4,6 +4,7 @@
 import express from 'express';
 import multer from 'multer'
 import ListingController from '../controllers/ListingController.js';
+import requireAuth from '../middleware/requireAuth.js';
 const router = express.Router();
 const upload = multer({
 	dest: 'buffer/', 
@@ -12,8 +13,8 @@ const upload = multer({
 
 router.get("/", ListingController.findAll);
 router.get("/:id", ListingController.find);
-router.post("/", upload.array('newMedia', 5), ListingController.create);
-router.patch("/:id", upload.any(), ListingController.update);
-router.delete("/:id", ListingController.delete);
+router.post("/",  upload.array('newMedia', 5), ListingController.create);
+router.patch("/:id", requireAuth,  upload.any(), ListingController.update);
+router.delete("/:id",  requireAuth, ListingController.delete);
 
 export default router;
