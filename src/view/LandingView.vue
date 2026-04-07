@@ -14,8 +14,7 @@ ListingService.findAll()
 	});
 
 const universityFilters = [
-	"De La Salle University", "University of Santo Thomas",
-	"University of the Philippines - Diliman", "Ateneo De Manila University"
+	"Living Room", "Bathroom", "Bedrooms", "Dining Room", "Kitchen"
 ]
 
 const topAmenities = computed(() => {
@@ -64,7 +63,11 @@ const topAmenities = computed(() => {
 	<!-- Main Section -->
 	<div class="w-full h-fit flex flex-col gap-10 justify-start px-12 pb-4">
 		<!-- First Category -->
-		<LandingCategory :filterItems="universityFilters" :listings="listings"/>
+		<LandingCategory :filterItems="universityFilters" :listings="listings">
+			<template #text>
+				Find homes that have what you need!
+			</template>
+		</LandingCategory>
  
 		<!-- Second Category -->
 		<LandingCategory :filterItems="topAmenities" :listings="listings">

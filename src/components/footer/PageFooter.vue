@@ -1,4 +1,6 @@
 <script setup>
+import { RouterLink } from 'vue-router';
+
 </script>
 
 <template>
@@ -18,7 +20,7 @@
 
 		<!-- Trademark -->
 		<div class="text-[14px] leading-4 text-center text-slate-500 dark:text-slate-400">
-			© 2025 Fantastic Dorms. All rights reserved. • Terms of Use • Privacy Policy
+			© 2026 Fantastic Dorms. All rights reserved. • <RouterLink to="/about-us">About Us</RouterLink>
 		</div>
 	</footer>
 </template>

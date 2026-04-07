@@ -13,6 +13,7 @@ import SettingsView from "@/view/SettingsView.vue";
 import AccountCreationView from "@/view/AccountCreationView.vue";
 import ListingSettingsView from "@/view/ListingSettingsView.vue";
 import { useAuthStore } from '@/auth';
+import AboutView from '@/view/AboutView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -184,7 +185,13 @@ const router = createRouter({
         else
           return next();
       }
-    }
+    },
+    {
+      path: "/about-us",
+      name: "about-us",
+      component: AboutView,
+      meta: { search: true, loggedIn: true },
+    },
   ],
 })
 
