@@ -155,19 +155,19 @@ const handleSave = () => {
 								<div class="space-y-2">
 									<label class="text-sm font-semibold">Listing Name</label>
 									<input v-model="listing.name" type="text" 
-									placeholder="e.g. Green Residences Studio" class="input-field" required />
+									placeholder="e.g. Green Residences Studio" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500" required />
 								</div>
 
 								<!-- Location -->
 								<div class="space-y-2">
 									<label class="text-sm font-semibold">Location</label>
-									<input v-model="listing.address" type="text" placeholder="e.g. Taft Avenue, Manila" class="input-field" required />
+									<input v-model="listing.address" type="text" placeholder="e.g. Taft Avenue, Manila" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500" required />
 								</div>
 
 								<!-- Description -->
 								<div class="md:col-span-2 space-y-2">
 									<label class="text-sm font-semibold">Description</label>
-									<!-- <textarea v-model="listing.description" rows="4" placeholder="Describe the listing..." class="input-field resize-none"></textarea> -->
+									<!-- <textarea v-model="listing.description" rows="4" placeholder="Describe the listing..." class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500 resize-none"></textarea> -->
 									<TextEditor 
 										class="mt-2"
 										v-model="listing.description"
@@ -192,7 +192,7 @@ const handleSave = () => {
 							<!-- amenity field -->
 							<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 								<div v-for="(amenity, index) in listing.amenities" :key="index" class="flex gap-2">
-									<input v-model="listing.amenities[index]" type="text" placeholder="e.g. Free Wi-Fi" class="input-field" required />
+									<input v-model="listing.amenities[index]" type="text" placeholder="e.g. Free Wi-Fi" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500" required />
 									<button type="button" @click="removeAmenity(index)" class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 px-2 rounded-lg transition-colors">
 										<span class="material-symbols-outlined">delete</span>
 									</button>
@@ -217,12 +217,12 @@ const handleSave = () => {
 									<!-- name field -->
 									<div class="flex-1 space-y-2">
 										<label class="text-xs font-bold uppercase text-slate-400">Platform Name</label>
-										<input v-model="social.name" type="text" placeholder="e.g. Facebook" class="input-field" required />
+										<input v-model="social.name" type="text" placeholder="e.g. Facebook" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500" required />
 									</div>
 									<!-- link field -->
 									<div class="flex-2 space-y-2">
 										<label class="text-xs font-bold uppercase text-slate-400">Link / URL</label>
-										<input v-model="social.link" type="text" placeholder="https://..." class="input-field" />
+										<input v-model="social.link" type="text" placeholder="https://..." class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500" />
 									</div>
 									<button type="button" @click="removeSocial(index)" class="self-end md:self-center text-red-500 p-2">
 										<span class="material-symbols-outlined">delete</span>
@@ -281,9 +281,13 @@ const handleSave = () => {
 	</div>
 </template>
 
-<style scoped>
+<!--
+	Tailwind doesn't support dark mode for this and they will not fix it :( 
+	See: https://github.com/tailwindlabs/tailwindcss/discussions/2917
+-->
+<!-- <style scoped>
 @reference "tailwindcss";
 .input-field {
 	@apply w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#121422] text-black dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500;
 }
-</style>
+</style> -->
