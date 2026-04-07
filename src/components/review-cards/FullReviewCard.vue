@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { marked } from 'marked';
+import { useAuthStore } from '@/auth';
 import Carousel from '../carousel/Carousel.vue';
 import MediaContainer from '../carousel/MediaContainer.vue';
 import ProfileIcon from "@/components/profile/ProfileIcon.vue";
@@ -64,18 +65,19 @@ const rerouteTo = (reply) => {
 }
 
 const getScore = () => {
-	return props.review.votes.upvotes.length-props.review.votes.downvotes.length
-}
+	if (!props.review.votes) return 0;
+	return (props.review.votes.upvotes?.length ?? 0) - (props.review.votes.downvotes?.length ?? 0);
+};
+const auth = useAuthStore();
 
 const getDir = () => {
-	const votes = props.review.votes;
-	if (votes.upvotes.indexOf(profile.username) > -1)
-		return "up"
-	else if (votes.downvotes.indexOf(profile.username) > -1)
-		return "down"
-	else
-		return "none"
-}
+	const username = auth.user?.username;
+	if (!username || !props.review.votes) return 'none';
+
+	if (props.review.votes.upvotes?.includes(username)) return 'up';
+	if (props.review.votes.downvotes?.includes(username)) return 'down';
+	return 'none';
+};
 </script>
 
 <template>

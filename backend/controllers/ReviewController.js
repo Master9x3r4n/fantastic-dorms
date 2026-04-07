@@ -126,7 +126,7 @@ class ReviewController {
 			const review = await Review.findById(id);
 			if (review) {
 				// Delete all images on Cloudinary server
-				for (publicId in review.media) {
+				for (const publicId in review.media) {
 					const response = await cloudinary.uploader.destroy(publicId, {
 						resource_type: 'image'
 					});
@@ -155,83 +155,46 @@ class ReviewController {
 		const id = req.params.id;
 		const direction = req.body.direction;
 		const userId = req.body.userId;
-		let upvotes = [];
-		let downvotes = [];
 
-		//Get current upvotes and downvotes arrays
 		try {
 			const review = await Review.findById(id);
+			if (!review) return res.status(404).send({ message: "Review not found" });
 
-			if (!review) {
-				return res.status(404).send({ message: "Review not found" });
-			}
-			
-			upvotes = review.votes.upvotes;
-			downvotes = review.votes.downvotes;
+			let upvotes = [...review.votes.upvotes];
+			let downvotes = [...review.votes.downvotes];
 
-			let incdec = 0;
-			// get number from direction
 			if (direction === 'up') {
-				if (!upvotes.includes(userId)) {
-					const index = downvotes.indexOf(userId);
-					//remove username from downvotes
-					if (index > -1)
-						downvotes.splice(index, 1);
-					//add username to upvotes
-					else
-						upvotes.push(userId);
-				}
+				// Remove from downvotes AND add to upvotes
+				downvotes = downvotes.filter(u => u !== userId);
+				if (!upvotes.includes(userId)) upvotes.push(userId);
 			}
 			else if (direction === 'down') {
-				if (!downvotes.includes(userId)) {
-					const index = upvotes.indexOf(userId);
-					//remove username from upvotes
-					if (index > -1)
-						upvotes.splice(index, 1);
-					//add username to downvotes
-					else
-						downvotes.push(userId);
-				}
+				// Remove from upvotes AND add to downvotes
+				upvotes = upvotes.filter(u => u !== userId);
+				if (!downvotes.includes(userId)) downvotes.push(userId);
 			}
-			else if (direction === 'downdown') {
-				//remove username from upvotes
-				const index = upvotes.indexOf(userId);
-				if (index > -1)
-					upvotes.splice(index, 1);
-
-				//add username to downvotes
-				if (!downvotes.includes(userId))
-					downvotes.push(userId)
+			else if (direction === 'removeup') {
+				upvotes = upvotes.filter(u => u !== userId);
 			}
-			else if (direction === 'upup') {
-				//remove username from downvotes
-				const index = downvotes.indexOf(userId);
-				if (index > -1)
-					downvotes.splice(index, 1);
-
-				//add username to upvotes
-				if (!upvotes.includes(userId))
-					upvotes.push(userId)
+			else if (direction === 'removedown') {
+				downvotes = downvotes.filter(u => u !== userId);
 			}
 
-			const updatedReview = await Review.findByIdAndUpdate(id,
-				{ 
-					// add this amount to the amount in the db
-					$set: { "votes.upvotes": upvotes,
-							"votes.downvotes": downvotes,
-							score: 0
-							 }
-				}, 
-				{ 
-					// give us the updated values from mongodb
-					returnDocument: 'after',
-					runValidators: true,
-				}
+			const score = upvotes.length - downvotes.length;
+
+			const updatedReview = await Review.findByIdAndUpdate(
+				id,
+				{
+					$set: {
+						'votes.upvotes': upvotes,
+						'votes.downvotes': downvotes,
+						score: score
+					}
+				},
+				{ returnDocument: 'after', runValidators: true }
 			);
 
-			if (!updatedReview) {
-				return res.status(404).send({ message: "Review not found" });
-			}
+			if (!updatedReview) return res.status(404).send({ message: "Review not found" });
 
 			res.status(200).send(updatedReview);
 		} catch (err) {
