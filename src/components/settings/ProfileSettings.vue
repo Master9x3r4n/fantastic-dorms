@@ -126,7 +126,7 @@ const handleProfileSave = async () => {
 
 	let usernameExists = null;
 
-	if (oldUsername != newUsername)
+	if (oldUsername !== newUsername)
 	{
 		try
 		{
@@ -141,12 +141,11 @@ const handleProfileSave = async () => {
 	}
 	
 
-	// if its in the database
+	// if it's in the database
 	if (usernameExists)
 	{
 		// alert user that what they want is taken
 		alert(`Your new username ${newUsername} is already taken!`);
-		return;
 	}
 	else
 	{
