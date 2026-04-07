@@ -9,8 +9,8 @@
 		<div class="flex flex-col rg:flex-row gap-10 rg:gap-12 relative">
 			<div class="bg-white dark:bg-[#121422] border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm p-6 md:p-8 transition-colors duration-200 flex flex-col gap-8">
 					<div class="flex flex-col gap-2">
-							<h1 class="font-bold text-3xl md:text-4xl text-slate-900 dark:text-white tracking-tight">
-									About Me
+							<h1 class="underline font-bold text-3xl md:text-4xl text-slate-900 dark:text-white tracking-tight">
+									About Us
 							</h1>
 					</div>
 
