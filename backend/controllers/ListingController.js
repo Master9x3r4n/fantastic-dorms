@@ -68,6 +68,10 @@ class ListingController {
 		const rawMedia = req.files;
 		const uploadedMedia = [];		
 
+		//validate if user is admin or user is listing owner
+		if (listing.owner !== req.session.user.username && !req.session.user.isAdmin)
+			return res.status(403).json({ message: 'Forbidden' });
+
 		try {
 			// Removing all 'deleted' images
 			for (const media of listing.deletedMedia) {
@@ -126,6 +130,11 @@ class ListingController {
 	// Delete a Listings with the specified listingId in the request
 	async delete(req, res) {
 		const listingId = req.params.listingId;
+		const listing = await Listing.findOne({ listingId: req.params.id });
+
+		//validate if user is admin or user is listing owner
+		if (listing.owner !== req.session.user.username && !req.session.user.isAdmin)
+			return res.status(403).json({ message: 'Forbidden' });
 
 		Listing.findOneAndDelete( {listingId: listingId} )
 			.then(data => {
