@@ -10,7 +10,7 @@ const ProfileSchema = new mongoose.Schema({
 	saltedPassword: { type: String },
 	joinDate: { type: Date, default: Date.now },
 	picture: { type: String, default: '' },
-	bio: { type: String, default: 'Goodbye cruel world' },
+	bio: { type: String, default: '' },
 	school: {
 		name: { type: String, default: '' },
 		since: { type: String, default: '' }
