@@ -30,7 +30,7 @@
 									Created Using:
 								</h2>
 								<p>
-									html, css, js, vue, tailwind, tiptap, axios, express, marked, pinia cloudinary, argon2, express, node, cors, mongoose
+									html, css, js, vue, tailwind, tiptap, axios, express, marked, pinia, cloudinary, argon2, express, node, cors, mongoose, mongodb, zod
 								</p>
 							</div>
 					</div>
