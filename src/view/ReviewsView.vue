@@ -1,8 +1,10 @@
 <script setup>
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, onMounted, nextTick, computed } from 'vue';
 import { useRoute } from 'vue-router';
+import { useAuthStore } from '@/auth'; 
 import FullReviewCard from '@/components/review-cards/FullReviewCard.vue';
 import ReviewService from '../services/ReviewService.js';
+import ListingService from '@/services/ListingService.js';
 
 const route = useRoute();
 
@@ -10,9 +12,41 @@ const route = useRoute();
 const listingId = route.params.id;
 
 const reviews = ref([]);
+const auth = useAuthStore();
 
-onMounted(() => {
+const listingOwnerUsername = ref('');
+
+// get current user from store
+const user = computed(() => {
+		return auth.user
+	}
+);
+
+const isOwner = computed(() => {
+		return user.value && user.value.username === listingOwnerUsername.value;
+	}
+);
+
+onMounted(async () => {
+
+	// make sure to get current user
+	if (!auth.user) {
+        await auth.fetchCurrentUser();
+    }
+
+
 	if (listingId) {
+
+		// find listing owner based on listinId
+        ListingService.find(listingId)
+            .then(res => {
+                listingOwnerUsername.value = res.data.owner;
+				console.log(res);
+            }
+		)
+            .catch(err => console.error("Error fetching listing:", err)
+		);
+
 		// Fetch all reviews specific to this listing
 		ReviewService.findAllFromListing(listingId)
 				.then(async (res) => {
@@ -74,7 +108,7 @@ onMounted(() => {
 				<template v-for="review in reviews" :key="review._id">
 					<!-- ID assigned for scrolling -->
 					<div :id="review._id">
-						<FullReviewCard :review="review" />
+						<FullReviewCard :review="review" :is-owner="isOwner" />
 					</div>
 				</template>
 			</div>
