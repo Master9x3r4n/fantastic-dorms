@@ -5,7 +5,10 @@ import express from 'express';
 import multer from 'multer'
 import ListingController from '../controllers/ListingController.js';
 const router = express.Router();
-const upload = multer({ dest: 'buffer/' });
+const upload = multer({
+	dest: 'buffer/', 
+	limits: { fieldSize: 10 * 1024 * 1024 }
+});
 
 router.get("/", ListingController.findAll);
 router.get("/:id", ListingController.find);

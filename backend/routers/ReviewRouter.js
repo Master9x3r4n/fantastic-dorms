@@ -6,7 +6,10 @@ import express from 'express';
 import multer from 'multer';
 import ReviewController from '../controllers/ReviewController.js';
 const router = express.Router();
-const upload = multer({ dest: 'buffer/' });
+const upload = multer({
+	dest: 'buffer/',
+	limits: { fieldSize: 10 * 1024 * 1024 }
+});
 
 router.get('/', ReviewController.findAll);
 router.get('/:id', ReviewController.find);

@@ -73,7 +73,8 @@ class ListingController {
 			for (const media of listing.deletedMedia) {
 				const publicId = extractPublicId(media);
 				const response = await cloudinary.uploader.destroy(publicId, {
-					resource_type: 'image'
+					resource_type: 'image',
+					invalidate: true
 				});
 
 				if (response.result !== 'ok') {
