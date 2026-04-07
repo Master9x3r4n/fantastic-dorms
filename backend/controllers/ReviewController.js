@@ -2,6 +2,7 @@
 // https://www.bezkoder.com/node-express-mongodb-crud-rest-api/
 
 import { v2 as cloudinary } from 'cloudinary';
+import { extractPublicId } from 'cloudinary-build-url';
 import fs from 'fs';
 import Review from '../models/Review.js';
 // const MAX_MEDIA_COUNT = 10;
@@ -14,6 +15,7 @@ class ReviewController {
 		if (req.query.username) condition['username'] = req.query.username;
 		if (req.query.listingId) condition['listingId'] = req.query.listingId;
 		if (req.query.title) condition['title'] =  { $regex: `/${title}/`, $options: 'i' };
+		if (req.query.isAnonymous) condition['isAnonymous'] = req.query.isAnonymous;
 
 		try {
 			const reviews = await Review.find(condition);
@@ -117,13 +119,22 @@ class ReviewController {
 	// Deletes Review document with ID
 	// Returns: Object { deletedCount: x }
 	async delete(req, res) {
+		if (!req.session.user) {
+			return res.status(401).send({ message: 'Not logged in.' });
+		}
 		const id = req.params.id;
 
 		try {
 			const review = await Review.findById(id);
 			if (review) {
+				// Check if user === review's user
+				if (req.session.user.username !== review.username) {
+					return res.status(401).send({ message: 'Unauthorized access.' });
+				}
+				
 				// Delete all images on Cloudinary server
-				for (const publicId in review.media) {
+				for (const media of review.media) {
+					const publicId = extractPublicId(media);
 					const response = await cloudinary.uploader.destroy(publicId, {
 						resource_type: 'image'
 					});
@@ -133,7 +144,7 @@ class ReviewController {
 					}
 				}
 
-				const result = await Review.deleteOne(id);
+				const result = await Review.deleteOne({ _id: id });
 				res.status(204).send(result);
 			} else {
 				res.status(404).send({
@@ -141,6 +152,7 @@ class ReviewController {
 				});
 			}
 		} catch (err) {
+			console.log('Error occurred while deleting Review: ' + err.message);
 			res.status(500).send({
 				message: err.message || `An error occurred while deleting Review ${id}.`
 			});

@@ -24,7 +24,8 @@ class ReviewService {
 	}
 
 	findAllByUser(username) {
-		return http.get(`/r?username=${username}`)
+		// return http.get(`/r?username=${username}&isAnonymous=false`);
+		return http.get(`/r?username=${username}`);
 	}
 	
 	findAllFromListing(listingId) {
@@ -57,9 +58,7 @@ class ReviewService {
 		return http.delete(`/r?username=${username}`);
 	}
 
-
-	updateScore(id, { userId: userId, direction: direction }) 
-	{
+	updateScore(id, { userId: userId, direction: direction }) {
 		return http.patch(`/r/${id}/vote`, { userId: userId, direction: direction });
 	}
 }
