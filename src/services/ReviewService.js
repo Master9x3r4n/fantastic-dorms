@@ -24,7 +24,8 @@ class ReviewService {
 	}
 
 	findAllByUser(username) {
-		return http.get(`/r?username=${username}&isAnonymous=false`);
+		// return http.get(`/r?username=${username}&isAnonymous=false`);
+		return http.get(`/r?username=${username}`);
 	}
 	
 	findAllFromListing(listingId) {
