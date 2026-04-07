@@ -148,8 +148,8 @@
 							<input
 								class="w-full px-4 py-3 rounded-lg border-2 text-slate-900 dark:text-white focus:ring-2 focus:ring-[#355AFF] focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500 pr-10"
 								:class="isValidConfirm(inputs.fields?.confirm) ? 'border-slate-200 dark:border-slate-700 bg-transparent' : 'border-red-400 bg-red-100 dark:bg-red-600/10'"
-								id="password"
-								name="password"
+								id="confirm-password"
+								name="confirm-password"
 								placeholder="••••••••"
 								required
 								:type="showPassword ? 'text' : 'password'"
