@@ -72,7 +72,8 @@ class ReviewController {
 
 				// Rebuild with this URL:
 				// https://res.cloudinary.com/fantasticdorms/image/upload/reviewMedia/<public_id>.png
-				uploadedMedia.push(`https://res.cloudinary.com/fantasticdorms/image/upload/${json.public_id}`);
+				// uploadedMedia.push(`https://res.cloudinary.com/fantasticdorms/image/upload/${json.public_id}`);
+				uploadedMedia.push(json.secure_url);
 				if (fs.existsSync(media.path)) {
 					fs.unlinkSync(media.path);
 				}
