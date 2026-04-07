@@ -4,6 +4,7 @@
 import Profile from '../models/Profile.js';
 import PasswordsUtils from '../passwords.js';
 import { v2 as cloudinary } from 'cloudinary';
+import { passwordUpdateSchema } from '../passwordValidator.js';
 
 class ProfileController {
 	// Retrieves all profiles from the database
@@ -207,9 +208,18 @@ class ProfileController {
 	// handles updating of passwords in the backend cuz security
 	async upadatePassword(req, res)
 	{
-		const username = req.params.username;
-		const current = req.body.currentPassword;
-		const newP = req.body.newPassword;
+		const result = passwordUpdateSchema.safeParse(req.body);
+
+		if (!result.success) 
+		{
+			return res.status(400).json({ 
+				errors: result.error.flatten().fieldErrors 
+			});
+		}
+
+		const username = result.data.username;
+		const current = result.data.currentPassword;
+		const newP = result.data.newPassword;
 
 		if (typeof username !== 'string' || typeof current !== 'string' || typeof newP !== 'string')
 		{

@@ -45,6 +45,8 @@ class PasswordsUtils {
         }
         
     };
+
+    
 }
 
 export default new PasswordsUtils();
